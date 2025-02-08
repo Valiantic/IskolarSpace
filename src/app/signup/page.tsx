@@ -6,40 +6,50 @@ import { supabase } from "../../../lib/supabaseClient";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
+  const [error, setError]       = useState("");
+  const router                = useRouter();
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
-    // Sign up the user using Supabase Auth
-    const { data, error } = await supabase.auth.signUp({
+    // 1. Attempt to sign up the user.
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { full_name: fullName },
-      },
+      options: { data: { full_name: fullName } },
     });
 
-    if (error) {
-      setError(error.message);
-    } else {
-      // After successful signup, insert extra user info into tbl_users
-      const userId = data.user?.id;
-      if (userId) {
-        const { error: dbError } = await supabase
-          .from("tbl_users")
-          .insert([{ id: userId, full_name: fullName }]);
-        if (dbError) {
-          setError(dbError.message);
-          return;
-        }
-      }
-      router.push("/dashboard");
+    if (signUpError) {
+      setError("Signup Error: " + signUpError.message);
+      return;
     }
+
+    // 2. Check for a valid session.
+    // NOTE: If email confirmations are enabled, data.session might be null.
+    if (!data.session) {
+      // For development, disable email confirmations in Supabase Auth settings.
+      setError("Please check your email to confirm your account. Once confirmed, please sign in.");
+      return;
+    }
+
+    // 3. With a valid session, insert additional user info into tbl_users.
+    const userId = data.user?.id;
+    if (userId) {
+      const { error: dbError } = await supabase
+        .from("tbl_users")
+        .insert([{ id: userId, full_name: fullName }]);
+
+      if (dbError) {
+        setError("Database Insert Error: " + dbError.message);
+        return;
+      }
+    }
+
+    // 4. Redirect to Dashboard on successful signup.
+    router.push("/dashboard");
   };
 
   return (
@@ -77,10 +87,7 @@ export default function SignupPage() {
             required
           />
         </div>
-        <button
-          type="submit"
-          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-        >
+        <button type="submit" className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
           Sign Up
         </button>
       </form>
