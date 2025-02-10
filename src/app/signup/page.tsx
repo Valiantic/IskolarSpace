@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
+  const [togglePassword, setTogglePassword] = useState(false);
   const [error, setError]       = useState("");
   const router                = useRouter();
 
@@ -20,6 +22,7 @@ export default function SignupPage() {
       email,
       password,
       options: { data: { full_name: fullName } },
+      
     });
 
     if (signUpError) {
@@ -52,6 +55,10 @@ export default function SignupPage() {
     router.push("/dashboard");
   };
   
+  const showPassword = () => {
+    setTogglePassword(!togglePassword);
+  }
+
   const handleNavigation = () => {
     router.push("/login");
   }
@@ -81,15 +88,24 @@ export default function SignupPage() {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label className="block text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded"
-            required
-          />
+          <div className="relative">
+            <input
+              type={togglePassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+            <button 
+              type="button" 
+              onClick={showPassword} 
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              {togglePassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
         </div>
         <button type="submit" className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
           Sign Up

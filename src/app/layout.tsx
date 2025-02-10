@@ -24,8 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-       <head>
-       <link rel="icon" type="image/png" href="/iskolarspace_logo.png" />      </head>
+      <head>
+        <link rel="icon" type="image/png" href="/globe.svg" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
