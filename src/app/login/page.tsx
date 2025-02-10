@@ -35,6 +35,10 @@ export default function LoginPage() {
     router.push("/dashboard");
   };
 
+  const handleNavigation = () => {
+    router.push("/signup");
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSignin} className="bg-white p-6 rounded shadow-md w-full max-w-sm">
@@ -62,6 +66,10 @@ export default function LoginPage() {
         </div>
         <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
           Sign In
+        </button>
+
+        <button type="button" onClick={handleNavigation} className="w-full mt-4">
+          Don't have an account? Sign Up
         </button>
       </form>
     </div>

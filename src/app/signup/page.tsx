@@ -51,6 +51,10 @@ export default function SignupPage() {
     // 4. Redirect to Dashboard on successful signup.
     router.push("/dashboard");
   };
+  
+  const handleNavigation = () => {
+    router.push("/login");
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -90,6 +94,10 @@ export default function SignupPage() {
         <button type="submit" className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
           Sign Up
         </button>
+       
+
+        <button className="w-full mt-4" onClick={handleNavigation}>Already have an account?</button>
+
       </form>
     </div>
   );
