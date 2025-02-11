@@ -112,7 +112,7 @@ export default function SignupPage() {
         </button>
        
 
-        <button className="w-full mt-4" onClick={handleNavigation}>Already have an account?</button>
+        <button className="w-full mt-7" onClick={handleNavigation}>Already have an account?</button>
 
       </form>
     </div>
