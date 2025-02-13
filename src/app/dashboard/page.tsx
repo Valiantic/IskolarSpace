@@ -12,6 +12,10 @@ export default function DashboardPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [todos, setTodos] = useState<any[]>([]);
 
+  // STATES TO EDIT TASK 
+  const [editingTaskId, setEditingTaskId] = useState< | null>(null);
+  const [editedContent, setEditedContent] = useState("");
+
   // FETCH USER SESSION 
   useEffect(() => {
     const fetchUser = async () => {
@@ -73,6 +77,38 @@ export default function DashboardPage() {
       }
   }
 
+  // HANDLE EDITING TASK 
+  const startEditing = (todo: any) => {
+    setEditingTaskId(todo.id);
+    setEditedContent(todo.content);
+  }
+
+  // HANDLE CANCEL EDIT MODE 
+  const cancelEditing = () => {
+    setEditingTaskId(null);
+    setEditedContent("");
+  }
+
+  // HANDLE SAVE EDITED TASK 
+  const handleSaveEdit = async (todoId: string) => {
+    if (!editedContent.trim()) return;
+
+    const { error } = await supabase
+      .from("tbl_todos")
+      .update({ content: editedContent })
+      .eq("id", todoId);
+
+    if (error) {
+      console.error("Error updating task", error.message);
+    } else {
+
+      // CLEAR EDITING STATE 
+      setEditingTaskId(null);
+      setEditedContent("");
+      fetchTodos();
+    }
+  }
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/login");
@@ -119,9 +155,51 @@ export default function DashboardPage() {
               {todos.map((todo) => (
                 <li
                 key={todo.id}
-                className="border p-3 rounded shadow-sm hover:bg-gray-50">
-                  {todo.content}
+                className="border p-3 rounded shadow-sm hover:bg-gray-50">        
+                 
+                 {/* FETCH TASKS */}
+                  <div className="flex-1">
+                    {editingTaskId === todo.id ? (
+                      <input
+                      type="text"
+                      className="w-full border p-2 rounded"
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
+                      />
+                    ) : (
+                      <span>{todo.content}</span>
+                    )}
+                  </div>
+
+                  <div className="ml-4">
+                    {editingTaskId === todo.id ? (
+                      // SAVE EDIT MODE 
+                      <>
+                      <button onClick={() => handleSaveEdit(todo.id)}
+                        className="text-green-600 mr-2">
+                        Save
+                      </button>
+                      <button
+                      onClick={cancelEditing}
+                      className="text-red-600">
+                        Cancel
+                      </button>
+                      </>
+
+                    ) : (
+
+                      // CANCEL EDITING MODE 
+                      <button
+                      onClick={() => startEditing(todo)}
+                      className="text-blue-600">
+                        Edit
+                      </button>
+
+                    )}
+
+                  </div>
                 </li>
+
               ))}
             </ul>
           )}
