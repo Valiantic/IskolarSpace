@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
+
+interface Todo {
+  id: string;
+  content: string;
+  user_id: string;
+  created_at: string;
+}
 
 export default function DashboardPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -10,7 +17,7 @@ export default function DashboardPage() {
   const [task, setTask] = useState("");
   const [showInput, setShowInput] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [todos, setTodos] = useState<any[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   // STATES TO EDIT TASK 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
@@ -19,6 +26,23 @@ export default function DashboardPage() {
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
+
+  // FUNCTION TO FETCH TASK FROM SUPABASE - Moved up and wrapped in useCallback  
+  const fetchTodos = useCallback(async () => {
+    if (!userId) return; // Guard clause
+
+    const { data, error } = await supabase
+      .from("tbl_todos")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .eq('user_id', userId);
+    
+    if (error) {
+      console.error("Error fetching todos:", error);
+    } else {
+      setTodos(data || []);
+    }
+  }, [userId]); // Add userId as dependency
 
   // FETCH USER SESSION 
   useEffect(() => {
@@ -43,24 +67,7 @@ export default function DashboardPage() {
     if (userId) { // Only fetch if userId exists
       fetchTodos();
     }
-  }, [userId]); // Depend on userId
-
-  // FUNCTION TO FETCH TASK FROM SUPABASE  
-  const fetchTodos = async () => {
-    if (!userId) return; // Guard clause
-
-    const { data, error } = await supabase
-      .from("tbl_todos")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .eq('user_id', userId);
-    
-    if (error) {
-      console.error("Error fetching todos:", error);
-    } else {
-      setTodos(data || []);
-    }
-  };
+  }, [userId, fetchTodos]); // Added fetchTodos to dependency array
 
   // HANLDE ADDING A NEW TASK  
   const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,7 +89,7 @@ export default function DashboardPage() {
   }
 
   // HANDLE EDITING TASK 
-  const startEditing = (todo: any) => {
+  const startEditing = (todo: Todo) => {
     setEditingTaskId(todo.id);
     setEditedContent(todo.content);
   }
