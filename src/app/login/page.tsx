@@ -86,7 +86,7 @@ export default function LoginPage() {
         </button>
 
         <button type="button" onClick={handleNavigation} className="w-full mt-4">
-          Don't have an account? Sign Up
+          Don&apos;t have an account? Sign Up
         </button>
       </form>
     </div>
