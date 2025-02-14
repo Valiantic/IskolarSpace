@@ -162,7 +162,7 @@ export default function DashboardPage() {
       </button>
 
       <div className="p-4 max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">Your Task List</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">Your Task List</h1>
       
         <button onClick={() => setShowInput((prev) => !prev)} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
           Add Task
@@ -171,13 +171,16 @@ export default function DashboardPage() {
         {showInput && (
           <form onSubmit={handleAddTask} className="mt-4">
             <textarea
-            className="w-full border p2 rounded mb-2"
+            className="w-full border p2 rounded mb-2 resize-none p-4"
             placeholder="Add a new task"
             value={task}
             onChange={(e) => setTask(e.target.value)}
             />
             <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
               Save Task
+            </button>
+            <button onClick={() => setShowInput(false)} className="bg-gray-200 text-gray-800 px-4 py-2 rounded ml-2 hover:bg-gray-300">
+              Cancel
             </button>
           </form>
         )}
