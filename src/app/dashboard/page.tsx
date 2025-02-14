@@ -13,8 +13,12 @@ export default function DashboardPage() {
   const [todos, setTodos] = useState<any[]>([]);
 
   // STATES TO EDIT TASK 
-  const [editingTaskId, setEditingTaskId] = useState< | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
+
+  // DELETE CONFIRMATION MODAL 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
 
   // FETCH USER SESSION 
   useEffect(() => {
@@ -114,6 +118,37 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
+  // HANDLE DELETE TASK
+  const handleDelete = async () => {
+    if(!todoToDelete) return;
+
+    const { error } = await supabase
+    .from("tbl_todos")
+    .delete()
+    .eq("id", todoToDelete);
+
+    if (error) {
+      console.error("Error deleting task", error.message);
+    }else {
+      fetchTodos();
+    }
+
+    setShowDeleteModal(false);
+    setTodoToDelete(null);
+  };
+
+  // Confirm delete action
+  const confirmDelete = (todoId: string) => {
+    setTodoToDelete(todoId);
+    setShowDeleteModal(true);
+  };
+
+  // Cancel the delete action
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setTodoToDelete(null);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
     
@@ -179,6 +214,8 @@ export default function DashboardPage() {
                         className="text-green-600 mr-2">
                         Save
                       </button>
+
+                      {/* // CANCEL EDIT MODE  */}
                       <button
                       onClick={cancelEditing}
                       className="text-red-600">
@@ -188,13 +225,24 @@ export default function DashboardPage() {
 
                     ) : (
 
-                      // CANCEL EDITING MODE 
+                     <>
+                       {/* EDIT TASK */}
                       <button
                       onClick={() => startEditing(todo)}
                       className="text-blue-600">
                         Edit
                       </button>
 
+                       {/* DELETE TASK */}
+                      <button 
+                      onClick={() => confirmDelete(todo.id)}
+                      className="text-red-600 ml-2"
+                      >
+                        Delete
+                      </button>
+                     
+                     
+                     </>
                     )}
 
                   </div>
@@ -203,8 +251,31 @@ export default function DashboardPage() {
               ))}
             </ul>
           )}
-
         </div>
+
+        {/* DELETE CONFIRMATION MODAL */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded shadow-md max-w-sm w-full">
+              <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+              <p>Are you sure you want to delete this task?</p>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                onClick={handleDelete}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Yes, Delete task
+                </button>
+                <button
+                onClick={cancelDelete}
+                className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
+                  Cancel
+                </button>
+              </div>
+            </div>
+
+          </div>
+        )}
 
 
       </div>
