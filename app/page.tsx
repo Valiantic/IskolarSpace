@@ -1,31 +1,48 @@
 "use client";
+import React, { useEffect } from "react";
+import { SparklesCore } from "./components/ui/sparkles";
+import dynamic from "next/dynamic";
 
-import Image from "next/image";
-import Link from 'next/link';
-
-export default function Home() {
+export default function Page() {
+  useEffect(() => {
+    async function initAOS() {
+      const AOS = (await import('aos')).default;
+      AOS.init({
+        duration: 1000,
+        once: true,
+      });
+    }
+    
+    initAOS();
+  }, []);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden">
+      <h1 
+        data-aos="fade-up"
+        className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white relative z-20"
+      >
+        IskolarSpace
+      </h1>
+      <div className="w-[40rem] h-40 relative">
+        {/* Gradients */}
+        <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
+        <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
+        <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
+        <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
+
+        <SparklesCore
+          id="tsparticles"
+          background="transparent"
+          minSize={0.4}
+          maxSize={1}
+          particleDensity={1200}
+          className="w-full h-full"
+          particleColor="#FFFFFF"
         />
-        <h1 className="text-4xl font-bold text-center sm:text-left">
-          Welcome to IskolarSpace!
-        </h1>
 
-        <Link href="/login" className="w-full">
-          <button className="w-full border border-4 text-bold p-4 rounded-md">Login</button>
-        </Link>
-        <button className="w-full border border-4 text-bold p-4 rounded-md">Signup</button>
-
-      </main>
+        <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+      </div>
     </div>
   );
 }
