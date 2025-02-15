@@ -12,7 +12,6 @@ interface Todo {
 }
 
 export default function DashboardPage() {
-  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userFullName, setUserFullName] = useState<string | null>(null);
   const router = useRouter();
   const [task, setTask] = useState("");
@@ -55,7 +54,6 @@ export default function DashboardPage() {
       if (!session) {
         router.push("/login");
       } else {
-        setUserEmail(session.user.email ?? "");
         setUserId(session.user.id);
 
         // Fetch user's full name
