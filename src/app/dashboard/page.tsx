@@ -13,6 +13,7 @@ interface Todo {
 
 export default function DashboardPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userFullName, setUserFullName] = useState<string | null>(null);
   const router = useRouter();
   const [task, setTask] = useState("");
   const [showInput, setShowInput] = useState(false);
@@ -56,6 +57,17 @@ export default function DashboardPage() {
       } else {
         setUserEmail(session.user.email ?? "");
         setUserId(session.user.id);
+
+        // Fetch user's full name
+        const { data: userData, error } = await supabase
+          .from('tbl_users')
+          .select('full_name')
+          .eq('id', session.user.id)
+          .single();
+
+        if (!error && userData) {
+          setUserFullName(userData.full_name);
+        }
       }
     };
 
@@ -157,16 +169,24 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-    
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-      {userEmail ? <p>Logged in as: {userEmail}</p> : <p>Loading...</p>}
-      <button
-        onClick={handleLogout}
-        className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-      >
-        Logout
-      </button>
+    <div className="min-h-screen flex flex-col justify-start bg-gray-100">
+
+      <div className="p-4 bg-white shadow-sm">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
+          <div className="flex flex-col">
+            <h1>Welcome Back!</h1>
+            {userFullName && <h2 className="text-xl font-semibold">{userFullName}</h2>}
+
+            <button
+              onClick={handleLogout}
+              className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
+            >
+              Logout
+            </button>
+          </div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+        </div>
+      </div>
 
       <div className="p-4 max-w-xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">Your Task List</h1>
