@@ -2,6 +2,9 @@
 import React, { useEffect } from "react";
 import { SparklesCore } from "./components/ui/sparkles";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+
+import { StickyScrollReveal } from "./blocks/StickyScrollReveal";
 
 export default function Page() {
   useEffect(() => {
@@ -17,7 +20,9 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden">
+
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center overflow-hidden">
+       <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden">
       <h1 
         data-aos="fade-up"
         className="md:text-7xl text-3xl lg:text-9xl font-bold text-center relative z-20 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text"
@@ -52,14 +57,17 @@ export default function Page() {
       </div>
 
       <div className="flex gap-4 mt-8">
-        <button className="px-6 py-2 text-white border border-sky-500 rounded-full hover:bg-sky-500/20 transition-colors">
-          Sign In
+        <Link href="/login">
+        <button className="px-8 py-3 text-white border border-sky-500 rounded-full hover:bg-sky-500/20 transition-colors">
+          Get Started
         </button>
-        <button className="px-6 py-2 text-white bg-sky-500 rounded-full hover:bg-sky-600 transition-colors">
-          Sign Up
-        </button>
+        </Link>
       </div>
-
     </div>
-  );
+
+      <section className="w-full">
+        <StickyScrollReveal />
+      </section>
+    </div>
+  )
 }
