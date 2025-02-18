@@ -8,6 +8,7 @@ import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
 import About from "./blocks/About";
 import { StickyScrollReveal } from "./blocks/StickyScrollReveal";
 import GetStartedBanner from "./blocks/GetStartedBanner";
+import Footer from "./blocks/Footer";
 
 function PageContent() {
   const { backgroundColor } = useBackground();
@@ -63,7 +64,7 @@ function PageContent() {
         </div>
 
         <div className="flex gap-4 mt-8">
-          <Link href="/login">
+          <Link href="/signup">
           <button className="px-8 py-3 text-white border border-sky-500 rounded-full hover:bg-sky-500/20 transition-colors">
             Get Started
           </button>
@@ -81,6 +82,11 @@ function PageContent() {
 
       <section className="w-full mt-10 mb-10">
         <GetStartedBanner />
+      </section>
+
+     
+      <section className="w-full">
+      <Footer/>
       </section>
 
     </div>
