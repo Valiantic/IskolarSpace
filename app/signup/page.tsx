@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaArrowAltCircleRight } from "react-icons/fa";
 import Image from 'next/image';
+import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
 import StudentCollab from '../../public/images/student_collabs.jpeg';
 
@@ -82,6 +83,10 @@ export default function SignupPage() {
     >
       <div className="max-w-xl lg:max-w-3xl">
 
+          <Link href="/" className="mt-4 text-sm text-blue-600 sm:mt-0 underline gap-2 flex items-center">
+              Home <FaArrowAltCircleRight />
+          </Link>
+
         <div className="flex"> 
 
         <h1 className="mt-6 text-2xl font-bold text-black sm:text-xl md:text-4xl">
@@ -96,6 +101,7 @@ export default function SignupPage() {
         </p>
 
         <form onSubmit={handleSignup} className="mt-8 grid grid-cols-6 gap-6">
+
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 

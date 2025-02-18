@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaArrowAltCircleRight } from "react-icons/fa";
 import Image from 'next/image';
+import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
 import Studying from '../../public/images/Studying.jpeg'
 
@@ -98,8 +99,13 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSignin} className="mt-8 grid grid-cols-6 gap-6">
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+    
+          <Link href="/" className="mt-4 text-sm text-blue-600 sm:mt-0 underline gap-2 flex items-center">
+              Home <FaArrowAltCircleRight />
+          </Link>
 
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+          
 
           <div className="col-span-6">
             <h1 className="text-4xl font-bold mb-2">Login</h1>
