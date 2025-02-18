@@ -108,7 +108,7 @@ export default function SignupPage() {
               type="text"
               id="Fullname"
               name="full_name"
-              className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-xs"
+              className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black shadow-xs"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
@@ -122,7 +122,7 @@ export default function SignupPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-               className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700  shadow-xs"
+               className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black  shadow-xs"
               required
             />
           </div>
@@ -137,7 +137,7 @@ export default function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-xs"
+              className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black shadow-xs"
             />
 
             <button 
