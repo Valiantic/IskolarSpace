@@ -1,55 +1,66 @@
 "use client";
 import React from "react";
 import { StickyScroll } from "../components/ui/sticky-scroll-reveal";
-import Image from "next/image";
-
+import { useBackground } from "../../lib/BackgroundContext";
 
 const content = [
   {
-    title: "Collaborative Editing",
+    title: "Efficient Task Management",
     description:
-      "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
+      "IskolarSpace streamlines your academic life by consolidating all your tasks, assignments, and deadlines into one intuitive dashboard. With smart reminders and prioritization tools, you can effortlessly stay organized and ahead of your workload..",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Collaborative Editing
+        Efficient Task Management
       </div>
     ),
   },
   {
-    title: "Real time changes",
+    title: "Seamless Collaboration",
     description:
-      "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
+      "Connect with classmates like never before through IskolarSpace's integrated communication features. Engage in real-time discussions, share resources, and collaborate on projects within a unified platform designed to enhance teamwork.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Review with Peers
+        Seamless Collaboration
       </div>
     ),
   },
   {
-    title: "Version control",
+    title: "Personal Development Tools",
     description:
-      "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+      "Beyond academics, IskolarSpace supports your growth with tools for goal setting and progress tracking. Access a wealth of resources to develop essential skills, while insightful analytics help you monitor your achievements.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
-        Version control
+        Personal Development Tools
       </div>
     ),
   },
   {
-    title: "Running out of content",
+    title: "User-Friendly Interface",
     description:
-      "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+      "Navigate your studies with ease using IskolarSpace's clean, intuitive design crafted specifically for students. Personalize your workspace with customizable themes, and enjoy full functionality across all devices for productivity on the go.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Running out of content
+        User-Friendly Interface
       </div>
     ),
   },
 ];
+
 export function StickyScrollReveal() {
+  const { setBackgroundColor } = useBackground();
+
+  const handleColorChange = (activeCard: number) => {
+    const colors = [
+      "#000000", // black
+      "#0f172a", // slate-900
+      "#171717", // neutral-900
+    ];
+    setBackgroundColor(colors[activeCard % colors.length]);
+  };
+
   return (
     <div className="p-10">
-      <StickyScroll content={content} />
+      <StickyScroll content={content} onColorChange={handleColorChange} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { cn } from "../../../lib/utils";
 export const StickyScroll = ({
   content,
   contentClassName,
+  onColorChange,
 }: {
   content: {
     title: string;
@@ -14,6 +15,7 @@ export const StickyScroll = ({
     content?: React.ReactNode | any;
   }[];
   contentClassName?: string;
+  onColorChange?: (activeCard: number) => void;
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
   const ref = useRef<any>(null);
@@ -41,8 +43,8 @@ export const StickyScroll = ({
   });
 
   const backgroundColors = [
-    "var(--slate-900)",
     "var(--black)",
+    "var(--slate-900)",
     "var(--neutral-900)",
   ];
   const linearGradients = [
@@ -57,7 +59,8 @@ export const StickyScroll = ({
 
   useEffect(() => {
     setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
-  }, [activeCard]);
+    onColorChange?.(activeCard);
+  }, [activeCard, onColorChange]);
 
   return (
     <motion.div

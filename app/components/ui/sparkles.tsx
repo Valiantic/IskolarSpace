@@ -22,7 +22,7 @@ export const SparklesCore = (props: ParticlesProps) => {
   const {
     id,
     className,
-    background,
+    background = "transparent", // changed default to transparent
     minSize,
     maxSize,
     speed,
@@ -52,7 +52,11 @@ export const SparklesCore = (props: ParticlesProps) => {
 
   const generatedId = useId();
   return (
-    <motion.div animate={controls} className={cn("opacity-0", className)}>
+    <motion.div 
+      animate={controls} 
+      className={cn("opacity-0", className)}
+      style={{ background: background }} // Add this line to handle background
+    >
       {init && (
         <Particles
           id={id || generatedId}
@@ -61,7 +65,7 @@ export const SparklesCore = (props: ParticlesProps) => {
           options={{
             background: {
               color: {
-                value: background || "#0d47a1",
+                value: "transparent", // Change this to transparent
               },
             },
             fullScreen: {
