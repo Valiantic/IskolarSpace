@@ -5,8 +5,9 @@ import Link from "next/link";
 import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
 
 // COMPONENTS
-import { StickyScrollReveal } from "./blocks/StickyScrollReveal";
 import About from "./blocks/About";
+import { StickyScrollReveal } from "./blocks/StickyScrollReveal";
+import GetStartedBanner from "./blocks/GetStartedBanner";
 
 function PageContent() {
   const { backgroundColor } = useBackground();
@@ -77,6 +78,11 @@ function PageContent() {
       <section className="w-full mt-10 mb-10">
         <StickyScrollReveal />
       </section>
+
+      <section className="w-full mt-10 mb-10">
+        <GetStartedBanner />
+      </section>
+
     </div>
   );
 }
