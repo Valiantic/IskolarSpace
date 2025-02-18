@@ -1,10 +1,13 @@
 "use client";
 import React, { useEffect } from "react";
 import { SparklesCore } from "./components/ui/sparkles";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 
+// COMPONENTS
 import { StickyScrollReveal } from "./blocks/StickyScrollReveal";
+import About from "./blocks/About";
+
+
 
 export default function Page() {
   useEffect(() => {
@@ -22,7 +25,8 @@ export default function Page() {
   return (
 
     <div className="min-h-screen bg-black flex flex-col items-center justify-center overflow-hidden">
-       <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden">
+
+       <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden mt-7">
       <h1 
         data-aos="fade-up"
         className="md:text-7xl text-3xl lg:text-9xl font-bold text-center relative z-20 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text"
@@ -65,9 +69,15 @@ export default function Page() {
       </div>
     </div>
 
-      <section className="w-full">
+      <section className="w-full mt-10 mb-10">
+       <About />
+      </section>
+
+      <section className="w-full mt-10 mb-10">
         <StickyScrollReveal />
       </section>
+
+
     </div>
   )
 }
