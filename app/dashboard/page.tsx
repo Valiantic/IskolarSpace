@@ -13,6 +13,7 @@ interface Todo {
 
 export default function DashboardPage() {
   const [userFullName, setUserFullName] = useState<string | null>(null);
+  const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
   const [task, setTask] = useState("");
   const [showInput, setShowInput] = useState(false);
@@ -56,15 +57,21 @@ export default function DashboardPage() {
       } else {
         setUserId(session.user.id);
 
-        // Fetch user's full name
+        // Fetch user's full name and created_at timestamp
         const { data: userData, error } = await supabase
           .from('tbl_users')
-          .select('full_name')
+          .select('full_name, created_at')
           .eq('id', session.user.id)
           .single();
 
         if (!error && userData) {
           setUserFullName(userData.full_name);
+          
+          // Check if user was created in the last 24 hours
+          const createdAt = new Date(userData.created_at);
+          const now = new Date();
+          const isNew = (now.getTime() - createdAt.getTime()) < 24 * 60 * 60 * 1000;
+          setIsNewUser(isNew);
         }
       }
     };
@@ -172,7 +179,7 @@ export default function DashboardPage() {
       <div className="p-4 bg-white shadow-sm">
         <div className="flex justify-between items-center max-w-6xl mx-auto">
           <div className="flex flex-col">
-            <h1>Welcome Back!</h1>
+            <h1>{isNewUser ? 'Welcome!' : 'Welcome Back!'}</h1>
             {userFullName && <h2 className="text-xl font-semibold">{userFullName}</h2>}
 
             <button
