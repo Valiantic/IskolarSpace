@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import { Plus } from "lucide-react";
 
 interface Todo {
   id: string;
@@ -207,126 +208,99 @@ export default function DashboardPage() {
 
 
       <div className="p-4 max-w-xl mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-4 text-center">Your Task List</h1>
+        <h1 className="text-3xl text-white font-bold mb-4 text-center">Things to do</h1>
       
-        <button onClick={() => setShowInput((prev) => !prev)} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          Add Task
-        </button>
+      {/* Add Task Button */}
+        <button 
+        onClick={() => setShowInput((prev) => !prev)}
+        className="fixed bottom-8 right-8 bg-green-400 hover:bg-green-500 rounded-full p-4 text-white shadow-lg"
+      >
+        <Plus size={24} />
+      </button>
 
-        {showInput && (
-          <form onSubmit={handleAddTask} className="mt-4">
-            <textarea
-            className="w-full border p2 rounded mb-2 resize-none p-4"
-            placeholder="Add a new task"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
-            />
-            <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-              Save Task
-            </button>
-            <button onClick={() => setShowInput(false)} className="bg-gray-200 text-gray-800 px-4 py-2 rounded ml-2 hover:bg-gray-300">
-              Cancel
-            </button>
-          </form>
-        )}
-
-        <div className="mt-6">
-          {todos.length === 0 ? (
-            <p className="text-gray-600">No tasks added yet.</p>
-          ) : (
-            <ul className="space-y-2">
-              {todos.map((todo) => (
-                <li
-                key={todo.id}
-                className="border p-3 rounded shadow-sm hover:bg-gray-50">        
-                 
-                 {/* FETCH TASKS */}
-                  <div className="flex-1">
-                    {editingTaskId === todo.id ? (
-                      <input
-                      type="text"
-                      className="w-full border p-2 rounded"
-                      value={editedContent}
-                      onChange={(e) => setEditedContent(e.target.value)}
-                      />
-                    ) : (
-                      <span>{todo.content}</span>
-                    )}
-                  </div>
-
-                  <div className="ml-4">
-                    {editingTaskId === todo.id ? (
-                      // SAVE EDIT MODE 
-                      <>
-                      <button onClick={() => handleSaveEdit(todo.id)}
-                        className="text-green-600 mr-2">
-                        Save
-                      </button>
-
-                      {/* // CANCEL EDIT MODE  */}
-                      <button
-                      onClick={cancelEditing}
-                      className="text-red-600">
-                        Cancel
-                      </button>
-                      </>
-
-                    ) : (
-
-                     <>
-                       {/* EDIT TASK */}
-                      <button
-                      onClick={() => startEditing(todo)}
-                      className="text-blue-600">
-                        Edit
-                      </button>
-
-                       {/* DELETE TASK */}
-                      <button 
-                      onClick={() => confirmDelete(todo.id)}
-                      className="text-red-600 ml-2"
-                      >
-                        Delete
-                      </button>
-                     
-                     
-                     </>
-                    )}
-
-                  </div>
-                </li>
-
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* DELETE CONFIRMATION MODAL */}
-        {showDeleteModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded shadow-md max-w-sm w-full">
-              <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-              <p>Are you sure you want to delete this task?</p>
-              <div className="mt-6 flex justify-end space-x-3">
+        {/* Add Task Modal */}
+      {showInput && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4 text-black">Add New Task</h2>
+            <form onSubmit={handleAddTask}>
+              <textarea
+                className="w-full border-2 border-gray-300 p-4 rounded-lg mb-4 resize-none h-32 text-black"
+                placeholder="Enter your task..."
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+              />
+              <div className="flex justify-end gap-2">
                 <button
-                onClick={handleDelete}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  type="button"
+                  onClick={() => setShowInput(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
                 >
-                  Yes, Delete task
+                  Cancel
                 </button>
                 <button
-                onClick={cancelDelete}
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
-                  Cancel
+                  type="submit"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                >
+                  Add Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+         {/* Task Grid */}
+      <div className="p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {todos.map((todo, index) => (
+            <div
+              key={todo.id}
+              className={`${cardColors[index % cardColors.length]} rounded-lg p-6 shadow-lg min-h-[200px] flex flex-col justify-between`}
+            >
+              <div className="flex-1">
+                <p className="text-black text-lg">{todo.content}</p>
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => {
+                    setTodoToDelete(todo.id);
+                    setShowDeleteModal(true);
+                  }}
+                  className="text-gray-700 hover:text-red-700"
+                >
+                  Delete
                 </button>
               </div>
             </div>
-
-          </div>
-        )}
-
-
+          ))}
+        </div>
       </div>
+
+        {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+            <h2 className="text-xl font-bold mb-4 text-black">Confirm Deletion</h2>
+            <p className="text-gray-600">Are you sure you want to delete this task?</p>
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
 
     </div>
   );
