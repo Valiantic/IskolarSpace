@@ -173,28 +173,41 @@ export default function DashboardPage() {
     setTodoToDelete(null);
   };
 
+
+  // Colors for notes 
+
+   const cardColors = [
+    'bg-emerald-400',
+    'bg-orange-300',
+    'bg-yellow-200',
+    'bg-fuchsia-300',
+    'bg-blue-300',
+    'bg-coral-400'
+  ];
+
+
   return (
-    <div className="min-h-screen flex flex-col justify-start bg-gray-100">
 
-      <div className="p-4 bg-white shadow-sm">
-        <div className="flex justify-between items-center max-w-6xl mx-auto">
-          <div className="flex flex-col">
-            <h1>{isNewUser ? 'Welcome!' : 'Welcome Back!'}</h1>
+      <div className="min-h-screen bg-gray-900">
+      {/* Header */}
+      <div className="p-4">
+        <div className="flex justify-between items-center">
+          <div className="bg-white rounded-lg p-4 text-black">
+            <h1 className="font-normal">{isNewUser ? 'Welcome!' : 'Welcome Back!'}</h1>
             {userFullName && <h2 className="text-xl font-semibold">{userFullName}</h2>}
-
-            <button
-              onClick={handleLogout}
-              className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
-            >
-              Logout
-            </button>
           </div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+          >
+            Log-out
+          </button>
         </div>
       </div>
 
+
       <div className="p-4 max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4 text-center">Your Task List</h1>
+        <h1 className="text-3xl text-white font-bold mb-4 text-center">Your Task List</h1>
       
         <button onClick={() => setShowInput((prev) => !prev)} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
           Add Task
