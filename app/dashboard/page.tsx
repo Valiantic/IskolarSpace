@@ -162,17 +162,6 @@ export default function DashboardPage() {
     setTodoToDelete(null);
   };
 
-  // Confirm delete action
-  const confirmDelete = (todoId: string) => {
-    setTodoToDelete(todoId);
-    setShowDeleteModal(true);
-  };
-
-  // Cancel the delete action
-  const cancelDelete = () => {
-    setShowDeleteModal(false);
-    setTodoToDelete(null);
-  };
 
 
   // Colors for notes 

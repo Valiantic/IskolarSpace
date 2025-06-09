@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { FaEye, FaEyeSlash, FaArrowAltCircleRight } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaArrowAltCircleLeft } from "react-icons/fa";
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
-import StudentCollab from '../../public/images/student_collabs.jpeg';
+// import StudentCollab from '../../public/images/student_collabs.jpeg';
+import StudentAstronaut from '../../public/images/student_astronaut.png';
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -68,45 +69,55 @@ export default function SignupPage() {
   }
 
   return (
-<section className="bg-white">
+<section className="bg-black">
   <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-    <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
+    <aside className="relative block h-64 md:h-80 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
       <Image
-      alt=""
-      src={StudentCollab}
-      className="absolute inset-0 h-full w-full object-cover"
+        alt="Student Astronaut"
+        src={StudentAstronaut}
+        className="absolute inset-0 h-full w-full object-contain md:object-cover"
+        priority
       />
     </aside>
 
     <main
       className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
     >
-      <div className="max-w-xl lg:max-w-3xl">
+      <div className="max-w-xl lg:max-w-3xl w-full">
 
-          <Link href="/" className="mt-4 text-sm text-blue-600 sm:mt-0 underline gap-2 flex items-center">
-              Home <FaArrowAltCircleRight />
+          <Link href="/" className="mt-4 text-sm text-white sm:mt-0 underline gap-2 flex items-center bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
+             <FaArrowAltCircleLeft/> Home
           </Link>
 
-        <div className="flex"> 
-
-        <h1 className="mt-6 text-2xl font-bold text-black sm:text-xl md:text-4xl">
-          Welcome to <span className="font-bold text-sky-500">IskolarSpace</span>
-        </h1>
-        <Image src={Logo} alt="IskolarSpace Logo" width={50} height={50} />
-
+        <div className="flex items-center gap-2"> 
+          <h1 className="mt-6 text-5xl font-bold text-white sm:text-xl md:text-7xl">
+            Welcome to <span className="font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">IskolarSpace!</span>
+          </h1>
+          <Image 
+            src={Logo} 
+            alt="IskolarSpace Logo" 
+            className="mt-6 h-16 w-16 sm:h-10 sm:w-10 md:h-28 md:w-28" 
+            width={0} 
+            height={0} 
+          />
         </div>
 
-        <p className="mt-4 leading-relaxed text-black">
-        Unlock powerful tools to streamline your tasks, boost productivity, and connect with a supportive community. Empower your educational journey with IskolarSpace. Let's get started!
+        <p className="mt-4 leading-relaxed text-white">
+         Empower your educational journey with IskolarSpace. Let's get started!
         </p>
 
         <form onSubmit={handleSignup} className="mt-8 grid grid-cols-6 gap-6">
 
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {/* Error message with improved mobile display */}
+        {error && (
+          <div className="col-span-6">
+            <p className="text-red-500 mb-4 break-words text-sm sm:text-base">{error}</p>
+          </div>
+        )}
 
           <div className="col-span-6">
-            <label htmlFor="Fullname" className="block text-xl font-medium text-black">
+            <label htmlFor="Fullname" className="block text-xl font-medium text-white">
               Fullname
             </label>
 
@@ -122,19 +133,19 @@ export default function SignupPage() {
 
 
           <div className="col-span-6">
-            <label htmlFor="Email" className="block text-xl font-medium text-black"> Email </label>
+            <label htmlFor="Email" className="block text-xl font-medium text-white"> Email </label>
 
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-               className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black  shadow-xs"
+               className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl  text-black  shadow-xs"
               required
             />
           </div>
 
           <div className="col-span-6">
-            <label htmlFor="Password" className="block text-xl font-medium text-black"> Password </label>
+            <label htmlFor="Password" className="block text-xl font-medium text-white"> Password </label>
 
             <div className="mb-4 relative">
 
@@ -143,7 +154,7 @@ export default function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black shadow-xs"
+              className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl  text-black shadow-xs"
             />
 
             <button 
@@ -160,17 +171,18 @@ export default function SignupPage() {
 
       
 
-          <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
+          <div className="col-span-6 sm:flex sm:items-center sm:gap-4 sm:justify-end">
+            
+            <p onClick={handleNavigation} className="mt-4 text-sm text-blue-600 sm:mt-0 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
+              Already have an account?&nbsp;&nbsp;
+              <a href="#" className="text-white underline">Log in</a>.
+            </p>
+
             <button
-              className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:ring-3 focus:outline-hidden"
+              className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-gradient-to-r from-white to-sky-500 hover:text-blue-600 focus:ring-3 focus:outline-hidden"
             >
               Create an account
             </button>
-
-            <p onClick={handleNavigation} className="mt-4 text-sm text-blue-600 sm:mt-0">
-              Already have an account?&nbsp;
-              <a href="#" className="text-black underline">Log in</a>.
-            </p>
             
           </div>
         </form>
