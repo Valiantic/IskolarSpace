@@ -19,7 +19,7 @@ const content = [
     description:
       "Connect with classmates like never before through IskolarSpace's integrated communication features. Engage in real-time discussions, share resources, and collaborate on projects within a unified platform designed to enhance teamwork.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
+      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-500),var(--emerald-200))] flex items-center justify-center text-white">
         Seamless Collaboration
       </div>
     ),
@@ -29,7 +29,7 @@ const content = [
     description:
       "Beyond academics, IskolarSpace supports your growth with tools for goal setting and progress tracking. Access a wealth of resources to develop essential skills, while insightful analytics help you monitor your achievements.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
+      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--blue-300),var(--emerald-500))] flex items-center justify-center text-white">
         Personal Development Tools
       </div>
     ),
@@ -39,7 +39,7 @@ const content = [
     description:
       "Navigate your studies with ease using IskolarSpace's clean, intuitive design crafted specifically for students. Personalize your workspace with customizable themes, and enjoy full functionality across all devices for productivity on the go.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
+      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-700),var(--emerald-700))] flex items-center justify-center text-white">
         User-Friendly Interface
       </div>
     ),
