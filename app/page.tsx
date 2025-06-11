@@ -59,14 +59,14 @@ function PageContent() {
 
         <div className="flex gap-4 mt-8" data-aos="fade-up">
           <h2 className="text-white text-center">
-          Empower. Manage. Achieve.
+          Bridging Students Across the Globe
           </h2>
         </div>
 
         <div className="flex gap-4 mt-8">
-          <Link href="/signup">
+          <Link href="/login">
           <button className="px-8 py-3 text-white border border-sky-500 rounded-full hover:bg-sky-500/20 transition-colors">
-            Get Started
+            Login 
           </button>
           </Link>
         </div>
