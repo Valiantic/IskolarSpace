@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
 // import StudentCollab from '../../public/images/student_collabs.jpeg';
 import StudentAstronaut from '../../public/images/student_astronaut.png';
+import Signupic from '../../public/images/signupic.png';
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -69,13 +70,13 @@ export default function SignupPage() {
   }
 
   return (
-<section className="bg-black">
-  <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-    <aside className="relative block h-64 md:h-80 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
+<section className="bg-black overflow-x-hidden w-full">
+  <div className="lg:grid lg:min-h-screen lg:grid-cols-12 w-full overflow-hidden">
+    <aside className="relative block h-40 md:h-80 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
       <Image
         alt="Student Astronaut"
-        src={StudentAstronaut}
-        className="absolute inset-0 h-full w-full object-contain md:object-cover"
+        src={Signupic}
+        className="absolute inset-0 h-full w-full object-cover md:object-cover"
         priority
       />
     </aside>
