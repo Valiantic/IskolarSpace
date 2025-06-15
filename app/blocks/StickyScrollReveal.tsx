@@ -5,42 +5,32 @@ import { useBackground } from "../../lib/BackgroundContext";
 
 const content = [
   {
-    title: "Efficient Task Management",
+    title: "Connect Globally",
     description:
-      "IskolarSpace streamlines your academic life by consolidating all your tasks, assignments, and deadlines into one intuitive dashboard. With smart reminders and prioritization tools, you can effortlessly stay organized and ahead of your workload..",
+      "Join a vibrant community of learners from diverse backgrounds and cultures. Expand your network, share perspectives, and make lifelong connections.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Efficient Task Management
+      Connect Globally
       </div>
     ),
   },
   {
-    title: "Seamless Collaboration",
+    title: "Collaborate Effortlessly",
     description:
-      "Connect with classmates like never before through IskolarSpace's integrated communication features. Engage in real-time discussions, share resources, and collaborate on projects within a unified platform designed to enhance teamwork.",
+      "Experience the future of group study with intuitive, real-time collaborative note-taking. Work together on projects, assignments, and exam prep like never before.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-500),var(--emerald-200))] flex items-center justify-center text-white">
-        Seamless Collaboration
+        Collaborate Effortlessly
       </div>
     ),
   },
   {
-    title: "Personal Development Tools",
+    title: "Explore New Horizons",
     description:
-      "Beyond academics, IskolarSpace supports your growth with tools for goal setting and progress tracking. Access a wealth of resources to develop essential skills, while insightful analytics help you monitor your achievements.",
+      "Our platform is more than just notes; it's a space for discovery. Uncover new ideas, gain deeper understanding, and unlock your full academic potential.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--blue-300),var(--emerald-500))] flex items-center justify-center text-white">
-        Personal Development Tools
-      </div>
-    ),
-  },
-  {
-    title: "User-Friendly Interface",
-    description:
-      "Navigate your studies with ease using IskolarSpace's clean, intuitive design crafted specifically for students. Personalize your workspace with customizable themes, and enjoy full functionality across all devices for productivity on the go.",
-    content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-700),var(--emerald-700))] flex items-center justify-center text-white">
-        User-Friendly Interface
+        Explore New Horizons
       </div>
     ),
   },

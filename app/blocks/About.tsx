@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { useEffect } from 'react'
 import StudentCollabs from '../../public/images/student_collabs.jpeg'
 import Adventure from '../../public/svgs/adventure.svg'
+import TaskBG  from "../../public/images/iskolartaskbg.png";
+
 
 const About = () => {
 
@@ -28,15 +30,15 @@ const About = () => {
                 What is IskolarSpace?
               </h2>
     
-              <p className="mt-4 text-white">
-              IskolarSpace is a cutting-edge online platform designed to revolutionize the way students manage their academic responsibilities. By providing tools that streamline task management and foster meaningful connections among peers, IskolarSpace empowers students to take control of their educational journey and achieve success with confidence.
+              <p className="mt-4 text-white sm:text-2xl md:text-4xl justify-content-center">
+             IskolarSpace is your launchpad to a global student network. Take notes like never before, share insights, and study together with peers from around the world.
               </p>
             </div>
           </div>
     
           <div>
             <Image
-              src={Adventure}
+              src={TaskBG}
               alt="Students collaborating"
               className="rounded"
               width={500}
