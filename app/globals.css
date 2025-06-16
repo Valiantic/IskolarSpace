@@ -6,7 +6,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
+@layer utilities {
+  .shadow-text {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
 
 
 @layer base {
