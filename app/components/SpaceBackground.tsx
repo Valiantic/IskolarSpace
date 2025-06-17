@@ -9,14 +9,6 @@ interface Star {
   color: string;
 }
 
-interface Cloud {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  velocity: number;
-  opacity: number;
-}
 
 const SpaceBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -49,44 +41,12 @@ const SpaceBackground: React.FC = () => {
           color: Math.random() > 0.8 ? '#90e0ef' : Math.random() > 0.6 ? '#caf0f8' : '#ffffff'
         });
       }
-    };    // Create clouds
-    const clouds: Cloud[] = [];
-    const initClouds = () => {
-      clouds.length = 0;
-      const numClouds = Math.floor(canvas.width / 300); 
-      
-      for (let i = 0; i < numClouds; i++) {
-        clouds.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * (canvas.height / 3),
-          width: Math.random() * 200 + 100,
-          height: Math.random() * 60 + 40,
-          velocity: Math.random() * 0.05 + 0.01,
-          opacity: Math.random() * 0.08 + 0.02 
-        });
-      }
-    };
+    };    
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      clouds.forEach(cloud => {
-        cloud.x += cloud.velocity;
-        if (cloud.x > canvas.width) {
-          cloud.x = -cloud.width;
-        }
-        
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(255, 255, 255, ${cloud.opacity})`;
-        ctx.ellipse(
-          cloud.x, 
-          cloud.y, 
-          cloud.width / 2, 
-          cloud.height / 2, 
-          0, 0, Math.PI * 2
-        );
-        ctx.fill();
-      });
+
       
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
@@ -158,7 +118,6 @@ const SpaceBackground: React.FC = () => {
     };
       window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    initClouds();
     animate();
     
     return () => {
