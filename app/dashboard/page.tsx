@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { Plus } from "lucide-react";
+import SpaceBackground from "../components/SpaceBackground";
 
 interface Todo {
   id: string;
@@ -164,58 +165,50 @@ export default function DashboardPage() {
 
 
 
-  // Colors for notes 
-
-   const cardColors = [
-    'bg-emerald-400',
-    'bg-orange-300',
-    'bg-yellow-200',
-    'bg-fuchsia-300',
-    'bg-blue-300',
-    'bg-coral-400'
+  // Colors for notes
+  const cardColors = [
+    'bg-sky-300',
+    'bg-blue-200',
+    'bg-cyan-200',
+    'bg-indigo-200',
+    'bg-sky-200',
+    'bg-cyan-300'
   ];
-
-
   return (
-
-      <div className="min-h-screen bg-gray-900">
+    <div className="relative">
+      <SpaceBackground />
+      <div className="min-h-screen relative z-10">
       {/* Header */}
       <div className="p-4">
         <div className="flex justify-between items-center">
-          <div className="bg-white rounded-lg p-4 text-black">
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 text-black shadow-lg">
             <h1 className="font-normal">{isNewUser ? 'Welcome!' : 'Welcome Back!'}</h1>
             {userFullName && <h2 className="text-xl font-semibold">{userFullName}</h2>}
           </div>
           <button
             onClick={handleLogout}
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+            className="bg-red-500 bg-opacity-90 text-white px-6 py-2 rounded-lg hover:bg-red-600 shadow-lg"
           >
             Log-out
           </button>
         </div>
-      </div>
-
-
-      <div className="p-4 max-w-xl mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-4 text-center">Things to do</h1>
-      
-      {/* Add Task Button */}
+      </div>      <div className="p-4 max-w-xl mx-auto">
+        <h1 className="text-3xl text-white font-bold mb-4 text-center">Your Progress</h1>
+        {/* Add Task Button */}
         <button 
         onClick={() => setShowInput((prev) => !prev)}
-        className="fixed bottom-8 right-8 bg-green-400 hover:bg-green-500 rounded-full p-4 text-white shadow-lg"
+        className="fixed bottom-8 right-8 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 rounded-full p-4 text-white shadow-lg"
       >
         <Plus size={24} />
-      </button>
-
-        {/* Add Task Modal */}
+      </button>     
       {showInput && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4 text-black">Add New Task</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500">
+            <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300">Add Task</h2>
             <form onSubmit={handleAddTask}>
               <textarea
-                className="w-full border-2 border-gray-300 p-4 rounded-lg mb-4 resize-none h-32 text-black"
-                placeholder="Enter your task..."
+                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none"
+                placeholder="What's your progress today?"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
               />
@@ -223,13 +216,13 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowInput(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                  className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                  className="px-4 py-2 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-lg hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 transition-colors"
                 >
                   Add Task
                 </button>
@@ -237,18 +230,16 @@ export default function DashboardPage() {
             </form>
           </div>
         </div>
-      )}
-
-         {/* Task Grid */}
+      )}{/* Task Grid */}
       <div className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {todos.map((todo, index) => (
             <div
               key={todo.id}
-              className={`${cardColors[index % cardColors.length]} rounded-lg p-6 shadow-lg min-h-[200px] flex flex-col justify-between`}
+              className={`${cardColors[index % cardColors.length]} rounded-lg p-6 shadow-lg min-h-[200px] flex flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform duration-200`}
             >
               <div className="flex-1">
-                <p className="text-black text-lg">{todo.content}</p>
+                <p className="text-black text-lg font-medium">{todo.content}</p>
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <button
@@ -256,7 +247,7 @@ export default function DashboardPage() {
                     setTodoToDelete(todo.id);
                     setShowDeleteModal(true);
                   }}
-                  className="text-gray-700 hover:text-red-700"
+                  className="text-gray-700 hover:text-red-700 px-3 py-1 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-all duration-200"
                 >
                   Delete
                 </button>
@@ -264,33 +255,30 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
-      </div>
-
-        {/* Delete Confirmation Modal */}
+      </div>        {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4 text-black">Confirm Deletion</h2>
-            <p className="text-gray-600">Are you sure you want to delete this task?</p>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500">
+            <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-400">Confirm Deletion</h2>
+            <p className="text-gray-300">Are you sure you want to delete this cosmic task?</p>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                className="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg hover:from-red-600 hover:to-rose-600 transition-colors"
               >
                 Delete
               </button>
-            </div>
-          </div>
+            </div>          </div>
         </div>
       )}
+      </div>
     </div>
-
     </div>
   );
 }
