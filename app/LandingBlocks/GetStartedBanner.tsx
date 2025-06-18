@@ -36,7 +36,7 @@ const GetStartedBanner = () => {
           </h1>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link href="/signup" className="block w-full rounded-md bg-cyan-600 px-12 py-3 text-sm font-medium text-white shadow-sm hover:bg-cyan-700 focus:ring-3 focus:outline-hidden sm:w-auto">
+            <Link href="/Signup" className="block w-full rounded-md bg-cyan-600 px-12 py-3 text-sm font-medium text-white shadow-sm hover:bg-cyan-700 focus:ring-3 focus:outline-hidden sm:w-auto">
             Join the Mission
             </Link>
 

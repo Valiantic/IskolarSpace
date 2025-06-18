@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { Plus, Rocket, Check, CircleX } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
-import SpaceBackground from "../components/SpaceBackground";
-import TaskGrid from "../components/TaskGrid";
-import Header from "../components/Header";
+import SpaceBackground from "../DashboardBlocks/SpaceBackground";
+import TaskGrid from "../DashboardBlocks/TaskGrid";
+import Header from "../DashboardBlocks/Header";
 
 interface Todo {
   id: string;
@@ -264,12 +264,12 @@ export default function DashboardPage() {
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
-                'bg-sky-300',
-                'bg-blue-200',
-                'bg-cyan-200',
-                'bg-indigo-200',
-                'bg-sky-200',
-                'bg-cyan-300'
+                'bg-sky-400',
+                'bg-blue-400',
+                'bg-cyan-400',
+                'bg-indigo-400',
+                'bg-sky-400',
+                'bg-cyan-400'
               ];
               const cardColor = todoIndex >= 0 ? cardColors[todoIndex % cardColors.length] : 'bg-sky-300';
               

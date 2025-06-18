@@ -19,12 +19,12 @@ interface TaskGridProps {
 
 const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteModal, setTodoToDelete, startEditing }) => {
   const cardColors = [
-    'bg-sky-300',
-    'bg-blue-200',
-    'bg-cyan-200',
-    'bg-indigo-200',
-    'bg-sky-200',
-    'bg-cyan-300'
+    'bg-sky-400',
+    'bg-blue-400',
+    'bg-cyan-400',
+    'bg-indigo-400',
+    'bg-sky-400',
+    'bg-cyan-400'
   ];
   return (
     <>

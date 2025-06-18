@@ -66,7 +66,7 @@ export default function SignupPage() {
   }
 
   const handleNavigation = () => {
-    router.push("/login");
+    router.push("/Login");
   }
 
   return (
