@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { Plus, Rocket } from "lucide-react";
+import { Plus, Rocket, Check } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/SpaceBackground";
 import TaskGrid from "../components/TaskGrid";
@@ -189,13 +189,12 @@ export default function DashboardPage() {
       
       {/* Content Container */}
       <div className="p-4 container mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-6 text-center">{quote}</h1>
-
-        <TaskGrid 
-        todos={todos} 
-        fetchTodos={fetchTodos} 
-        setShowDeleteModal={setShowDeleteModal} 
-        setTodoToDelete={setTodoToDelete} 
+        <h1 className="text-3xl text-white font-bold mb-10 text-center">{quote}</h1>        <TaskGrid 
+          todos={todos} 
+          fetchTodos={fetchTodos} 
+          setShowDeleteModal={setShowDeleteModal} 
+          setTodoToDelete={setTodoToDelete} 
+          startEditing={startEditing}
         />
 
       </div>
@@ -259,6 +258,51 @@ export default function DashboardPage() {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}        
+      
+      {/* Edit Task Modal */}
+      {editingTaskId && (
+        <div 
+          className="fixed inset-0  flex items-center justify-center z-50"
+          onClick={cancelEditing}
+        >
+          <div className="w-full max-w-md mx-auto">
+            {(() => {
+              const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
+              const cardColors = [
+                'bg-sky-300',
+                'bg-blue-200',
+                'bg-cyan-200',
+                'bg-indigo-200',
+                'bg-sky-200',
+                'bg-cyan-300'
+              ];
+              const cardColor = todoIndex >= 0 ? cardColors[todoIndex % cardColors.length] : 'bg-sky-300';
+              
+              return (                
+                <div 
+                  className={`${cardColor} rounded-lg p-6 shadow-lg w-full backdrop-blur-sm bg-opacity-90 transform transition-transform duration-200`}
+                  onClick={(e) => e.stopPropagation()} 
+                >
+                  <textarea
+                    className="w-full p-3 rounded-lg mb-4 resize-none h-32 text-white bg-transparent focus:outline-none border-0 sm:text-lg md:text-2xl font-bold"
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    autoFocus
+                  />
+                  <div className="flex justify-end mt-4">
+                    <button
+                      onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}
+                      className="text-sky-700 hover:text-sky-900 px-4 py-2 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-200"
+                    >
+                      <Check size={20} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
