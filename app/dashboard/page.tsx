@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { Plus } from "lucide-react";
+import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/SpaceBackground";
 
 interface Todo {
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
+  const [quote, setQuote] = useState('');
 
   // FUNCTION TO FETCH TASK FROM SUPABASE - Moved up and wrapped in useCallback  
   const fetchTodos = useCallback(async () => {
@@ -163,6 +165,10 @@ export default function DashboardPage() {
     setTodoToDelete(null);
   };
 
+  useEffect(() => {
+      setQuote(getRandomQuote());
+  }, []);
+
 
 
   // Colors for notes
@@ -193,7 +199,7 @@ export default function DashboardPage() {
           </button>
         </div>
       </div>      <div className="p-4 max-w-xl mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-4 text-center">Your Progress</h1>
+        <h1 className="text-3xl text-white font-bold mb-4 text-center">{quote}</h1>
         {/* Add Task Button */}
         <button 
         onClick={() => setShowInput((prev) => !prev)}
