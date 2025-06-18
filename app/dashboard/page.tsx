@@ -7,6 +7,7 @@ import { Plus, Rocket, Check, CircleX } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/SpaceBackground";
 import TaskGrid from "../components/TaskGrid";
+import Header from "../components/Header";
 
 interface Todo {
   id: string;
@@ -167,28 +168,21 @@ export default function DashboardPage() {
   };
   useEffect(() => {
       setQuote(getRandomQuote());
-  }, []);
-  return (
+  }, []);  return (
     <div className="relative">
       <SpaceBackground />
       <div className="min-h-screen relative z-10">
-      {/* Header */}
-      <div className="p-4">
-        <div className="flex justify-between items-center">
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-4 text-black shadow-lg">
-            <h1 className="font-normal">{isNewUser ? 'Welcome!' : 'Welcome Back!'}</h1>
-            {userFullName && <h2 className="text-xl font-semibold">{userFullName}</h2>}
-          </div>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 bg-opacity-90 text-white px-6 py-2 rounded-lg hover:bg-red-600 shadow-lg"
-          >
-            Log-out
-          </button>
-        </div>      </div>
+      
+      <div className="fixed top-0 left-0 w-full bg-gradient-to-b from-slate-900 to-slate-800 p-2 shadow-lg z-20">
+        <Header 
+          isNewUser={isNewUser} 
+          userFullName={userFullName} 
+          handleLogout={handleLogout} 
+        />
+      </div>
       
       {/* Content Container */}
-      <div className="p-4 container mx-auto">
+      <div className="mt-40 p-4 container mx-auto">
         <h1 className="text-3xl text-white font-bold mb-10 text-center">{quote}</h1>        <TaskGrid 
           todos={todos} 
           fetchTodos={fetchTodos} 

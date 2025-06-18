@@ -27,7 +27,7 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
+    <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
       {todos.map((todo, index) => (        <div
           key={todo.id}
           className={`${cardColors[index % cardColors.length]} rounded-lg p-4 sm:p-5 shadow-lg min-h-[120px] w-full flex flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform duration-200 cursor-pointer`}
