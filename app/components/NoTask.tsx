@@ -1,7 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
 import NoTaskImage from '../../public/images/NoTask.png'
-import { Rocket } from 'lucide-react'
 
 const NoTaskBanner = () => {
   return (
