@@ -1,9 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { useEffect } from 'react'
-import StudentCollabs from '../../public/images/student_collabs.jpeg'
-import Adventure from '../../public/svgs/adventure.svg'
-import TaskBG  from "../../public/images/iskolartaskbg.png";
+import Homepage from '../../public/images/homepage.png'
 
 
 const About = () => {
@@ -38,11 +36,11 @@ const About = () => {
     
           <div>
             <Image
-              src={TaskBG}
+              src={Homepage}
               alt="Students collaborating"
               className="rounded"
-              width={500}
-              height={300}
+              width={900}
+              height={700}
             />
           </div>
         </div>
