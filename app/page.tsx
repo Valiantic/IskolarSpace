@@ -5,10 +5,10 @@ import Link from "next/link";
 import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
 
 // COMPONENTS
-import About from "./blocks/About";
-import { StickyScrollReveal } from "./blocks/StickyScrollReveal";
-import GetStartedBanner from "./blocks/GetStartedBanner";
-import Footer from "./blocks/Footer";
+import About from "./LandingBlocks/About";
+import { StickyScrollReveal } from "./LandingBlocks/StickyScrollReveal";
+import GetStartedBanner from "./LandingBlocks/GetStartedBanner";
+import Footer from "./LandingBlocks/Footer";
 
 function PageContent() {
   const { backgroundColor } = useBackground();
