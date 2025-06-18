@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { Plus } from "lucide-react";
+import { Plus, Rocket } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/SpaceBackground";
 
@@ -197,55 +197,21 @@ export default function DashboardPage() {
           >
             Log-out
           </button>
-        </div>
-      </div>      <div className="p-4 max-w-xl mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-4 text-center">{quote}</h1>
-        {/* Add Task Button */}
-        <button 
-        onClick={() => setShowInput((prev) => !prev)}
-        className="fixed bottom-8 right-8 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 rounded-full p-4 text-white shadow-lg"
-      >
-        <Plus size={24} />
-      </button>     
-      {showInput && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500">
-            <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300">Add Task</h2>
-            <form onSubmit={handleAddTask}>
-              <textarea
-                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none"
-                placeholder="What's your progress today?"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowInput(false)}
-                  className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-lg hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 transition-colors"
-                >
-                  Add Task
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}{/* Task Grid */}
-      <div className="p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </div>      </div>
+      
+      {/* Content Container */}
+      <div className="p-4 container mx-auto">
+        <h1 className="text-3xl text-white font-bold mb-6 text-center">{quote}</h1>
+
+        {/* Task Grid with Improved Responsiveness */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
           {todos.map((todo, index) => (
             <div
               key={todo.id}
-              className={`${cardColors[index % cardColors.length]} rounded-lg p-6 shadow-lg min-h-[200px] flex flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform duration-200`}
+              className={`${cardColors[index % cardColors.length]} rounded-lg p-4 sm:p-5 shadow-lg min-h-[120px] w-full flex flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform duration-200`}
             >
               <div className="flex-1">
-                <p className="text-black text-lg font-medium">{todo.content}</p>
+                <p className="text-black text-lg font-medium break-words">{todo.content}</p>
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <button
@@ -261,7 +227,48 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
-      </div>        {/* Delete Confirmation Modal */}
+      </div>
+      
+      {/* Add Task Button */}
+      <button 
+        onClick={() => setShowInput((prev) => !prev)}
+        className="fixed bottom-8 right-8 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 rounded-full p-4 text-white shadow-lg"
+      >
+        <Plus size={24} />
+      </button>
+      
+      {/* Task Input Modal */}
+      {showInput && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500">
+            <h2 className="text-xl text-center font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300">What's your plan for today?</h2>
+            <form onSubmit={handleAddTask}>
+              <textarea
+                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none"
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowInput(false)}
+                  className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex justify-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-lg hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 transition-colors"
+                >
+                  Add Task <Rocket size={20}/>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500">
@@ -280,11 +287,11 @@ export default function DashboardPage() {
               >
                 Delete
               </button>
-            </div>          </div>
+            </div>
+          </div>
         </div>
       )}
       </div>
     </div>
-    </div>
   );
-}
+};
