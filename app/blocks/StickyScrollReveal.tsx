@@ -5,22 +5,22 @@ import { useBackground } from "../../lib/BackgroundContext";
 
 const content = [
   {
-    title: "Connect Globally",
+    title: "Organize Seamlessly",
     description:
-      "Join a vibrant community of learners from diverse backgrounds and cultures. Expand your network, share perspectives, and make lifelong connections.",
+      "Take control of your academic workflow with structured task management and smart note-taking. Prioritize assignments, track deadlines, and streamline your study sessions effortlessly",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-      Connect Globally
+      Organize Seamlessly
       </div>
     ),
   },
   {
-    title: "Collaborate Effortlessly",
+    title: "Master Your Productivity",
     description:
-      "Experience the future of group study with intuitive, real-time collaborative note-taking. Work together on projects, assignments, and exam prep like never before.",
+      "Stay on top of your daily tasks with an intuitive platform designed for efficiency. Create, organize, and refine your study plans—ensuring every goal is within reach",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-500),var(--emerald-200))] flex items-center justify-center text-white">
-        Collaborate Effortlessly
+        Master Your Productivity
       </div>
     ),
   },

@@ -31,7 +31,7 @@ const About = () => {
               </h2>
     
               <p className="mt-4 text-white sm:text-2xl md:text-2xl justify-content-center">
-             IskolarSpace is your launchpad to a global student network. Take notes like never before, share insights, and study together with peers from around the world.
+            "IskolarSpace is your ultimate platform for organizing and mastering your academic workflow. Take notes effortlessly, track tasks efficiently, and structure your studies like never before."
               </p>
             </div>
           </div>

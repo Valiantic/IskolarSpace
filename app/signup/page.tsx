@@ -119,7 +119,7 @@ export default function SignupPage() {
 
           <div className="col-span-6">
             <label htmlFor="Fullname" className="block text-xl font-medium text-white">
-              Fullname
+              What should we call you?
             </label>
 
             <input
