@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { Plus, Rocket, Check } from "lucide-react";
+import { Plus, Rocket, Check, CircleX } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/SpaceBackground";
 import TaskGrid from "../components/TaskGrid";
@@ -243,7 +243,7 @@ export default function DashboardPage() {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500">
             <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-400">Confirm Deletion</h2>
-            <p className="text-gray-300">Are you sure you want to delete this cosmic task?</p>
+            <p className="text-gray-300">Are you sure you want to delete this task?</p>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setShowDeleteModal(false)}
@@ -253,22 +253,20 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg hover:from-red-600 hover:to-rose-600 transition-colors"
+                className="flex justify-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg hover:from-red-600 hover:to-rose-600 transition-colors"
               >
-                Delete
+                Delete <CircleX size={20} />
               </button>
             </div>
           </div>
         </div>
-      )}        
-      
-      {/* Edit Task Modal */}
+      )}            {/* Edit Task Modal */}
       {editingTaskId && (
         <div 
-          className="fixed inset-0  flex items-center justify-center z-50"
+          className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn"
           onClick={cancelEditing}
         >
-          <div className="w-full max-w-md mx-auto">
+          <div className="w-full max-w-md mx-auto animate-scaleIn">
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
@@ -283,7 +281,7 @@ export default function DashboardPage() {
               
               return (                
                 <div 
-                  className={`${cardColor} rounded-lg p-6 shadow-lg w-full backdrop-blur-sm bg-opacity-90 transform transition-transform duration-200`}
+                  className={`${cardColor} rounded-lg p-6 shadow-xl w-full backdrop-blur-sm bg-opacity-95 transform transition-all duration-300 hover:shadow-2xl`}
                   onClick={(e) => e.stopPropagation()} 
                 >
                   <textarea

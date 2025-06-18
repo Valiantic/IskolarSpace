@@ -31,10 +31,10 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
       {todos.map((todo, index) => (        <div
           key={todo.id}
           className={`${cardColors[index % cardColors.length]} rounded-lg p-4 sm:p-5 shadow-lg min-h-[120px] w-full flex flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform duration-200 cursor-pointer`}
+            onClick={() => startEditing(todo)}
         >
           <div 
             className="flex-1"
-            onClick={() => startEditing(todo)}
           >
             <p className="text-white sm:text-lg md:text-2xl font-bold break-words">{todo.content}</p>
           </div>
