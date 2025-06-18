@@ -47,7 +47,7 @@ export default function LoginPage() {
   }
 
   const handleNavigation = () => {
-    router.push("/Signup");
+    router.push("/signup");
   }
 
   return (
