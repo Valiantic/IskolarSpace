@@ -39,7 +39,7 @@ export default function LoginPage() {
     }
 
     // On success, redirect to the Dashboard.
-    router.push("/Dashboard");
+    router.push("/dashboard");
   };
 
   const showPassword = () => {
