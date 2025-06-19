@@ -21,7 +21,7 @@ const NoTaskBanner = () => {
           
           <div className="mt-4 bg-blue-900 bg-opacity-30 p-4 rounded-lg border border-blue-500 border-opacity-30">
             <p className="text-blue-100 text-center text-lg">
-              Begin your productivity journey by clicking the <span className="inline-flex items-center bg-blue-500 text-white rounded-full px-2 py-1 text-sm mx-1"> + </span> button on the below right side
+              Begin your productivity journey by clicking the <span className="inline-flex items-center bg-blue-500 text-white rounded-full px-2 py-1 text-sm mx-1"> + </span> button on the right side below
             </p>
           </div>
           

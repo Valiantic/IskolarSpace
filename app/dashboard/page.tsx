@@ -183,7 +183,7 @@ export default function DashboardPage() {
       
       {/* Content Container */}
       <div className="mt-40 p-4 container mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-10 text-center">{quote}</h1>        <TaskGrid 
+        <h1 className="text-3xl text-white font-bold mb-10 text-center">{quote.toUpperCase()}</h1>        <TaskGrid 
           todos={todos} 
           fetchTodos={fetchTodos} 
           setShowDeleteModal={setShowDeleteModal} 

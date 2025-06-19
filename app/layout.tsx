@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "IskolarSpace",
-  description: "Empower. Manage. Achieve.",
+  description: "Plan. Prioritize. Conquer.",
 };
 
 export default function RootLayout({
