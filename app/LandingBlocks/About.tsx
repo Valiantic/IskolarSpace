@@ -38,7 +38,7 @@ const About = () => {
             <Image
               src={Homepage}
               alt="Students collaborating"
-              className="rounded"
+              className="rounded w-full h-auto transition-transform duration-300 hover:scale-105"
               width={900}
               height={700}
             />
