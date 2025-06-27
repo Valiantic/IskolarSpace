@@ -115,14 +115,15 @@ export default function DashboardPage() {
   const startEditing = (todo: Todo) => {
     setEditingTaskId(todo.id);
     setEditedContent(todo.content);
+    document.body.classList.add('modal-open');
   }
 
   // HANDLE CANCEL EDIT MODE 
   const cancelEditing = () => {
     setEditingTaskId(null);
     setEditedContent("");
+    document.body.classList.remove('modal-open');
   }
-
   // HANDLE SAVE EDITED TASK 
   const handleSaveEdit = async (todoId: string) => {
     if (!editedContent.trim()) return;
@@ -135,10 +136,10 @@ export default function DashboardPage() {
     if (error) {
       console.error("Error updating task", error.message);
     } else {
-
       // CLEAR EDITING STATE 
       setEditingTaskId(null);
       setEditedContent("");
+      document.body.classList.remove('modal-open');
       fetchTodos();
     }
   }
@@ -168,6 +169,13 @@ export default function DashboardPage() {
   };
   useEffect(() => {
       setQuote(getRandomQuote());
+  }, []);
+  
+  // Cleanup function to remove modal-open class when component unmounts
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
   }, []);  return (
     <div className="relative">
       <SpaceBackground />
@@ -257,10 +265,10 @@ export default function DashboardPage() {
       )}            {/* Edit Task Modal */}
       {editingTaskId && (
         <div 
-          className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn"
+          className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-4"
           onClick={cancelEditing}
         >
-          <div className="w-full max-w-md mx-auto animate-scaleIn">
+          <div className="w-full max-w-4xl mx-auto animate-scaleInLarger no-scrollbar">
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
@@ -275,21 +283,22 @@ export default function DashboardPage() {
               
               return (                
                 <div 
-                  className={`${cardColor} rounded-lg p-6 shadow-xl w-full backdrop-blur-sm bg-opacity-95 transform transition-all duration-300 hover:shadow-2xl`}
+                  className={`${cardColor} rounded-xl p-12 shadow-2xl w-full backdrop-blur-sm bg-opacity-95 transform transition-all duration-300 hover:shadow-2xl min-h-[60vh]`}
                   onClick={(e) => e.stopPropagation()} 
                 >
                   <textarea
-                    className="w-full p-3 rounded-lg mb-4 resize-none h-32 text-white bg-transparent focus:outline-none border-0 sm:text-lg md:text-2xl font-bold"
+                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold no-scrollbar leading-relaxed"
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     autoFocus
+                    placeholder="Enter your task details..."
                   />
-                  <div className="flex justify-end mt-4">
+                  <div className="flex justify-end mt-6">
                     <button
                       onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}
-                      className="text-sky-700 hover:text-sky-900 px-4 py-2 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-200"
+                      className="text-sky-700 hover:text-sky-900 px-8 py-4 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-200 shadow-lg"
                     >
-                      <Check size={20} />
+                      <Check size={28} />
                     </button>
                   </div>
                 </div>
