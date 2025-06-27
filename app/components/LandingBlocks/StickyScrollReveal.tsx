@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { StickyScroll } from "../DashboardBlocks/ui/sticky-scroll-reveal";
-import { useBackground } from "../../lib/BackgroundContext";
+import { useBackground } from "../../../lib/BackgroundContext";
 
 const content = [
   {

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image';
-import IskolarSpaceLogo from '../../public/images/iskolarspace_logo.png'
-import UserAvatar from '../../public/images/user_avatar.png'
+import IskolarSpaceLogo from '../../../public/images/iskolarspace_logo.png'
+import UserAvatar from '../../../public/images/user_avatar.png'
 
 interface HeaderProps {
   isNewUser: boolean;

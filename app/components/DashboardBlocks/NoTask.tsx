@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import NoTaskImage from '../../public/images/NoTask.png'
+import NoTaskImage from '../../../public/images/NoTask.png'
 
 const NoTaskBanner = () => {
   return (

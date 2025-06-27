@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect } from "react";
-import { SparklesCore } from "./DashboardBlocks/ui/sparkles";
+import { SparklesCore } from "./components/DashboardBlocks/ui/sparkles";
 import Link from "next/link";
 import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
 
 // COMPONENTS
-import About from "./LandingBlocks/About";
-import { StickyScrollReveal } from "./LandingBlocks/StickyScrollReveal";
-import GetStartedBanner from "./LandingBlocks/GetStartedBanner";
-import Footer from "./LandingBlocks/Footer";
+import About from "./components/LandingBlocks/About";
+import { StickyScrollReveal } from "./components/LandingBlocks/StickyScrollReveal";
+import GetStartedBanner from "./components/LandingBlocks/GetStartedBanner";
+import Footer from "./components/LandingBlocks/Footer";
 
 function PageContent() {
   const { backgroundColor } = useBackground();

@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { Plus, Rocket, Check, CircleX } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
-import SpaceBackground from "../DashboardBlocks/SpaceBackground";
-import TaskGrid from "../DashboardBlocks/TaskGrid";
-import Header from "../DashboardBlocks/Header";
+import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
+import TaskGrid from "../components/DashboardBlocks/TaskGrid";
+import Header from "../components/DashboardBlocks/Header";
 
 interface Todo {
   id: string;
@@ -181,7 +181,7 @@ export default function DashboardPage() {
       <SpaceBackground />
       <div className="min-h-screen relative z-10">
       
-      <div className="fixed top-0 left-0 w-full bg-gradient-to-b from-slate-900 to-slate-800 p-2 shadow-lg z-20">
+      <div className="fixed top-0 left-0 w-full bg-gradient-to-b from-slate-900 to-sky-800 p-2 shadow-lg z-20">
         <Header 
           isNewUser={isNewUser} 
           userFullName={userFullName} 
@@ -272,12 +272,12 @@ export default function DashboardPage() {
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
-                'bg-sky-400',
-                'bg-blue-400',
-                'bg-cyan-400',
-                'bg-indigo-400',
-                'bg-sky-400',
-                'bg-cyan-400'
+                'bg-sky-500',
+                'bg-blue-500',
+                'bg-cyan-500',
+                'bg-indigo-500',
+                'bg-sky-500',
+                'bg-cyan-500'
               ];
               const cardColor = todoIndex >= 0 ? cardColors[todoIndex % cardColors.length] : 'bg-sky-300';
               

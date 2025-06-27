@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { useEffect } from 'react'
-import Homepage from '../../public/images/homepage.png'
+import Homepage from '../../../public/images/homepage.png'
 
 
 const About = () => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import Link from 'next/link';
-import GetStartedPic from '../../public/images/GetStartedPic.png';
+import GetStartedPic from '../../../public/images/GetStartedPic.png';
 
 const GetStartedBanner = () => {
 

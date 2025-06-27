@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect } from 'react'
-import SpaceBackground from './DashboardBlocks/SpaceBackground'
+import SpaceBackground from './components/DashboardBlocks/SpaceBackground'
 import Image from 'next/image'
 import Notask from '../public/images/NoTask.png'
 import { useRouter } from 'next/navigation'
