@@ -1,4 +1,4 @@
-# 🌌 IskolarSpace: To-Do Application for Students  
+# 🌌 IskolarSpace: Task Management Application for Students  
 
 ## 🚀 Overview  
 IskolarSpace is a **Next.js-powered** productivity platform designed for students to efficiently **manage their academic tasks**. It provides a structured way to **plan, track, and organize** daily workloads, ensuring students stay on top of their academic progress.
