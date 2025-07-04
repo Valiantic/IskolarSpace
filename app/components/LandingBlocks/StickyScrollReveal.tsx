@@ -49,7 +49,7 @@ export function StickyScrollReveal() {
   };
 
   return (
-    <div className="p-10">
+    <div id="features" className="p-10">
       <StickyScroll content={content} onColorChange={handleColorChange} />
     </div>
   );

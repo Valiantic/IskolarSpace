@@ -3,12 +3,14 @@ import React, { useEffect } from "react";
 import { SparklesCore } from "./components/DashboardBlocks/ui/sparkles";
 import Link from "next/link";
 import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
+import { Rocket } from "lucide-react";
 
 // COMPONENTS
 import About from "./components/LandingBlocks/About";
 import { StickyScrollReveal } from "./components/LandingBlocks/StickyScrollReveal";
 import GetStartedBanner from "./components/LandingBlocks/GetStartedBanner";
 import Footer from "./components/LandingBlocks/Footer";
+import Navbar from "./components/LandingBlocks/Navbar";
 
 function PageContent() {
   const { backgroundColor } = useBackground();
@@ -27,6 +29,8 @@ function PageContent() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center overflow-hidden" style={{ backgroundColor }}>
+      <Navbar />
+      
       <div className="h-screen w-full flex flex-col items-center justify-center overflow-hidden mt-7" style={{ backgroundColor }}>
         <h1 
           data-aos="fade-up"
@@ -67,6 +71,7 @@ function PageContent() {
           <Link href="/login">
           <button className="px-8 py-3 text-white border border-sky-500 rounded-full hover:bg-sky-500/20 transition-colors">
             Resume the Mission
+            <Rocket className="inline ml-2" />
           </button>
           </Link>
         </div>
