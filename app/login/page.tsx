@@ -82,100 +82,111 @@ export default function LoginPage() {
       className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
     >
       <div className="max-w-xl lg:max-w-3xl">
-        <div className="relative -mt-16 block lg:hidden">
-        
-
-          <div className="flex mt-10"> 
-
-          <h1 className="mt-6 text-2xl font-bold sm:text-xl md:text-4xl">
-            Welcome to <span className="font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">IskolarSpace</span>
-          </h1>
-          <Image src={Logo} alt="IskolarSpace Logo" width={50} height={50} />
-
+        <div className="relative -mt-16 block lg:hidden mb-8">
+          <div className="flex items-center gap-3 mt-10"> 
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              Welcome to <span className="font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">IskolarSpace</span>
+            </h1>
+            <Image src={Logo} alt="IskolarSpace Logo" width={40} height={40} />
           </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-white">
-            Log in to access your to-do list, manage tasks, and stay on top of your academic responsibilities. Let's continue organizing your journey towards success with IskolarSpace!
-            </p>
+          <p className="mt-4 text-sm leading-relaxed text-white">
+            Log in to access your to-do list, manage tasks, and stay on top of your academic responsibilities.
+          </p>
         </div>
-
-        <form onSubmit={handleSignin} className="mt-8 grid grid-cols-6 gap-6">
-    
-          <div className="col-span-6 flex justify-end mb-4">
-          <Link href="/" className="text-sm text-white underline gap-2 flex items-center">
-              Home <FaArrowAltCircleRight />
-          </Link>
-          </div>
-        
-          {/* Error message - now centered with text-center class */}
-          {error && <div className="col-span-6 flex justify-center">
-            <p className="text-red-500 mb-4 text-center">{error}</p>
-          </div>}
           
+        {/* Card Container */}
+        <div className="bg-gray-900/80 backdrop-blur-sm border border-cyan-500/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/10">
+          
+          {/* Home Link */}
+          <div className="flex justify-end mb-6">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-white underline hover:text-cyan-400 transition-colors">
+              Home <FaArrowAltCircleRight />
+            </Link>
+          </div>
 
-          <div className="col-span-6 justify-end flex flex-col items-center mb-4">
-            <h1 className="text-6xl font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
+          {/* Welcome Message */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
               Welcome back!
             </h1>
-
-            <p className="mt-4 text-sm text-white text-center underline underline-offset-4">
+            <p className="mt-4 text-sm text-white underline underline-offset-4">
               Log in to continue managing your tasks and assignments.
             </p>
-
           </div>
 
+          <form onSubmit={handleSignin} className="space-y-6">
+            {/* Error message */}
+            {error && (
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                <p className="text-red-400 text-sm text-center">{error}</p>
+              </div>
+            )}
 
-          <div className="col-span-6">
-            <label htmlFor="Email" className="block text-xl font-medium text-white"> Email </label>
-
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-2 w-full rounded-lg border border-2 border-gray-200 bg-white text-xl text-black shadow-xs"
-              required
-            />
-          </div>
-
-          <div className="col-span-6">
-            <label htmlFor="Password" className="block text-xl font-medium text-white"> Password </label>
-
-            <div className="relative">
-            <input
-              type={togglePassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-2 w-full rounded-lg border border-2 border-gray-200 bg-white text-xl text-black shadow-xs"
-              required
-            />
-
-              <button 
-                      type="button" 
-                      onClick={showPassword} 
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                    >
-                      {togglePassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+            {/* Email */}
+            <div>
+              <label htmlFor="Email" className="block text-lg font-medium text-white mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-3 rounded-lg border border-gray-600 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                placeholder="Enter your email"
+                required
+              />
             </div>
 
-          </div>
+            {/* Password */}
+            <div>
+              <label htmlFor="Password" className="block text-lg font-medium text-white mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={togglePassword ? "text" : "password"}
+                  id="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3 rounded-lg border border-gray-600 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all pr-12"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button 
+                  type="button" 
+                  onClick={showPassword} 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                >
+                  {togglePassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+            </div>
 
-         
-          <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
+            {/* Submit Button */}
             <button
-             className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-gradient-to-r from-white to-sky-500 hover:text-blue-600 focus:ring-3 focus:outline-hidden"
+              type="submit"
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/25"
             >
-             Log in
+              Log in
             </button>
 
-            <p className="mt-4 text-sm text-blue-600 sm:mt-0 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
-             Don't have an account?&nbsp;
-              <a onClick={handleNavigation} className="text-white underline cursor">Sign-up</a>.
-            </p>
-
-          </div>
-
-        </form>
+            {/* Signup Link */}
+            <div className="text-center pt-4 border-t border-gray-700">
+              <p className="text-gray-300">
+                Don't have an account?{" "}
+                <button
+                  type="button"
+                  onClick={handleNavigation}
+                  className="text-cyan-400 hover:text-cyan-300 underline font-medium transition-colors"
+                >
+                  Sign up
+                </button>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
   </div>
