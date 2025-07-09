@@ -11,6 +11,7 @@ import { StickyScrollReveal } from "./components/LandingBlocks/StickyScrollRevea
 import GetStartedBanner from "./components/LandingBlocks/GetStartedBanner";
 import Footer from "./components/LandingBlocks/Footer";
 import Navbar from "./components/LandingBlocks/Navbar";
+import ScrollToTop from "./components/LandingBlocks/ScrollToTop";
 
 function PageContent() {
   const { backgroundColor } = useBackground();
@@ -93,7 +94,7 @@ function PageContent() {
       <section className="w-full">
       <Footer/>
       </section>
-
+      <ScrollToTop />
     </div>
   );
 }
