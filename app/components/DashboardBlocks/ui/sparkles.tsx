@@ -54,7 +54,7 @@ export const SparklesCore = (props: ParticlesProps) => {
   return (
     <motion.div 
       animate={controls} 
-      className={cn("opacity-0", className)}
+      className={cn("opacity-0 relative z-0", className)}
       style={{ background: background }} // Add this line to handle background
     >
       {init && (
@@ -70,7 +70,7 @@ export const SparklesCore = (props: ParticlesProps) => {
             },
             fullScreen: {
               enable: false,
-              zIndex: 1,
+              zIndex: 0,
             },
 
             fpsLimit: 120,

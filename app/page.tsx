@@ -32,14 +32,19 @@ function PageContent() {
     <div className="min-h-screen flex flex-col items-center justify-center overflow-hidden" style={{ backgroundColor }}>
       <Navbar />
       
-      <div className="h-screen w-full flex flex-col items-center justify-center overflow-hidden mt-7" style={{ backgroundColor }}>
+      <div id="home" className="h-screen w-full flex flex-col items-center justify-center overflow-hidden mt-20" style={{ backgroundColor }}>
+        
+        <h1 className="text-2xl font-bold text-white sm:text-lg md:text-4xl lg:text-4xl font-bold text-center mb-4 z-10" data-aos="fade-up">
+          Your No. 1 A.I Powered Task Management App
+        </h1>
+
         <h1 
           data-aos="fade-up"
-          className="md:text-7xl text-3xl lg:text-9xl font-bold text-center relative z-20 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text"
+          className="md:text-7xl text-3xl lg:text-9xl font-bold text-center relative z-20 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text z-20"
         >
           IskolarSpace
         </h1>
-        <div className="w-[40rem] h-40 relative">
+        <div className="w-[40rem] h-40 relative z-10">
           {/* Gradients */}
           <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
           <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
