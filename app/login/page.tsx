@@ -110,7 +110,7 @@ export default function LoginPage() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
               Welcome back!
             </h1>
-            <p className="mt-4 text-sm text-white underline underline-offset-4">
+            <p className="mt-4 text-sm text-white">
               Log in to continue managing your tasks and assignments.
             </p>
           </div>
