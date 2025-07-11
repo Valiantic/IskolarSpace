@@ -7,7 +7,6 @@ import { FaEye, FaEyeSlash, FaArrowAltCircleRight } from "react-icons/fa";
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
-import Studying from '../../public/images/Studying.jpeg'
 import Loginpic from '../../public/images/loginpic.png';
 
 export default function LoginPage() {
