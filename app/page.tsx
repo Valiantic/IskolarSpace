@@ -83,7 +83,7 @@ function PageContent() {
         </div>
       </div>
 
-      <section className="w-full mt-10 mb-10">
+      <section  data-aos="fade-up" className="w-full mt-10 mb-10">
         <About />
       </section>
 
