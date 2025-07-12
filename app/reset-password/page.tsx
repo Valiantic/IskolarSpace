@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useResetPassword } from '../hooks/useResetPassword';
 import { supabase } from '../../lib/supabaseClient';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const {
     newPassword,
     setNewPassword,
@@ -241,5 +241,20 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <section className="bg-black min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <Loader className="animate-spin text-cyan-400 text-4xl mx-auto mb-4" />
+          <p className="text-white">Loading...</p>
+        </div>
+      </section>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
