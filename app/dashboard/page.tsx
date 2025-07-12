@@ -8,6 +8,7 @@ import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
 import TaskGrid from "../components/DashboardBlocks/TaskGrid";
 import Header from "../components/DashboardBlocks/Header";
+import { useAuth } from "../hooks/useAuth";
 
 interface Todo {
   id: string;
@@ -17,6 +18,8 @@ interface Todo {
 }
 
 export default function DashboardPage() {
+  const { isAuthenticated, authLoading, user, logout, requireAuth } = useAuth();
+  
   const [userFullName, setUserFullName] = useState<string | null>(null);
   const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
@@ -51,23 +54,17 @@ export default function DashboardPage() {
     }
   }, [userId]); // Add userId as dependency
 
-  // FETCH USER SESSION 
+  // FETCH USER DATA using the authenticated user
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        router.push("/login");
-      } else {
-        setUserId(session.user.id);
+    const fetchUserData = async () => {
+      if (user) {
+        setUserId(user.id);
 
         // Fetch user's full name and created_at timestamp
         const { data: userData, error } = await supabase
           .from('tbl_users')
           .select('full_name, created_at')
-          .eq('id', session.user.id)
+          .eq('id', user.id)
           .single();
 
         if (!error && userData) {
@@ -82,8 +79,8 @@ export default function DashboardPage() {
       }
     };
 
-    fetchUser();
-  }, [router]);
+    fetchUserData();
+  }, [user]);
 
   // Separate useEffect for fetching todos
   useEffect(() => {
@@ -91,6 +88,14 @@ export default function DashboardPage() {
       fetchTodos();
     }
   }, [userId, fetchTodos]); // Added fetchTodos to dependency array
+  
+  useEffect(() => {
+    setQuote(getRandomQuote());
+  }, []);
+  
+  useEffect(() => {
+    requireAuth();
+  }, [requireAuth]);
 
   // HANLDE ADDING A NEW TASK  
   const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -115,14 +120,12 @@ export default function DashboardPage() {
   const startEditing = (todo: Todo) => {
     setEditingTaskId(todo.id);
     setEditedContent(todo.content);
-    document.body.classList.add('modal-open');
   }
 
   // HANDLE CANCEL EDIT MODE 
   const cancelEditing = () => {
     setEditingTaskId(null);
     setEditedContent("");
-    document.body.classList.remove('modal-open');
   }
   // HANDLE SAVE EDITED TASK 
   const handleSaveEdit = async (todoId: string) => {
@@ -139,15 +142,9 @@ export default function DashboardPage() {
       // CLEAR EDITING STATE 
       setEditingTaskId(null);
       setEditedContent("");
-      document.body.classList.remove('modal-open');
       fetchTodos();
     }
   }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
-  };
 
   // HANDLE DELETE TASK
   const handleDelete = async () => {
@@ -167,16 +164,18 @@ export default function DashboardPage() {
     setShowDeleteModal(false);
     setTodoToDelete(null);
   };
-  useEffect(() => {
-      setQuote(getRandomQuote());
-  }, []);
-  
-  // Cleanup function to remove modal-open class when component unmounts
-  useEffect(() => {
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
-  }, []);  return (
+
+  if (authLoading || isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }  return (
     <div className="relative">
       <SpaceBackground />
       <div className="min-h-screen relative z-10">
@@ -185,7 +184,7 @@ export default function DashboardPage() {
         <Header 
           isNewUser={isNewUser} 
           userFullName={userFullName} 
-          handleLogout={handleLogout} 
+          handleLogout={logout}
         />
       </div>
       
@@ -211,14 +210,15 @@ export default function DashboardPage() {
       
       {/* Task Input Modal */}
       {showInput && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
+          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500 m-4">
             <h2 className="text-xl text-center font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300">What's your plan for today?</h2>
             <form onSubmit={handleAddTask}>
               <textarea
                 className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
+                autoFocus
               />
               <div className="flex justify-end gap-2">
                 <button
@@ -242,8 +242,8 @@ export default function DashboardPage() {
       
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
+          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500 m-4">
             <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-400">Confirm Deletion</h2>
             <p className="text-gray-300">Are you sure you want to delete this task?</p>
             <div className="mt-6 flex justify-end gap-2">
@@ -262,13 +262,13 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      )}            {/* Edit Task Modal */}
+      )}      {/* Edit Task Modal */}
       {editingTaskId && (
         <div 
           className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-4"
           onClick={cancelEditing}
         >
-          <div className="w-full max-w-4xl mx-auto animate-scaleInLarger no-scrollbar">
+          <div className="w-full max-w-4xl mx-auto animate-scaleInLarger overflow-y-auto max-h-full">
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
@@ -287,7 +287,7 @@ export default function DashboardPage() {
                   onClick={(e) => e.stopPropagation()} 
                 >
                   <textarea
-                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold no-scrollbar leading-relaxed"
+                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed"
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     autoFocus
