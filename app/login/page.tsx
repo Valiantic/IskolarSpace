@@ -1,45 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../lib/supabaseClient";
 import { FaEye, FaEyeSlash, FaArrowAltCircleRight } from "react-icons/fa";
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
 import Loginpic from '../../public/images/loginpic.png';
+import ForgotPasswordModal from "../components/LoginBlocks/ForgotPasswordModal";
 
 export default function LoginPage() {
-  const [email, setEmail]       = useState("");
-  const [password, setPassword] = useState("");
-  const [togglePassword, setTogglePassword] = useState(false);
-  const [error, setError]       = useState("");
-  const router                = useRouter();
+   const [togglePassword, setTogglePassword] = useState(false);
+   const [showForgotModal, setShowForgotModal] = useState(false);
+   const router = useRouter();
 
-  const handleSignin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-
-    // Attempt to sign in the user.
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInError) {
-      setError("Signin Error: " + signInError.message);
-      return;
-    }
-
-    // Check if a valid session exists.
-    if (!data.session) {
-      setError("Signin failed: No session. Ensure your account is confirmed.");
-      return;
-    }
-
-    // On success, redirect to the Dashboard.
-    router.push("/dashboard");
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    loading,
+    signIn,
+  } = useAuth();
 
   const showPassword = () => {
     setTogglePassword(!togglePassword);
@@ -50,7 +34,8 @@ export default function LoginPage() {
   }
 
   return (
-<section className="bg-black">
+    <>
+    <section className="bg-black">
   <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
     <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
   
@@ -114,7 +99,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSignin} className="space-y-6">
+          <form onSubmit={signIn} className="space-y-6">
             {/* Error message */}
             {error && (
               <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
@@ -161,14 +146,26 @@ export default function LoginPage() {
                   {togglePassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
+              
+              {/* Forgot Password Link */}
+              <div className="text-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(true)}
+                  className="text-lg text-cyan-400 hover:text-cyan-300 underline transition-colors"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/25"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/25 disabled:opacity-50 disabled:transform-none"
             >
-              Log in
+              {loading ? 'Signing in...' : 'Log in'}
             </button>
 
             {/* Signup Link */}
@@ -190,5 +187,11 @@ export default function LoginPage() {
     </main>
   </div>
 </section>
+
+      <ForgotPasswordModal
+          isOpen={showForgotModal}
+          onClose={() => setShowForgotModal(false)}
+      />
+    </>
   );
 }
