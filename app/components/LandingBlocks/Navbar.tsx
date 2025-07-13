@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden text-xl gap-10 font-bold md:flex items-center space-x-8">
+        <div className="hidden text-xl gap-10 font-bold lg:flex items-center space-x-8">
           <button
             onClick={() => scrollToSection('home')}
             className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out transform hover:scale-105"
