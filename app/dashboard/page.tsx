@@ -268,7 +268,7 @@ export default function DashboardPage() {
           className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-4"
           onClick={cancelEditing}
         >
-          <div className="w-full max-w-4xl mx-auto animate-scaleInLarger overflow-y-auto max-h-full">
+          <div className="w-full p-4 max-w-4xl mx-auto animate-scaleInLarger overflow-y-auto max-h-full">
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
@@ -287,7 +287,7 @@ export default function DashboardPage() {
                   onClick={(e) => e.stopPropagation()} 
                 >
                   <textarea
-                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed"
+                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed overflow-auto no-scrollbar"
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     autoFocus

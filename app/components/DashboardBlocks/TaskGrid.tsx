@@ -35,7 +35,7 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
         </div>
       ) : (
         // Show tasks grid when there are tasks
-        <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
+        <div className="mt-20 grid p-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
           {todos.map((todo, index) => (        
             <div
               key={todo.id}
