@@ -5,7 +5,7 @@ import NoTaskImage from '../../../public/images/NoTask.png'
 const NoTaskBanner = () => {
   return (
     <div className="flex flex-col items-center justify-center py-10 px-4">
-      <div className="bg-slate-800 bg-opacity-60 p-8 rounded-2xl shadow-2xl border border-blue-400 backdrop-blur-sm max-w-2xl w-full animate-scaleIn">
+      <div className="bg-transparent bg-opacity-60 p-8 rounded-2xl shadow-2xl border border-blue-400 backdrop-blur-sm max-w-2xl w-full animate-scaleIn">
         <div className="flex flex-col items-center">          <div className="animate-floating">
             <Image
               src={NoTaskImage}
@@ -16,7 +16,7 @@ const NoTaskBanner = () => {
           </div>
           
           <h2 className="text-3xl font-bold mt-6 text-center bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300 text-transparent bg-clip-text">
-            No tasks in your universe yet!
+            Oops! it looks like there are no task in your galaxy...
           </h2>
           
           <div className="mt-4 bg-blue-900 bg-opacity-30 p-4 rounded-lg border border-blue-500 border-opacity-30">

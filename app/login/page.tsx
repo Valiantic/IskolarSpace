@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../hooks/auth/useAuth";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash, FaArrowAltCircleRight } from "react-icons/fa";
 import Image from 'next/image';

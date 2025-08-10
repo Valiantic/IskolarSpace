@@ -7,8 +7,8 @@ import { Plus, Rocket, Check, CircleX } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
 import TaskGrid from "../components/DashboardBlocks/TaskGrid";
-import Header from "../components/DashboardBlocks/Header";
-import { useAuth } from "../hooks/useAuth";
+import Sidebar from "../components/DashboardBlocks/Sidebar";
+import { useAuth } from "../hooks/auth/useAuth";
 
 interface Todo {
   id: string;
@@ -178,26 +178,25 @@ export default function DashboardPage() {
   }  return (
     <div className="relative">
       <SpaceBackground />
-      <div className="min-h-screen relative z-10">
+      <div className="min-h-screen relative">
       
-      <div className="fixed top-0 left-0 w-full bg-gradient-to-b from-slate-900 to-sky-800 p-2 shadow-lg z-20">
-        <Header 
-          isNewUser={isNewUser} 
-          userFullName={userFullName} 
-          handleLogout={logout}
-        />
-      </div>
+      <Sidebar
+        userFullName={userFullName} 
+        handleLogout={logout}
+      />
       
       {/* Content Container */}
-      <div className="mt-40 p-4 container mx-auto">
-        <h1 className="text-3xl text-white font-bold mb-10 text-center">{quote.toUpperCase()}</h1>        <TaskGrid 
+      <div className="lg:ml-80 p-7 pt-10">
+        {todos.length > 0 && (
+          <h1 className="text-3xl text-white font-bold mb-6 text-center">{quote}</h1>
+        )}
+        <TaskGrid 
           todos={todos} 
           fetchTodos={fetchTodos} 
           setShowDeleteModal={setShowDeleteModal} 
           setTodoToDelete={setTodoToDelete} 
           startEditing={startEditing}
         />
-
       </div>
       
       {/* Add Task Button */}

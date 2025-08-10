@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '../../../lib/supabaseClient';
 
 export const useResetPassword = () => {
     const [newPassword, setNewPassword] = useState('');

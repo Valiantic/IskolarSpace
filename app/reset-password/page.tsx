@@ -2,7 +2,7 @@
 
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useResetPassword } from '../hooks/useResetPassword';
+import { useResetPassword } from '../hooks/auth/useResetPassword';
 import { supabase } from '../../lib/supabaseClient';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import Link from 'next/link';
