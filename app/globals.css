@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+/* Force Poppins font loading */
+.font-poppins {
+  font-family: var(--font-poppins), 'Poppins', sans-serif !important;
 }
 
 /* HIDE SCROLLBAR */

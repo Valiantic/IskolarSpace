@@ -188,7 +188,7 @@ export default function DashboardPage() {
       {/* Content Container */}
       <div className="lg:ml-80 p-7 pt-10">
         {todos.length > 0 && (
-          <h1 className="text-3xl text-white font-bold mb-6 text-center">{quote}</h1>
+          <h1 className="text-3xl text-white font-bold mb-6 text-center font-poppins">{quote}</h1>
         )}
         <TaskGrid 
           todos={todos} 
@@ -211,7 +211,7 @@ export default function DashboardPage() {
       {showInput && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
           <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500 m-4">
-            <h2 className="text-xl text-center font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300">What's your plan for today?</h2>
+            <h2 className="text-xl text-center font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300 font-poppins">What's your plan for today?</h2>
             <form onSubmit={handleAddTask}>
               <textarea
                 className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none"
@@ -223,13 +223,13 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowInput(false)}
-                  className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors"
+                  className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors font-poppins"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex justify-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-lg hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 transition-colors"
+                  className="flex justify-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-lg hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 transition-colors font-poppins"
                 >
                   Add Task <Rocket size={20}/>
                 </button>
@@ -243,18 +243,18 @@ export default function DashboardPage() {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
           <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500 m-4">
-            <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-400">Confirm Deletion</h2>
-            <p className="text-gray-300">Are you sure you want to delete this task?</p>
+            <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-400 font-poppins">Confirm Deletion</h2>
+            <p className="text-gray-300 font-poppins">Are you sure you want to delete this task?</p>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors"
+                className="px-4 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition-colors font-poppins"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex justify-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg hover:from-red-600 hover:to-rose-600 transition-colors"
+                className="flex justify-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg hover:from-red-600 hover:to-rose-600 transition-colors font-poppins"
               >
                 Delete <CircleX size={20} />
               </button>
@@ -286,7 +286,7 @@ export default function DashboardPage() {
                   onClick={(e) => e.stopPropagation()} 
                 >
                   <textarea
-                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed overflow-auto no-scrollbar"
+                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed overflow-auto no-scrollbar font-poppins"
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     autoFocus

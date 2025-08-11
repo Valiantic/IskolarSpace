@@ -70,7 +70,7 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
               />
 
             {userFullName && (
-              <p className="text-slate-100 text-center sm:text-lg md:text-2xl lg:text-2xl mt-1 font-bold">{userFullName}</p>
+              <p className="text-slate-100 text-center sm:text-lg md:text-2xl lg:text-2xl mt-1 font-bold font-poppins">{userFullName}</p>
             )}
           </div>
         </div>
@@ -81,7 +81,7 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
             <li>
               <a
                 href=""
-                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors"
+                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
               >
                 <Rocket size={25} className="mr-3" />
                 Discover Galaxies
@@ -90,7 +90,7 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
              <li>
               <a
                 href=""
-                className="flex items-center p-3 text-white hover:bg-slate-700 rounded-lg transition-colors"
+                className="flex items-center p-3 text-white hover:bg-slate-700 rounded-lg transition-colors font-poppins"
               >
                 <Orbit size={25} className="mr-3" />
                 My Galaxy
@@ -99,7 +99,7 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
             <li>
               <a
                 href=""
-                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors"
+                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
               >
                 <Settings size={25} className="mr-3" />
                 Settings
@@ -109,7 +109,7 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
                 <a
                   href=""
                   onClick={() => handleLogoutAction(handleLogout)}  
-                  className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors"
+                  className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
                 >
                   <LogOut size={25} className="mr-3" />
                   Log Out

@@ -46,11 +46,11 @@ const Navbar: React.FC = () => {
               height={40} 
               className="w-10 h-10 object-cover"
             />
-          <span className="text-white text-2xl font-semibold">IskolarSpace</span>
+          <span className="text-white text-2xl font-semibold font-poppins">IskolarSpace</span>
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden text-xl gap-10 font-bold lg:flex items-center space-x-8">
+        <div className="hidden text-xl gap-10 font-bold font-poppins lg:flex items-center space-x-8">
           <button
             onClick={() => scrollToSection('home')}
             className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out transform hover:scale-105"
@@ -73,10 +73,10 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <button onClick={goToLogin} className="text-white text-xl font-bold hover:text-cyan-400 transition-colors duration-300 ease-in-out transform hover:scale-105">
+          <button onClick={goToLogin} className="text-white text-xl font-bold font-poppins hover:text-cyan-400 transition-colors duration-300 ease-in-out transform hover:scale-105">
             Log in
           </button>
-          <button onClick={goToSignup} className="bg-cyan-500 text-xl font-bold hover:bg-cyan-600 text-white px-6 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25">
+          <button onClick={goToSignup} className="bg-cyan-500 text-xl font-bold font-poppins hover:bg-cyan-600 text-white px-6 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25">
             Sign Up
           </button>
         </div>
@@ -96,30 +96,30 @@ const Navbar: React.FC = () => {
           <div className="flex flex-col space-y-4">
             <a 
               href="#home" 
-              className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out py-2"
+              className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out py-2 font-poppins"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </a>
             <a 
               href="#about" 
-              className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out py-2"
+              className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out py-2 font-poppins"
               onClick={() => setIsMenuOpen(false)}
             >
               About
             </a>
             <a 
               href="#features" 
-              className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out py-2"
+              className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out py-2 font-poppins"
               onClick={() => setIsMenuOpen(false)}
             >
               Features
             </a>
             <div className="flex flex-col space-y-3 pt-4 border-t border-gray-700">
-              <button onClick={goToLogin} className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out text-left py-2">
+              <button onClick={goToLogin} className="text-white hover:text-cyan-400 transition-colors duration-300 ease-in-out text-left py-2 font-poppins">
                 Log in
               </button>
-              <button onClick={goToSignup} className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 w-full">
+              <button onClick={goToSignup} className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 w-full font-poppins">
                 Sign Up
               </button>
             </div>
