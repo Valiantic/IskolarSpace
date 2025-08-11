@@ -15,6 +15,7 @@ interface Todo {
   content: string;
   user_id: string;
   created_at: string;
+  priority: 'low' | 'moderate' | 'high';
 }
 
 export default function DashboardPage() {
@@ -24,6 +25,7 @@ export default function DashboardPage() {
   const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
   const [task, setTask] = useState("");
+  const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [showInput, setShowInput] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -31,6 +33,7 @@ export default function DashboardPage() {
   // STATES TO EDIT TASK 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
+  const [editedPriority, setEditedPriority] = useState<'low' | 'moderate' | 'high'>('low');
 
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -43,7 +46,7 @@ export default function DashboardPage() {
 
     const { data, error } = await supabase
       .from("tbl_todos")
-      .select("*")
+      .select("id, content, user_id, created_at, priority")
       .order("created_at", { ascending: false })
       .eq('user_id', userId);
     
@@ -102,15 +105,16 @@ export default function DashboardPage() {
       e.preventDefault();
       if (!task.trim() || !userId) return;
 
-      // INSERT THE NEW TASK ALONG WITH THE USER'S ID 
+      // INSERT THE NEW TASK ALONG WITH THE USER'S ID AND PRIORITY
       const { error } = await supabase.from("tbl_todos").insert([
-        { user_id: userId, content: task },
+        { user_id: userId, content: task, priority: priority },
       ]);
      
       if (error) {
         console.error("Error adding new task", error.message);
       }else {
         setTask("");
+        setPriority('low'); // Reset priority to default
         setShowInput(false); 
         fetchTodos();
       }
@@ -120,12 +124,14 @@ export default function DashboardPage() {
   const startEditing = (todo: Todo) => {
     setEditingTaskId(todo.id);
     setEditedContent(todo.content);
+    setEditedPriority(todo.priority);
   }
 
   // HANDLE CANCEL EDIT MODE 
   const cancelEditing = () => {
     setEditingTaskId(null);
     setEditedContent("");
+    setEditedPriority('low');
   }
   // HANDLE SAVE EDITED TASK 
   const handleSaveEdit = async (todoId: string) => {
@@ -133,7 +139,7 @@ export default function DashboardPage() {
 
     const { error } = await supabase
       .from("tbl_todos")
-      .update({ content: editedContent })
+      .update({ content: editedContent, priority: editedPriority })
       .eq("id", todoId);
 
     if (error) {
@@ -142,6 +148,7 @@ export default function DashboardPage() {
       // CLEAR EDITING STATE 
       setEditingTaskId(null);
       setEditedContent("");
+      setEditedPriority('low');
       fetchTodos();
     }
   }
@@ -214,11 +221,52 @@ export default function DashboardPage() {
             <h2 className="text-xl text-center font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300 font-poppins">What's your plan for today?</h2>
             <form onSubmit={handleAddTask}>
               <textarea
-                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none"
+                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none font-poppins"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
+                placeholder="Enter your task here..."
                 autoFocus
               />
+              
+              {/* Priority Selection */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-slate-300 mb-2 font-poppins">Priority Level</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPriority('low')}
+                    className={`p-2 rounded-lg border transition-all font-poppins ${
+                      priority === 'low'
+                        ? 'bg-green-500/30 border-green-400 text-green-300'
+                        : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-green-400'
+                    }`}
+                  >
+                    Low
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPriority('moderate')}
+                    className={`p-2 rounded-lg border transition-all font-poppins ${
+                      priority === 'moderate'
+                        ? 'bg-yellow-500/30 border-yellow-400 text-yellow-300'
+                        : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-yellow-400'
+                    }`}
+                  >
+                    Moderate
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPriority('high')}
+                    className={`p-2 rounded-lg border transition-all font-poppins ${
+                      priority === 'high'
+                        ? 'bg-red-500/30 border-red-400 text-red-300'
+                        : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-red-400'
+                    }`}
+                  >
+                    High
+                  </button>
+                </div>
+              </div>
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
@@ -286,12 +334,52 @@ export default function DashboardPage() {
                   onClick={(e) => e.stopPropagation()} 
                 >
                   <textarea
-                    className="w-full p-6 rounded-lg mb-8 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed overflow-auto no-scrollbar font-poppins"
+                    className="w-full p-6 rounded-lg mb-6 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed overflow-auto no-scrollbar font-poppins"
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     autoFocus
                     placeholder="Enter your task details..."
                   />
+                  
+                  {/* Priority Selection in Edit Mode */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-white/90 mb-3 font-poppins">Priority Level</label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setEditedPriority('low')}
+                        className={`p-3 rounded-lg border-2 transition-all font-poppins ${
+                          editedPriority === 'low'
+                            ? 'bg-green-500/40 border-green-300 text-green-100'
+                            : 'bg-white/20 border-white/30 text-white/80 hover:border-green-300'
+                        }`}
+                      >
+                        Low Priority
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditedPriority('moderate')}
+                        className={`p-3 rounded-lg border-2 transition-all font-poppins ${
+                          editedPriority === 'moderate'
+                            ? 'bg-yellow-500/40 border-yellow-300 text-yellow-100'
+                            : 'bg-white/20 border-white/30 text-white/80 hover:border-yellow-300'
+                        }`}
+                      >
+                        Moderate Priority
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditedPriority('high')}
+                        className={`p-3 rounded-lg border-2 transition-all font-poppins ${
+                          editedPriority === 'high'
+                            ? 'bg-red-500/40 border-red-300 text-red-100'
+                            : 'bg-white/20 border-white/30 text-white/80 hover:border-red-300'
+                        }`}
+                      >
+                        High Priority
+                      </button>
+                    </div>
+                  </div>
                   <div className="flex justify-end mt-6">
                     <button
                       onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}

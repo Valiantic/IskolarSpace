@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trash } from 'lucide-react';
+import { Trash, AlertCircle, Clock, Zap } from 'lucide-react';
 import NoTaskBanner from './NoTask';
 
 interface Todo {
@@ -7,6 +7,7 @@ interface Todo {
   content: string;
   user_id: string;
   created_at: string;
+  priority: 'low' | 'moderate' | 'high';
 }
 
 interface TaskGridProps {
@@ -26,6 +27,42 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
     'bg-sky-500',
     'bg-cyan-500'
   ];
+
+  // Priority configuration
+  const getPriorityConfig = (priority: 'low' | 'moderate' | 'high') => {
+    switch (priority) {
+      case 'high':
+        return {
+          icon: <Zap size={16} />,
+          label: 'High Priority',
+          color: 'text-red-300',
+          bgColor: 'bg-red-500/20',
+          borderColor: 'border-red-400/50'
+        };
+      case 'moderate':
+        return {
+          icon: <AlertCircle size={16} />,
+          label: 'Moderate Priority',
+          color: 'text-yellow-300',
+          bgColor: 'bg-yellow-500/20',
+          borderColor: 'border-yellow-400/50'
+        };
+      case 'low':
+        return {
+          icon: <Clock size={16} />,
+          label: 'Low Priority',
+          color: 'text-green-300',
+          bgColor: 'bg-green-500/20',
+          borderColor: 'border-green-400/50'
+        };
+    }
+  };
+
+  // Sort todos by priority (high -> moderate -> low)
+  const sortedTodos = [...todos].sort((a, b) => {
+    const priorityOrder = { high: 3, moderate: 2, low: 1 };
+    return priorityOrder[b.priority] - priorityOrder[a.priority];
+  });
   return (
     <>
       {todos.length === 0 ? (
@@ -36,18 +73,28 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
       ) : (
         // Show tasks grid when there are tasks
         <div className="mt-20 grid p-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
-          {todos.map((todo, index) => (        
+          {sortedTodos.map((todo, index) => {
+            const priorityConfig = getPriorityConfig(todo.priority);
+            return (        
             <div
               key={todo.id}
               className={`${cardColors[index % cardColors.length]} rounded-lg p-4 sm:p-5 shadow-lg min-h-[120px] w-full flex 
               flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform
-               duration-200 cursor-pointer animate-fadeIn`}
+               duration-200 cursor-pointer animate-fadeIn relative`}
                 onClick={() => startEditing(todo)}
             >
+              {/* Priority Badge */}
+              <div className={`absolute top-2 right-2 px-2 py-1 rounded-full ${priorityConfig.bgColor} ${priorityConfig.borderColor} border backdrop-blur-sm`}>
+                <div className={`flex items-center gap-1 ${priorityConfig.color}`}>
+                  {priorityConfig.icon}
+                  <span className="text-xs font-medium font-poppins">{todo.priority.toUpperCase()}</span>
+                </div>
+              </div>
+
               <div 
-                className="flex-1"
+                className="flex-1 pr-16"
               >
-                <p className="text-white sm:text-lg md:text-2xl font-bold break-words">{todo.content}</p>
+                <p className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins">{todo.content}</p>
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <button
@@ -62,7 +109,7 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
                 </button>
               </div>
             </div>
-          ))}
+          )})}
         </div>
       )}
     </>  );
