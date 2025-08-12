@@ -7,6 +7,14 @@
   font-family: var(--font-poppins), 'Poppins', sans-serif !important;
 }
 
+/* Line clamp utility for truncating text */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* HIDE SCROLLBAR */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

@@ -12,6 +12,7 @@ import { useAuth } from "../hooks/auth/useAuth";
 
 interface Todo {
   id: string;
+  title?: string;
   content: string;
   user_id: string;
   created_at: string;
@@ -25,6 +26,7 @@ export default function DashboardPage() {
   const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
   const [task, setTask] = useState("");
+  const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [showInput, setShowInput] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -33,6 +35,7 @@ export default function DashboardPage() {
   // STATES TO EDIT TASK 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
+  const [editedTitle, setEditedTitle] = useState("");
   const [editedPriority, setEditedPriority] = useState<'low' | 'moderate' | 'high'>('low');
 
   // DELETE CONFIRMATION MODAL 
@@ -46,7 +49,7 @@ export default function DashboardPage() {
 
     const { data, error } = await supabase
       .from("tbl_todos")
-      .select("id, content, user_id, created_at, priority")
+      .select("id, title, content, user_id, created_at, priority")
       .order("created_at", { ascending: false })
       .eq('user_id', userId);
     
@@ -105,15 +108,21 @@ export default function DashboardPage() {
       e.preventDefault();
       if (!task.trim() || !userId) return;
 
-      // INSERT THE NEW TASK ALONG WITH THE USER'S ID AND PRIORITY
+      // INSERT THE NEW TASK ALONG WITH THE USER'S ID, TITLE, AND PRIORITY
       const { error } = await supabase.from("tbl_todos").insert([
-        { user_id: userId, content: task, priority: priority },
+        { 
+          user_id: userId, 
+          title: title.trim() || null, 
+          content: task, 
+          priority: priority 
+        },
       ]);
      
       if (error) {
         console.error("Error adding new task", error.message);
       }else {
         setTask("");
+        setTitle("");
         setPriority('low'); // Reset priority to default
         setShowInput(false); 
         fetchTodos();
@@ -124,6 +133,7 @@ export default function DashboardPage() {
   const startEditing = (todo: Todo) => {
     setEditingTaskId(todo.id);
     setEditedContent(todo.content);
+    setEditedTitle(todo.title || "");
     setEditedPriority(todo.priority);
   }
 
@@ -131,6 +141,7 @@ export default function DashboardPage() {
   const cancelEditing = () => {
     setEditingTaskId(null);
     setEditedContent("");
+    setEditedTitle("");
     setEditedPriority('low');
   }
   // HANDLE SAVE EDITED TASK 
@@ -139,7 +150,11 @@ export default function DashboardPage() {
 
     const { error } = await supabase
       .from("tbl_todos")
-      .update({ content: editedContent, priority: editedPriority })
+      .update({ 
+        title: editedTitle.trim() || null,
+        content: editedContent, 
+        priority: editedPriority 
+      })
       .eq("id", todoId);
 
     if (error) {
@@ -148,6 +163,7 @@ export default function DashboardPage() {
       // CLEAR EDITING STATE 
       setEditingTaskId(null);
       setEditedContent("");
+      setEditedTitle("");
       setEditedPriority('low');
       fetchTodos();
     }
@@ -217,14 +233,23 @@ export default function DashboardPage() {
       {/* Task Input Modal */}
       {showInput && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
-          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500 m-4">
+          <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl w-full max-w-md border border-blue-500 m-4 overflow-hidden">
             <h2 className="text-xl text-center font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300 font-poppins">What's your plan for today?</h2>
             <form onSubmit={handleAddTask}>
+              {/* Title Input (Optional) */}
+              <input
+                type="text"
+                className="w-full text-center border-2 border-blue-400 p-4 rounded-lg mb-3 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none font-poppins"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Task title (optional)"
+              />
+              
               <textarea
-                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none font-poppins"
+                className="w-full border-2 border-blue-400 p-4 rounded-lg mb-4 resize-none h-32 text-white bg-slate-800 focus:border-cyan-400 focus:outline-none font-poppins no-scrollbar"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
-                placeholder="Enter your task here..."
+                placeholder="Enter your task description here..."
                 autoFocus
               />
               
@@ -315,7 +340,7 @@ export default function DashboardPage() {
           className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-4"
           onClick={cancelEditing}
         >
-          <div className="w-full p-4 max-w-4xl mx-auto animate-scaleInLarger overflow-y-auto max-h-full">
+          <div className="w-full p-4 max-w-4xl mx-auto animate-scaleInLarger overflow-hidden max-h-full">
             {(() => {
               const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
               const cardColors = [
@@ -330,14 +355,22 @@ export default function DashboardPage() {
               
               return (                
                 <div 
-                  className={`${cardColor} rounded-xl p-12 shadow-2xl w-full backdrop-blur-sm bg-opacity-95 transform transition-all duration-300 hover:shadow-2xl min-h-[60vh]`}
+                  className={`${cardColor} rounded-xl p-12 shadow-2xl w-full backdrop-blur-sm bg-opacity-95 transform transition-all duration-300 hover:shadow-2xl min-h-[60vh] overflow-hidden`}
                   onClick={(e) => e.stopPropagation()} 
                 >
+                  {/* Title Input (Optional) */}
+                  <input
+                    type="text"
+                    className="w-full p-4 rounded-lg mb-4 text-center text-white bg-white/20 focus:outline-none border-2 border-white/30 focus:border-white/60 text-xl font-bold font-poppins placeholder:text-white/60"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    placeholder="Task title (optional)..."
+                  />
+                  
                   <textarea
-                    className="w-full p-6 rounded-lg mb-6 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-xl md:text-3xl font-bold leading-relaxed overflow-auto no-scrollbar font-poppins"
+                    className="w-full p-6 rounded-lg mb-6 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-lg md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins"
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
-                    autoFocus
                     placeholder="Enter your task details..."
                   />
                   

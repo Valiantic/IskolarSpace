@@ -4,6 +4,7 @@ import NoTaskBanner from './NoTask';
 
 interface Todo {
   id: string;
+  title?: string;
   content: string;
   user_id: string;
   created_at: string;
@@ -94,7 +95,21 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
               <div 
                 className="flex-1 pr-16"
               >
-                <p className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins">{todo.content}</p>
+                {/* Display title if available, otherwise show truncated content */}
+                {todo.title ? (
+                  <div>
+                    <h3 className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins mb-1">
+                      {todo.title}
+                    </h3>
+                    <p className="text-white/80 text-sm sm:text-base line-clamp-2 font-poppins">
+                      {todo.content.length > 60 ? `${todo.content.substring(0, 60)}...` : todo.content}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins">
+                    {todo.content}
+                  </p>
+                )}
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <button
