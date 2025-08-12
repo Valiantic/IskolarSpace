@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { Plus, Rocket, CircleX } from "lucide-react";
+import { Plus } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
 import TaskGrid from "../components/DashboardBlocks/TaskGrid";
@@ -12,6 +12,7 @@ import EditTaskModal from "../components/DashboardBlocks/EditTaskModal";
 import AddTaskModal from "../components/DashboardBlocks/AddTaskModal";
 import DeleteConfirmationModal from "../components/DashboardBlocks/DeleteConfirmationModal";
 import SearchBar from "../components/DashboardBlocks/SearchBar";
+import PriorityFilter from "../components/DashboardBlocks/PriorityFilter";
 import { useAuth } from "../hooks/auth/useAuth";
 
 interface Todo {
@@ -36,6 +37,7 @@ export default function DashboardPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
 
   // STATES TO EDIT TASK 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
@@ -188,16 +190,30 @@ export default function DashboardPage() {
     setSearchTerm(searchTerm);
   }, []);
 
-  // FILTER TODOS BASED ON SEARCH TERM
+  // HANDLE PRIORITY FILTER
+  const handlePriorityFilter = useCallback((priorities: ('low' | 'moderate' | 'high')[]) => {
+    setPriorityFilters(priorities);
+  }, []);
+
+  // FILTER TODOS BASED ON SEARCH TERM AND PRIORITY
   const filteredTodos = todos.filter(todo => {
-    if (!searchTerm.trim()) return true;
+    // Search filter
+    let matchesSearch = true;
+    if (searchTerm.trim()) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      const titleMatch = todo.title?.toLowerCase().includes(lowerSearchTerm);
+      const contentMatch = todo.content.toLowerCase().includes(lowerSearchTerm);
+      const priorityMatch = todo.priority.toLowerCase().includes(lowerSearchTerm);
+      matchesSearch = titleMatch || contentMatch || priorityMatch;
+    }
     
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    const titleMatch = todo.title?.toLowerCase().includes(lowerSearchTerm);
-    const contentMatch = todo.content.toLowerCase().includes(lowerSearchTerm);
-    const priorityMatch = todo.priority.toLowerCase().includes(lowerSearchTerm);
+    // Priority filter
+    let matchesPriority = true;
+    if (priorityFilters.length > 0) {
+      matchesPriority = priorityFilters.includes(todo.priority);
+    }
     
-    return titleMatch || contentMatch || priorityMatch;
+    return matchesSearch && matchesPriority;
   });
 
   // HANDLE DELETE TASK FROM CONFIRMATION MODAL
@@ -249,26 +265,60 @@ export default function DashboardPage() {
       <div className="lg:ml-80 p-7 pt-10">
         {todos.length > 0 && (
           <>
-            {/* Search Bar */}
+            {/* Search Bar and Priority Filter */}
             <div className="mb-8">
-              <SearchBar 
-                onSearch={handleSearch}
-                placeholder="Search tasks by title, content, or priority..."
-                className="mb-4"
-              />
+              <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-center mb-4">
+                <div className="flex-1 max-w-md mx-auto lg:mx-0">
+                  <SearchBar 
+                    onSearch={handleSearch}
+                    placeholder="Search tasks by title, content, or priority..."
+                  />
+                </div>
+                <div className="mx-auto lg:mx-0 lg:ml-4">
+                  <PriorityFilter 
+                    onFilterChange={handlePriorityFilter}
+                  />
+                </div>
+              </div>
+              
               {/* Search Results Count */}
-              {searchTerm.trim() && (
-                <div className="text-center text-white/70 text-sm font-poppins">
-                  {filteredTodos.length === 0 
-                    ? 'No tasks found' 
-                    : `${filteredTodos.length} task${filteredTodos.length === 1 ? '' : 's'} found`
-                  }
+              {(searchTerm.trim() || priorityFilters.length > 0) && (
+                <div className="text-center space-y-2">
+                  <div className="text-white/70 text-sm font-poppins">
+                    {filteredTodos.length === 0 
+                      ? 'No tasks found' 
+                      : `${filteredTodos.length} task${filteredTodos.length === 1 ? '' : 's'} found`
+                    }
+                  </div>
+                  
+                  {/* Active Filters Display */}
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {searchTerm.trim() && (
+                      <span className="px-3 py-1 bg-blue-500/20 border border-blue-400/50 rounded-full text-blue-300 text-xs font-poppins">
+                        Search: "{searchTerm}"
+                      </span>
+                    )}
+                    {priorityFilters.map(priority => (
+                      <span 
+                        key={priority}
+                        className={`px-3 py-1 rounded-full text-xs font-poppins border ${
+                          priority === 'high' 
+                            ? 'bg-red-500/20 border-red-400/50 text-red-300'
+                            : priority === 'moderate'
+                            ? 'bg-yellow-500/20 border-yellow-400/50 text-yellow-300'
+                            : 'bg-green-500/20 border-green-400/50 text-green-300'
+                        }`}
+                      >
+                        {priority.charAt(0).toUpperCase() + priority.slice(1)} Priority
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
             
             {/* Quote */}
-            {!searchTerm.trim() && (
+            {!searchTerm.trim() && priorityFilters.length === 0 && (
               <h1 className="text-3xl text-white font-bold mb-6 text-center font-poppins">{quote}</h1>
             )}
           </>
