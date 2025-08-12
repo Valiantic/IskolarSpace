@@ -328,6 +328,9 @@ export default function DashboardPage() {
           fetchTodos={fetchTodos} 
           startEditing={startEditing}
           handlePriorityChange={handlePriorityChange}
+          searchTerm={searchTerm}
+          priorityFilters={priorityFilters}
+          totalTasks={todos.length}
         />
       </div>
       

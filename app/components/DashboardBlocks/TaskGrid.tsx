@@ -16,9 +16,20 @@ interface TaskGridProps {
   fetchTodos: () => Promise<void>;
   startEditing: (todo: Todo) => void;
   handlePriorityChange: (todoId: string, newPriority: 'low' | 'moderate' | 'high') => Promise<void>;
+  searchTerm?: string;
+  priorityFilters?: ('low' | 'moderate' | 'high')[];
+  totalTasks?: number;
 }
 
-const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, startEditing, handlePriorityChange }) => {
+const TaskGrid: React.FC<TaskGridProps> = ({ 
+  todos, 
+  fetchTodos, 
+  startEditing, 
+  handlePriorityChange,
+  searchTerm = '',
+  priorityFilters = [],
+  totalTasks = 0
+}) => {
   const cardColors = [
     'bg-sky-500',
     'bg-blue-500',
@@ -68,7 +79,11 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, startEditing, ha
       {todos.length === 0 ? (
         // Show NoTaskBanner when there are no tasks
         <div className="mt-10 animate-fadeIn">
-          <NoTaskBanner />
+          <NoTaskBanner 
+            searchTerm={searchTerm}
+            priorityFilters={priorityFilters}
+            totalTasks={totalTasks}
+          />
         </div>
       ) : (
         // Show tasks grid when there are tasks
