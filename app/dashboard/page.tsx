@@ -11,6 +11,7 @@ import Sidebar from "../components/DashboardBlocks/Sidebar";
 import EditTaskModal from "../components/DashboardBlocks/EditTaskModal";
 import AddTaskModal from "../components/DashboardBlocks/AddTaskModal";
 import DeleteConfirmationModal from "../components/DashboardBlocks/DeleteConfirmationModal";
+import SearchBar from "../components/DashboardBlocks/SearchBar";
 import { useAuth } from "../hooks/auth/useAuth";
 
 interface Todo {
@@ -34,6 +35,7 @@ export default function DashboardPage() {
   const [showInput, setShowInput] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // STATES TO EDIT TASK 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
@@ -181,6 +183,23 @@ export default function DashboardPage() {
     }
   };
 
+  // HANDLE SEARCH
+  const handleSearch = useCallback((searchTerm: string) => {
+    setSearchTerm(searchTerm);
+  }, []);
+
+  // FILTER TODOS BASED ON SEARCH TERM
+  const filteredTodos = todos.filter(todo => {
+    if (!searchTerm.trim()) return true;
+    
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    const titleMatch = todo.title?.toLowerCase().includes(lowerSearchTerm);
+    const contentMatch = todo.content.toLowerCase().includes(lowerSearchTerm);
+    const priorityMatch = todo.priority.toLowerCase().includes(lowerSearchTerm);
+    
+    return titleMatch || contentMatch || priorityMatch;
+  });
+
   // HANDLE DELETE TASK FROM CONFIRMATION MODAL
   const handleDelete = async () => {
     if(!todoToDelete) return;
@@ -229,10 +248,33 @@ export default function DashboardPage() {
       {/* Content Container */}
       <div className="lg:ml-80 p-7 pt-10">
         {todos.length > 0 && (
-          <h1 className="text-3xl text-white font-bold mb-6 text-center font-poppins">{quote}</h1>
+          <>
+            {/* Search Bar */}
+            <div className="mb-8">
+              <SearchBar 
+                onSearch={handleSearch}
+                placeholder="Search tasks by title, content, or priority..."
+                className="mb-4"
+              />
+              {/* Search Results Count */}
+              {searchTerm.trim() && (
+                <div className="text-center text-white/70 text-sm font-poppins">
+                  {filteredTodos.length === 0 
+                    ? 'No tasks found' 
+                    : `${filteredTodos.length} task${filteredTodos.length === 1 ? '' : 's'} found`
+                  }
+                </div>
+              )}
+            </div>
+            
+            {/* Quote */}
+            {!searchTerm.trim() && (
+              <h1 className="text-3xl text-white font-bold mb-6 text-center font-poppins">{quote}</h1>
+            )}
+          </>
         )}
         <TaskGrid 
-          todos={todos} 
+          todos={filteredTodos} 
           fetchTodos={fetchTodos} 
           startEditing={startEditing}
           handlePriorityChange={handlePriorityChange}
