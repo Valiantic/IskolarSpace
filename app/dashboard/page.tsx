@@ -3,11 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { Plus, Rocket, Check, CircleX } from "lucide-react";
+import { Plus, Rocket, CircleX } from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
 import TaskGrid from "../components/DashboardBlocks/TaskGrid";
 import Sidebar from "../components/DashboardBlocks/Sidebar";
+import EditTaskModal from "../components/DashboardBlocks/EditTaskModal";
 import { useAuth } from "../hooks/auth/useAuth";
 
 interface Todo {
@@ -334,99 +335,21 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      )}      {/* Edit Task Modal */}
-      {editingTaskId && (
-        <div 
-          className="fixed inset-0 backdrop-blur-sm bg-blue-900/30 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-4"
-          onClick={cancelEditing}
-        >
-          <div className="w-full p-4 max-w-4xl mx-auto animate-scaleInLarger overflow-hidden max-h-full">
-            {(() => {
-              const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
-              const cardColors = [
-                'bg-sky-500',
-                'bg-blue-500',
-                'bg-cyan-500',
-                'bg-indigo-500',
-                'bg-sky-500',
-                'bg-cyan-500'
-              ];
-              const cardColor = todoIndex >= 0 ? cardColors[todoIndex % cardColors.length] : 'bg-sky-300';
-              
-              return (                
-                <div 
-                  className={`${cardColor} rounded-xl p-12 shadow-2xl w-full backdrop-blur-sm bg-opacity-95 transform transition-all duration-300 hover:shadow-2xl min-h-[60vh] overflow-hidden`}
-                  onClick={(e) => e.stopPropagation()} 
-                >
-                  {/* Title Input (Optional) */}
-                  <input
-                    type="text"
-                    className="w-full p-4 rounded-lg mb-4 text-center text-white bg-white/20 focus:outline-none border-2 border-white/30 focus:border-white/60 text-xl font-bold font-poppins placeholder:text-white/60"
-                    value={editedTitle}
-                    onChange={(e) => setEditedTitle(e.target.value)}
-                    placeholder="Task title (optional)..."
-                  />
-                  
-                  <textarea
-                    className="w-full p-6 rounded-lg mb-6 resize-none h-80 text-white bg-transparent focus:outline-none border-0 text-lg md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins"
-                    value={editedContent}
-                    onChange={(e) => setEditedContent(e.target.value)}
-                    placeholder="Enter your task details..."
-                  />
-                  
-                  {/* Priority Selection in Edit Mode */}
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-white/90 mb-3 font-poppins">Priority Level</label>
-                    <div className="grid grid-cols-3 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setEditedPriority('low')}
-                        className={`p-3 rounded-lg border-2 transition-all font-poppins ${
-                          editedPriority === 'low'
-                            ? 'bg-green-500/40 border-green-300 text-green-100'
-                            : 'bg-white/20 border-white/30 text-white/80 hover:border-green-300'
-                        }`}
-                      >
-                        Low Priority
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditedPriority('moderate')}
-                        className={`p-3 rounded-lg border-2 transition-all font-poppins ${
-                          editedPriority === 'moderate'
-                            ? 'bg-yellow-500/40 border-yellow-300 text-yellow-100'
-                            : 'bg-white/20 border-white/30 text-white/80 hover:border-yellow-300'
-                        }`}
-                      >
-                        Moderate Priority
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditedPriority('high')}
-                        className={`p-3 rounded-lg border-2 transition-all font-poppins ${
-                          editedPriority === 'high'
-                            ? 'bg-red-500/40 border-red-300 text-red-100'
-                            : 'bg-white/20 border-white/30 text-white/80 hover:border-red-300'
-                        }`}
-                      >
-                        High Priority
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex justify-end mt-6">
-                    <button
-                      onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}
-                      className="text-sky-700 hover:text-sky-900 px-8 py-4 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-200 shadow-lg"
-                    >
-                      <Check size={28} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
       )}
+      
+      {/* Edit Task Modal */}
+      <EditTaskModal
+        editingTaskId={editingTaskId}
+        todos={todos}
+        editedContent={editedContent}
+        editedTitle={editedTitle}
+        editedPriority={editedPriority}
+        setEditedContent={setEditedContent}
+        setEditedTitle={setEditedTitle}
+        setEditedPriority={setEditedPriority}
+        handleSaveEdit={handleSaveEdit}
+        cancelEditing={cancelEditing}
+      />
       </div>
     </div>
   );
