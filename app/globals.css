@@ -91,6 +91,58 @@ body.modal-open {
   animation: floating 3s ease-in-out infinite;
 }
 
+/* Priority Level Pulsing Orb Animations */
+@keyframes pulse-green {
+  0%, 100% {
+    background-color: rgb(74 222 128); /* green-400 */
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgb(34 197 94); /* green-500 */
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-orange {
+  0%, 100% {
+    background-color: rgb(251 146 60); /* orange-400 */
+    box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgb(249 115 22); /* orange-500 */
+    box-shadow: 0 0 0 6px rgba(251, 146, 60, 0);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-red {
+  0%, 100% {
+    background-color: rgb(248 113 113); /* red-400 */
+    box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgb(239 68 68); /* red-500 */
+    box-shadow: 0 0 0 6px rgba(248, 113, 113, 0);
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse-green {
+  animation: pulse-green 2.5s ease-in-out infinite;
+}
+
+.animate-pulse-orange {
+  animation: pulse-orange 2s ease-in-out infinite;
+}
+
+.animate-pulse-red {
+  animation: pulse-red 1.5s ease-in-out infinite;
+}
+
 @layer utilities {
   .shadow-text {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);

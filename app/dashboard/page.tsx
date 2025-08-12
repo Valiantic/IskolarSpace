@@ -39,7 +39,6 @@ export default function DashboardPage() {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const [editedTitle, setEditedTitle] = useState("");
-  const [editedPriority, setEditedPriority] = useState<'low' | 'moderate' | 'high'>('low');
 
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -137,7 +136,6 @@ export default function DashboardPage() {
     setEditingTaskId(todo.id);
     setEditedContent(todo.content);
     setEditedTitle(todo.title || "");
-    setEditedPriority(todo.priority);
   }
 
   // HANDLE CANCEL EDIT MODE 
@@ -145,7 +143,6 @@ export default function DashboardPage() {
     setEditingTaskId(null);
     setEditedContent("");
     setEditedTitle("");
-    setEditedPriority('low');
   }
   // HANDLE SAVE EDITED TASK 
   const handleSaveEdit = async (todoId: string) => {
@@ -155,8 +152,7 @@ export default function DashboardPage() {
       .from("tbl_todos")
       .update({ 
         title: editedTitle.trim() || null,
-        content: editedContent, 
-        priority: editedPriority 
+        content: editedContent
       })
       .eq("id", todoId);
 
@@ -167,12 +163,25 @@ export default function DashboardPage() {
       setEditingTaskId(null);
       setEditedContent("");
       setEditedTitle("");
-      setEditedPriority('low');
       fetchTodos();
     }
   }
 
-  // HANDLE DELETE TASK
+  // HANDLE PRIORITY CHANGE
+  const handlePriorityChange = async (todoId: string, newPriority: 'low' | 'moderate' | 'high') => {
+    const { error } = await supabase
+      .from("tbl_todos")
+      .update({ priority: newPriority })
+      .eq("id", todoId);
+
+    if (error) {
+      console.error("Error updating priority", error.message);
+    } else {
+      fetchTodos();
+    }
+  };
+
+  // HANDLE DELETE TASK FROM CONFIRMATION MODAL
   const handleDelete = async () => {
     if(!todoToDelete) return;
 
@@ -184,6 +193,12 @@ export default function DashboardPage() {
     if (error) {
       console.error("Error deleting task", error.message);
     }else {
+      // Close edit modal if it's open and the deleted task is being edited
+      if (editingTaskId === todoToDelete) {
+        setEditingTaskId(null);
+        setEditedContent("");
+        setEditedTitle("");
+      }
       fetchTodos();
     }
 
@@ -219,9 +234,8 @@ export default function DashboardPage() {
         <TaskGrid 
           todos={todos} 
           fetchTodos={fetchTodos} 
-          setShowDeleteModal={setShowDeleteModal} 
-          setTodoToDelete={setTodoToDelete} 
           startEditing={startEditing}
+          handlePriorityChange={handlePriorityChange}
         />
       </div>
       
@@ -259,11 +273,11 @@ export default function DashboardPage() {
         todos={todos}
         editedContent={editedContent}
         editedTitle={editedTitle}
-        editedPriority={editedPriority}
         setEditedContent={setEditedContent}
         setEditedTitle={setEditedTitle}
-        setEditedPriority={setEditedPriority}
         handleSaveEdit={handleSaveEdit}
+        setShowDeleteModal={setShowDeleteModal}
+        setTodoToDelete={setTodoToDelete}
         cancelEditing={cancelEditing}
       />
       </div>

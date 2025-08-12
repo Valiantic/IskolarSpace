@@ -17,8 +17,8 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   if (!showDeleteModal) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden">
-      <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500 m-4">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60] overflow-hidden">
+      <div className="bg-gradient-to-b from-slate-800 to-slate-900 p-6 rounded-lg shadow-xl max-w-sm w-full border border-red-500 m-4 animate-scaleIn">
         <h2 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-400 font-poppins">
           Confirm Deletion
         </h2>

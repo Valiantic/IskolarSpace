@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Check } from 'lucide-react';
+import { Check, Trash } from 'lucide-react';
 
 interface Todo {
   id: string;
@@ -17,11 +17,11 @@ interface EditTaskModalProps {
   todos: Todo[];
   editedContent: string;
   editedTitle: string;
-  editedPriority: 'low' | 'moderate' | 'high';
   setEditedContent: (content: string) => void;
   setEditedTitle: (title: string) => void;
-  setEditedPriority: (priority: 'low' | 'moderate' | 'high') => void;
   handleSaveEdit: (todoId: string) => void;
+  setShowDeleteModal: (show: boolean) => void;
+  setTodoToDelete: (todoId: string | null) => void;
   cancelEditing: () => void;
 }
 
@@ -30,11 +30,11 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
   todos,
   editedContent,
   editedTitle,
-  editedPriority,
   setEditedContent,
   setEditedTitle,
-  setEditedPriority,
   handleSaveEdit,
+  setShowDeleteModal,
+  setTodoToDelete,
   cancelEditing,
 }) => {
   const [isScrolling, setIsScrolling] = useState(false);
@@ -113,48 +113,19 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             placeholder="Enter your task details..."
           />
           
-          {/* Priority Selection in Edit Mode - Hidden during scroll */}
-          <div className={`mb-6 transition-all duration-300 ${isScrolling ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
-            <label className="block text-sm font-medium text-white/90 mb-3 font-poppins">Priority Level</label>
-            <div className="grid grid-cols-3 gap-3">
-              <button
-                type="button"
-                onClick={() => setEditedPriority('low')}
-                className={`p-3 rounded-lg border-2 transition-all font-poppins backdrop-blur-sm ${
-                  editedPriority === 'low'
-                    ? 'bg-green-500/30 border-green-300 text-green-100'
-                    : 'bg-white/10 border-white/20 text-white/80 hover:border-green-300 hover:bg-green-500/20'
-                }`}
-              >
-                Low Priority
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditedPriority('moderate')}
-                className={`p-3 rounded-lg border-2 transition-all font-poppins backdrop-blur-sm ${
-                  editedPriority === 'moderate'
-                    ? 'bg-yellow-500/30 border-yellow-300 text-yellow-100'
-                    : 'bg-white/10 border-white/20 text-white/80 hover:border-yellow-300 hover:bg-yellow-500/20'
-                }`}
-              >
-                Moderate Priority
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditedPriority('high')}
-                className={`p-3 rounded-lg border-2 transition-all font-poppins backdrop-blur-sm ${
-                  editedPriority === 'high'
-                    ? 'bg-red-500/30 border-red-300 text-red-100'
-                    : 'bg-white/10 border-white/20 text-white/80 hover:border-red-300 hover:bg-red-500/20'
-                }`}
-              >
-                High Priority
-              </button>
-            </div>
-          </div>
-          
-          {/* Save Button */}
-          <div className="flex justify-end mt-6">
+          {/* Save and Delete Buttons */}
+          <div className="flex justify-end gap-4 mt-6">
+            <button
+              onClick={() => {
+                if (editingTaskId) {
+                  setTodoToDelete(editingTaskId);
+                  setShowDeleteModal(true);
+                }
+              }}
+              className="text-red-700 hover:text-red-900 px-8 py-4 rounded-full bg-white/80 hover:bg-white/90 transition-all duration-200 shadow-lg backdrop-blur-sm border border-white/20"
+            >
+              <Trash size={28} />
+            </button>
             <button
               onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}
               className="text-slate-700 hover:text-slate-900 px-8 py-4 rounded-full bg-white/80 hover:bg-white/90 transition-all duration-200 shadow-lg backdrop-blur-sm border border-white/20"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trash, AlertCircle, Clock, Zap } from 'lucide-react';
+import { AlertCircle, Clock, Zap, ChevronDown } from 'lucide-react';
 import NoTaskBanner from './NoTask';
 
 interface Todo {
@@ -14,12 +14,11 @@ interface Todo {
 interface TaskGridProps {
   todos: Todo[];
   fetchTodos: () => Promise<void>;
-  setShowDeleteModal: (show: boolean) => void;
-  setTodoToDelete: (todoId: string | null) => void;
   startEditing: (todo: Todo) => void;
+  handlePriorityChange: (todoId: string, newPriority: 'low' | 'moderate' | 'high') => Promise<void>;
 }
 
-const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteModal, setTodoToDelete, startEditing }) => {
+const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, startEditing, handlePriorityChange }) => {
   const cardColors = [
     'bg-sky-500',
     'bg-blue-500',
@@ -112,16 +111,37 @@ const TaskGrid: React.FC<TaskGridProps> = ({ todos, fetchTodos, setShowDeleteMod
                 )}
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation(); 
-                    setTodoToDelete(todo.id);
-                    setShowDeleteModal(true);
-                  }}
-                  className="text-sky-700 hover:text-red-700 px-3 py-1 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-all duration-200"
-                >
-                    <Trash size={20} />
-                </button>
+                <div className="relative flex items-center">
+                  {/* Priority Dropdown with Orb Inside */}
+                  <div className="relative flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-md hover:bg-black hover:shadow-md transition-all duration-200">
+                    {/* Pulsing Priority Orb */}
+                    <div className={`w-3 h-3 rounded-full ${
+                      todo.priority === 'low' 
+                        ? 'bg-green-400 animate-pulse-green' 
+                        : todo.priority === 'moderate'
+                        ? 'bg-orange-400 animate-pulse-orange'
+                        : 'bg-red-400 animate-pulse-red'
+                    }`}></div>
+                    
+                    <select
+                      value={todo.priority}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handlePriorityChange(todo.id, e.target.value as 'low' | 'moderate' | 'high');
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="appearance-none p-1 bg-transparent text-white border-0 focus:outline-none transition-all duration-200 cursor-pointer font-poppins text-xs font-medium text-left pr-4"
+                    >
+                      <option value="low" className="bg-slate-800 text-white">Low</option>
+                      <option value="moderate" className="bg-slate-800 text-white">Moderate</option>
+                      <option value="high" className="bg-slate-800 text-white">High</option>
+                    </select>
+                    <ChevronDown 
+                      size={12} 
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 pointer-events-none" 
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )})}
