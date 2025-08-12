@@ -1,25 +1,7 @@
 import React from 'react';
 import { AlertCircle, Clock, Zap, ChevronDown } from 'lucide-react';
 import NoTaskBanner from './NoTask';
-
-interface Todo {
-  id: string;
-  title?: string;
-  content: string;
-  user_id: string;
-  created_at: string;
-  priority: 'low' | 'moderate' | 'high';
-}
-
-interface TaskGridProps {
-  todos: Todo[];
-  fetchTodos: () => Promise<void>;
-  startEditing: (todo: Todo) => void;
-  handlePriorityChange: (todoId: string, newPriority: 'low' | 'moderate' | 'high') => Promise<void>;
-  searchTerm?: string;
-  priorityFilters?: ('low' | 'moderate' | 'high')[];
-  totalTasks?: number;
-}
+import { Todo, TaskGridProps, Priority } from '../../types/dashboard';
 
 const TaskGrid: React.FC<TaskGridProps> = ({ 
   todos, 

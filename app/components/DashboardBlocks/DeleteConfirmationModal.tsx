@@ -2,12 +2,7 @@
 
 import React from 'react';
 import { CircleX } from 'lucide-react';
-
-interface DeleteConfirmationModalProps {
-  showDeleteModal: boolean;
-  handleDelete: () => void;
-  setShowDeleteModal: (show: boolean) => void;
-}
+import { DeleteConfirmationModalProps } from '../../types/dashboard';
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   showDeleteModal,

@@ -2,18 +2,14 @@
 
 import React, { useState, useCallback } from 'react';
 import { Filter, Check, AlertCircle, Clock, Zap } from 'lucide-react';
-
-interface PriorityFilterProps {
-  onFilterChange: (priorities: ('low' | 'moderate' | 'high')[]) => void;
-  className?: string;
-}
+import { PriorityFilterProps, Priority } from '../../types/dashboard';
 
 const PriorityFilter: React.FC<PriorityFilterProps> = ({
   onFilterChange,
   className = ""
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedPriorities, setSelectedPriorities] = useState<('low' | 'moderate' | 'high')[]>([]);
+  const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
 
   const priorities = [
     { 
@@ -42,7 +38,7 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
     }
   ];
 
-  const togglePriority = useCallback((priority: 'low' | 'moderate' | 'high') => {
+  const togglePriority = useCallback((priority: Priority) => {
     const newSelected = selectedPriorities.includes(priority)
       ? selectedPriorities.filter(p => p !== priority)
       : [...selectedPriorities, priority];

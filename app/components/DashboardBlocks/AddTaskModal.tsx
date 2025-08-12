@@ -2,18 +2,7 @@
 
 import React, { useState } from 'react';
 import { Rocket, Clock, AlertCircle, Zap, X } from 'lucide-react';
-
-interface AddTaskModalProps {
-  showInput: boolean;
-  title: string;
-  task: string;
-  priority: 'low' | 'moderate' | 'high';
-  setTitle: (title: string) => void;
-  setTask: (task: string) => void;
-  setPriority: (priority: 'low' | 'moderate' | 'high') => void;
-  handleAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
-  setShowInput: (show: boolean) => void;
-}
+import { AddTaskModalProps, Priority } from '../../types/dashboard';
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({
   showInput,
@@ -50,7 +39,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     handleAddTask(e);
   };
 
-  const getPriorityIcon = (priorityLevel: 'low' | 'moderate' | 'high') => {
+  const getPriorityIcon = (priorityLevel: Priority) => {
     switch (priorityLevel) {
       case 'high':
         return <Zap size={16} className="text-red-400" />;

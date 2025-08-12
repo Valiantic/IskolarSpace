@@ -2,12 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import NoTaskImage from '../../../public/images/NoTask.png'
 import { Search, Filter, AlertCircle, Clock, Zap } from 'lucide-react'
-
-interface NoTaskBannerProps {
-  searchTerm?: string;
-  priorityFilters?: ('low' | 'moderate' | 'high')[];
-  totalTasks?: number;
-}
+import { NoTaskBannerProps } from '../../types/dashboard'
 
 const NoTaskBanner: React.FC<NoTaskBannerProps> = ({ 
   searchTerm = '', 

@@ -2,28 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Check, Trash } from 'lucide-react';
-
-interface Todo {
-  id: string;
-  title?: string;
-  content: string;
-  user_id: string;
-  created_at: string;
-  priority: 'low' | 'moderate' | 'high';
-}
-
-interface EditTaskModalProps {
-  editingTaskId: string | null;
-  todos: Todo[];
-  editedContent: string;
-  editedTitle: string;
-  setEditedContent: (content: string) => void;
-  setEditedTitle: (title: string) => void;
-  handleSaveEdit: (todoId: string) => void;
-  setShowDeleteModal: (show: boolean) => void;
-  setTodoToDelete: (todoId: string | null) => void;
-  cancelEditing: () => void;
-}
+import { Todo, EditTaskModalProps } from '../../types/dashboard';
 
 const EditTaskModal: React.FC<EditTaskModalProps> = ({
   editingTaskId,

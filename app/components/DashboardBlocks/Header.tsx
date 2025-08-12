@@ -2,12 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image';
 import IskolarSpaceLogo from '../../../public/images/iskolarspace_logo.png'
 import UserAvatar from '../../../public/images/user_avatar.png'
-
-interface HeaderProps {
-  isNewUser: boolean;
-  userFullName: string | null;
-  handleLogout: () => void;
-}
+import { HeaderProps } from '../../types/dashboard';
 
 const Header: React.FC<HeaderProps> = ({ isNewUser, userFullName, handleLogout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

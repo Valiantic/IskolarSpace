@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, X } from 'lucide-react';
-
-interface SearchBarProps {
-  onSearch: (searchTerm: string) => void;
-  placeholder?: string;
-  debounceMs?: number;
-  className?: string;
-}
+import { SearchBarProps } from '../../types/dashboard';
 
 const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,

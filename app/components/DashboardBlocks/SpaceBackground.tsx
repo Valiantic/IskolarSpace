@@ -1,15 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from 'react';
-
-interface Star {
-  x: number;
-  y: number;
-  radius: number;
-  velocity: number;
-  alpha: number;
-  color: string;
-}
-
+import { Star } from '../../types/dashboard';
 
 const SpaceBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

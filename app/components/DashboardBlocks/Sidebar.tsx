@@ -3,20 +3,14 @@
 import React from 'react'
 import Image from 'next/image';
 import { Menu, X, Orbit, Rocket, Settings, LogOut} from 'lucide-react';
-import IskolarSpaceLogo from '../../../public/images/iskolarspace_logo.png';
 import UserAvatar from '../../../public/images/user_avatar.png';
 import useSidebar from '../../hooks/dashboard/useSidebar';
-
-type SidebarProps = {
-    userFullName: string | null;
-    handleLogout: () => void;
-}
+import { SidebarProps } from '../../types/dashboard';
 
 const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
 
   const {
     isOpen,
-    dropdownOpen,
     sidebarRef,
     openSidebar,
     closeSidebar,
