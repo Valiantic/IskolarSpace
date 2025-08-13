@@ -13,6 +13,7 @@ import AddTaskModal from "../components/DashboardBlocks/AddTaskModal";
 import DeleteConfirmationModal from "../components/DashboardBlocks/DeleteConfirmationModal";
 import SearchBar from "../components/DashboardBlocks/SearchBar";
 import PriorityFilter from "../components/DashboardBlocks/PriorityFilter";
+import LoadingSpinner from "../components/DashboardBlocks/LoadingSpinner";
 import { useAuth } from "../hooks/auth/useAuth";
 
 interface Todo {
@@ -36,6 +37,7 @@ export default function DashboardPage() {
   const [showInput, setShowInput] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [isLoadingTodos, setIsLoadingTodos] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
 
@@ -53,6 +55,8 @@ export default function DashboardPage() {
   const fetchTodos = useCallback(async () => {
     if (!userId) return; // Guard clause
 
+    setIsLoadingTodos(true);
+
     const { data, error } = await supabase
       .from("tbl_todos")
       .select("id, title, content, user_id, created_at, priority")
@@ -64,6 +68,8 @@ export default function DashboardPage() {
     } else {
       setTodos(data || []);
     }
+
+    setIsLoadingTodos(false);
   }, [userId]); // Add userId as dependency
 
   // FETCH USER DATA using the authenticated user
@@ -268,7 +274,7 @@ export default function DashboardPage() {
       
       {/* Content Container */}
       <div className="lg:ml-80 p-7 pt-10">
-        {todos.length > 0 && (
+        {todos.length > 0 && !isLoadingTodos && (
           <>
             {/* Search Bar and Priority Filter */}
             <div className="mb-8">
@@ -328,7 +334,10 @@ export default function DashboardPage() {
             )}
           </>
         )}
-        <TaskGrid 
+        {isLoadingTodos ? (
+          <LoadingSpinner />
+        ) : (
+          <TaskGrid 
           todos={filteredTodos} 
           fetchTodos={fetchTodos} 
           startEditing={startEditing}
@@ -337,6 +346,7 @@ export default function DashboardPage() {
           priorityFilters={priorityFilters}
           totalTasks={todos.length}
         />
+        )}
       </div>
       
       {/* Add Task Button */}

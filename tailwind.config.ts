@@ -17,6 +17,9 @@ export default {
         'geist-sans': ['var(--font-geist-sans)', 'sans-serif'],
         'geist-mono': ['var(--font-geist-mono)', 'monospace'],
       },
+      animation: {
+        'spin-reverse': 'spin 1s linear infinite reverse',
+      },
     },
   },
   plugins: [],
