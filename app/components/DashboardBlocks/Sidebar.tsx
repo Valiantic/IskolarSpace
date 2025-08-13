@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image';
+import Link from 'next/link';
 import { Menu, X, Orbit, Rocket, Settings, LogOut} from 'lucide-react';
 import UserAvatar from '../../../public/images/user_avatar.png';
 import useSidebar from '../../hooks/dashboard/useSidebar';
@@ -73,13 +74,13 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
         <nav className="flex-1 p-4">
           <ul className="space-y-2">
             <li>
-              <a
-                href=""
+              <Link
+                href="/space"
                 className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
               >
                 <Rocket size={25} className="mr-3" />
-                Explore Space 
-              </a>
+                Explore Space
+              </Link>
             </li>
              <li>
               <a
