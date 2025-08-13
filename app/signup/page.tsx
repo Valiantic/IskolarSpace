@@ -7,9 +7,9 @@ import { FaEye, FaEyeSlash, FaArrowAltCircleLeft } from "react-icons/fa";
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../../public/svgs/iskolarspace_logo.svg';
-// import StudentCollab from '../../public/images/student_collabs.jpeg';
-import StudentAstronaut from '../../public/images/student_astronaut.png';
 import Signupic from '../../public/images/signupic.png';
+import { validateName, validatePassword, validateForm } from "../../lib/validators/signupValidator";
+
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -18,6 +18,17 @@ export default function SignupPage() {
   const [togglePassword, setTogglePassword] = useState(false);
   const [error, setError]       = useState("");
   const router                = useRouter();
+
+  const nameValidation = validateName(fullName);
+  const passwordValidation = validatePassword(password);
+  const isFormValid = validateForm(fullName, email, password).isValid;
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length <= 20) {
+      setFullName(value);
+    }
+  };
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -118,8 +129,13 @@ export default function SignupPage() {
                       name="full_name"
                       className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black shadow-xs"
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      onChange={handleNameChange}
+                      maxLength={20}
                     />
+                     <p className="text-sm text-gray-400 mt-1">{fullName.length}/20 characters</p>
+                    {!nameValidation.isValid && fullName.length > 20 && (
+                      <p className="text-red-500 text-sm mt-1">{nameValidation.errors[0]}</p>
+                    )}
                   </div>
         
         
@@ -155,9 +171,17 @@ export default function SignupPage() {
                     >
                       {togglePassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
-        
                     </div>
-        
+
+                    {password && !passwordValidation.isValid && (
+                      <div className="mt-2">
+                        <p className="text-sm text-red-500 mb-1">Requirements:</p>
+                        {passwordValidation.errors.map((err, i) => (
+                          <p key={i} className="text-red-500 text-sm">• {err}</p>
+                        ))}
+                      </div>
+                    )}
+
                   </div>
         
               
@@ -170,7 +194,9 @@ export default function SignupPage() {
                     </p>
         
                     <button
-                      className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-gradient-to-r from-white to-sky-500 hover:text-blue-600 focus:ring-3 focus:outline-hidden"
+                      type="submit"
+                      className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-gradient-to-r from-white to-sky-500 hover:text-blue-600 focus:ring-3 focus:outline-hidden disabled:opacity-50"
+                      disabled={!isFormValid}
                     >
                       Create an account
                     </button>
