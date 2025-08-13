@@ -1,14 +1,20 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
-import { Menu, X, Orbit, Rocket, Settings, LogOut} from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
+import { TAB_NAVIGATION } from '../../config/TabNavigation';
+import { usePathname } from 'next/navigation';
 import UserAvatar from '../../../public/images/user_avatar.png';
 import useSidebar from '../../hooks/dashboard/useSidebar';
 import { SidebarProps } from '../../types/dashboard';
+import { supabase } from '../../../lib/supabaseClient';
+import { useAuth } from '../../hooks/auth/useAuth';
 
 const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
+  const { user } = useAuth()
+  const [profilePicture, setProfilePicture] = useState<string | null>(null)
 
   const {
     isOpen,
@@ -18,6 +24,31 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
     toggleDropdown,
     handleLogoutAction,
   } = useSidebar();
+
+  const pathname = usePathname();
+
+  // Fetch user profile picture
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      if (!user) return
+
+      try {
+        const { data: profileData, error } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .single()
+
+        if (!error && profileData?.avatar_url) {
+          setProfilePicture(profileData.avatar_url)
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error)
+      }
+    }
+
+    fetchProfilePicture()
+  }, [user])
 
   return (
     <>
@@ -57,11 +88,11 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
           <div className="flex justify-content text-white">
 
               <Image
-                src={UserAvatar}
+                src={profilePicture || UserAvatar}
                 alt="User Profile"
                 width={40}
                 height={40}
-                className="rounded-full mr-3 border-2 border-blue-400"
+                className="rounded-full mr-3 border-2 border-blue-400 object-cover"
               />
 
             {userFullName && (
@@ -73,42 +104,30 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
         {/* Navigation Menu */}
         <nav className="flex-1 p-4">
           <ul className="space-y-2">
-            <li>
-              <Link
-                href="/space"
-                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
-              >
-                <Rocket size={25} className="mr-3" />
-                Explore Space
-              </Link>
-            </li>
-             <li>
-              <a
-                href=""
-                className="flex items-center p-3 text-white hover:bg-slate-700 rounded-lg transition-colors font-poppins"
-              >
-                <Orbit size={25} className="mr-3" />
-                My Space
-              </a>
-            </li>
-            <li>
-              <a
-                href=""
-                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
-              >
-                <Settings size={25} className="mr-3" />
-                Settings
-              </a>
-            </li>
-            <li>
-                <a
-                  href=""
-                  onClick={() => handleLogoutAction(handleLogout)}  
-                  className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
+            {TAB_NAVIGATION.map((tab) => (
+              <li key={tab.href}>
+                <Link
+                  href={tab.href}
+                  className={`flex items-center p-3 rounded-lg transition-colors font-poppins ${
+                    tab.match(pathname)
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                  }`}
                 >
-                  <LogOut size={25} className="mr-3" />
-                  Log Out
-                </a>
+                  {tab.icon}
+                  {tab.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <a
+                href=""
+                onClick={() => handleLogoutAction(handleLogout)}
+                className="flex items-center p-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors font-poppins"
+              >
+                <LogOut size={25} className="mr-3" />
+                Log Out
+              </a>
             </li>
           </ul>
         </nav>
