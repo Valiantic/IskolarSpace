@@ -44,20 +44,7 @@ export default function SignupPage() {
       return;
     }
 
-    // 3. With a valid session, insert additional user info into tbl_users.
-    const userId = data.user?.id;
-    if (userId) {
-      const { error: dbError } = await supabase
-        .from("tbl_users")
-        .insert([{ id: userId, full_name: fullName }]);
-
-      if (dbError) {
-        setError("Database Insert Error: " + dbError.message);
-        return;
-      }
-    }
-
-    // 4. Redirect to Dashboard on successful signup.
+    // 3. Redirect to Dashboard on successful signup.
     router.push("/dashboard");
   };
   

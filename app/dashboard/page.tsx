@@ -69,37 +69,42 @@ export default function DashboardPage() {
   // FETCH USER DATA using the authenticated user
   useEffect(() => {
     const fetchUserData = async () => {
-      if (user) {
+      if (user && isAuthenticated) {
         setUserId(user.id);
 
-        // Fetch user's full name and created_at timestamp
-        const { data: userData, error } = await supabase
-          .from('tbl_users')
-          .select('full_name, created_at')
-          .eq('id', user.id)
-          .single();
+        try {
+          const { data: userData, error } = await supabase
+            .from('tbl_users')
+            .select('full_name, created_at')
+            .eq('id', user.id)
+            .single();
 
-        if (!error && userData) {
-          setUserFullName(userData.full_name);
-          
-          // Check if user was created in the last 24 hours
-          const createdAt = new Date(userData.created_at);
-          const now = new Date();
-          const isNew = (now.getTime() - createdAt.getTime()) < 24 * 60 * 60 * 1000;
-          setIsNewUser(isNew);
+          if (!error && userData) {
+            setUserFullName(userData.full_name);
+            
+            // Check if user was created in the last 24 hours
+            const createdAt = new Date(userData.created_at);
+            const now = new Date();
+            const isNew = (now.getTime() - createdAt.getTime()) < 24 * 60 * 60 * 1000;
+            setIsNewUser(isNew);
+          } else if (error) {
+            console.error("Error fetching user data:", error);
+          }
+        } catch (error) {
+          console.error("Exception fetching user data:", error);
         }
       }
     };
 
     fetchUserData();
-  }, [user]);
+  }, [user, isAuthenticated]); 
 
   // Separate useEffect for fetching todos
   useEffect(() => {
-    if (userId) { // Only fetch if userId exists
+    if (userId && isAuthenticated) {
       fetchTodos();
     }
-  }, [userId, fetchTodos]); // Added fetchTodos to dependency array
+  }, [userId, fetchTodos, isAuthenticated]); 
   
   useEffect(() => {
     setQuote(getRandomQuote());
