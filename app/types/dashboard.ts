@@ -24,6 +24,7 @@ export interface HeaderProps {
 export type SidebarProps = {
   userFullName: string | null;
   handleLogout: () => void;
+  activePage?: string;
 }
 
 // TaskGrid Component Types

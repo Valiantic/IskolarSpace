@@ -12,10 +12,10 @@ const LoadingSpinner = () => {
       {/* Loading text */}
       <div className="text-center space-y-2">
         <h3 className="text-xl font-semibold text-white font-poppins">
-          Loading your workspace...
+          Just a moment...
         </h3>
         <p className="text-gray-300 text-sm font-poppins">
-          Preparing your tasks and data
+          We're preparing your data for you
         </p>
       </div>
       
