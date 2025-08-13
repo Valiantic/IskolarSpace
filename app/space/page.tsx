@@ -73,31 +73,31 @@ const SpacePage = () => {
 
       if (notesError) throw notesError
 
-      // Get user full names from tbl_users table (the original user table)
+      // Get user full names and avatar URLs from profiles
       const userIds = [...new Set(notesData.map(note => note.user_id))]
-      
       const { data: usersData, error: usersError } = await supabase
-        .from('tbl_users')
-        .select('id, full_name')
+        .from('profiles')
+        .select('id, full_name, avatar_url')
         .in('id', userIds)
 
       if (usersError) {
-        console.warn('Could not load users from tbl_users:', usersError)
+        console.warn('Could not load users from profiles:', usersError)
       }
 
-      // Merge the data
+      // Merge the data so every note has display_name and avatar_url
       const formattedNotes = notesData.map(note => {
         const userRecord = usersData?.find(u => u.id === note.user_id)
         const displayName = userRecord?.full_name || 'Anonymous'
-        
+        const avatarUrl = userRecord?.avatar_url || null
         return {
           ...note,
-          display_name: displayName
+          display_name: displayName,
+          avatar_url: avatarUrl
         }
       })
 
       setNotes(formattedNotes)
-      
+
       // Find current user's note
       const currentUserNote = formattedNotes.find(note => note.user_id === user?.id)
       setUserNote(currentUserNote || null)

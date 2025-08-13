@@ -146,6 +146,10 @@ const FloatingNoteBubble: React.FC<FloatingNoteBubbleProps> = ({
     return `${timeRemaining.minutesLeft}m`
   }
 
+  // Avatar logic: use note.avatar_url if available, else fallback to initial
+  const avatarUrl = note.avatar_url || null
+  const avatarInitial = note.display_name ? note.display_name.charAt(0).toUpperCase() : note.user_email ? note.user_email.charAt(0).toUpperCase() : 'U'
+
   return (
     <div
       className="fixed z-30 group cursor-pointer"
@@ -160,27 +164,35 @@ const FloatingNoteBubble: React.FC<FloatingNoteBubbleProps> = ({
       <div className="relative">
         {/* Glow effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-cyan-400/30 rounded-full blur-lg scale-100"></div>
-        
+
         {/* Bubble container */}
         <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-700/90 border border-cyan-400/50 rounded-full p-4 backdrop-blur-sm min-w-[200px] max-w-[250px] shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300 group-hover:scale-110">
           {/* User avatar and display name */}
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-              {note.display_name ? note.display_name.charAt(0).toUpperCase() : 
-               note.user_email ? note.user_email.charAt(0).toUpperCase() : 'U'}
-            </div>
-            
+            {/* Avatar */}
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={note.display_name || 'User Avatar'}
+                className="w-8 h-8 rounded-full object-cover border-2 border-cyan-400 flex-shrink-0"
+              />
+            ) : (
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                {avatarInitial}
+              </div>
+            )}
+
             <div className="flex-1 min-w-0">
               {/* Display Name */}
               <div className="text-cyan-300 text-xs font-medium mb-1 truncate">
                 {note.display_name || 'Anonymous'}
               </div>
-              
+
               {/* Note content */}
               <p className="text-white text-sm sm:text-sm lg:text-base xl:text-sm leading-relaxed break-words">
                 {note.content}
               </p>
-              
+
               {/* Time remaining */}
               <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
                 <Clock size={10} />
@@ -199,7 +211,7 @@ const FloatingNoteBubble: React.FC<FloatingNoteBubbleProps> = ({
           {/* Sparkle effects */}
           <div className="absolute -top-1 -left-1 w-2 h-2 bg-cyan-400 rounded-full animate-ping opacity-50"></div>
           <div className="absolute -bottom-1 -right-1 w-1 h-1 bg-purple-400 rounded-full"></div>
-          
+
           {/* Owner indicator */}
           {isOwner && (
             <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-2 border-slate-800 flex items-center justify-center">

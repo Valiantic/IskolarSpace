@@ -39,6 +39,7 @@ export interface SpaceNote {
   user_avatar?: string;
   display_name?: string;
   word?: string;
+  avatar_url?: string;
 }
 
 export interface NotePosition {
