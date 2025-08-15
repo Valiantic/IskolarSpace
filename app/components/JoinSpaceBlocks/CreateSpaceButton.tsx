@@ -2,10 +2,15 @@
 import React from 'react'
 import { Sparkles } from 'lucide-react'
 
-const CreateSpaceButton = () => {
+interface CreateSpaceButtonProps {
+  onClick?: () => void;
+}
+
+const CreateSpaceButton: React.FC<CreateSpaceButtonProps> = ({ onClick }) => {
   return (
      <button 
         className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-500 hover:via-blue-500 hover:to-cyan-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-cyan-500/50 text-sm sm:text-base w-full sm:w-auto max-w-xs sm:max-w-none"
+        onClick={onClick}
       >
         {/* Cosmic glow effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-300 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
