@@ -59,7 +59,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 sm:gap-3">
-              <h2 className="text-xs sm:text-sm md:text-sm lg:text-lg font-bold text-white">Share your thoughts to the Universe!</h2>
+              <h2 className="text-xs sm:text-xs md:text-xs lg:text-sm font-bold text-white">What's floating through your mind, astronaut?</h2>
               <Sparkles size={14} className="text-cyan-400 sm:w-4 sm:h-4" />
             </div>
             <button
@@ -77,7 +77,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="What's floating through your mind, astronaut?"
+              placeholder="I'm thinking of..."
               className="w-full h-24 sm:h-32 bg-slate-800/50 border border-cyan-500/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-white placeholder-gray-400 resize-none focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
               maxLength={maxCharacters}
               disabled={isLoading}
@@ -114,7 +114,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
                   Creating...
                 </div>
               ) : (
-                'Create Note'
+                'Create Thought'
               )}
             </button>
           </div>

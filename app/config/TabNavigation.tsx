@@ -13,7 +13,7 @@ import { Rocket, Orbit, Settings, LogOut } from 'lucide-react';
 
 export const TAB_NAVIGATION: TabNavItem[] = [
   {
-    label: 'Explore Space',
+    label: 'Explore universe',
     href: '/space',
     icon: <Rocket size={25} className="mr-3" />,
     match: (pathname) => pathname.startsWith('/space'),

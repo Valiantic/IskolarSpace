@@ -32,7 +32,7 @@ const AddNoteButton: React.FC<AddNoteButtonProps> = ({
         {/* Button content */}
         <div className="relative z-10 flex items-center justify-center gap-2">
           <span className="font-medium text-center">
-            <span className="hidden sm:inline">Share a thought in Space!</span>
+            <span className="hidden sm:inline">Share a thought to the Universe!</span>
             <span className="sm:hidden">Share in Space!</span>
           </span>
           <Sparkles size={14} className="sm:w-4 sm:h-4 flex-shrink-0" />
