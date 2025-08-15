@@ -19,16 +19,13 @@ import useSidebar from "../hooks/dashboard/useSidebar";
 import { Todo } from "../types/dashboard";
 
 export default function DashboardPage() {
-  const { isAuthenticated, authLoading, user, logout, requireAuth } = useAuth();
-  const { userFullName, setUserFullName } = useSidebar();
+  const { isAuthenticated, authLoading, logout, requireAuth } = useAuth();
+  const { userFullName, profilePicture } = useSidebar();
   
-  const [isNewUser, setIsNewUser] = useState(false);
-  const router = useRouter();
   const [task, setTask] = useState("");
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
+  const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>("low");
   const [showInput, setShowInput] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoadingTodos, setIsLoadingTodos] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,69 +43,32 @@ export default function DashboardPage() {
 
   // FUNCTION TO FETCH TASK FROM SUPABASE - Moved up and wrapped in useCallback  
   const fetchTodos = useCallback(async () => {
-    if (!userId) return; // Guard clause
-
+    // Get user id from localStorage/sessionStorage or useSidebar if needed
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+    if (!userId) return;
     setIsLoadingTodos(true);
-
     const { data, error } = await supabase
       .from("tbl_todos")
       .select("id, title, content, user_id, created_at, priority")
       .order("created_at", { ascending: false })
       .eq('user_id', userId);
-    
     if (error) {
       console.error("Error fetching todos:", error);
     } else {
       setTodos(data || []);
     }
-
     setIsLoadingTodos(false);
-  }, [userId]); // Add userId as dependency
+  }, []);
 
-  // FETCH USER DATA using the authenticated user
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user && isAuthenticated) {
-        setUserId(user.id);
+    fetchTodos();
+  }, [fetchTodos]);
 
-        try {
-          const { data: userData, error } = await supabase
-            .from('tbl_users')
-            .select('full_name, created_at')
-            .eq('id', user.id)
-            .single();
-
-          if (!error && userData) {
-            setUserFullName(userData.full_name);
-            
-            // Check if user was created in the last 24 hours
-            const createdAt = new Date(userData.created_at);
-            const now = new Date();
-            const isNew = (now.getTime() - createdAt.getTime()) < 24 * 60 * 60 * 1000;
-            setIsNewUser(isNew);
-          } else if (error) {
-            console.error("Error fetching user data:", error);
-          }
-        } catch (error) {
-          console.error("Exception fetching user data:", error);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, [user, isAuthenticated]); 
-
-  // Separate useEffect for fetching todos
-  useEffect(() => {
-    if (userId && isAuthenticated) {
-      fetchTodos();
-    }
-  }, [userId, fetchTodos, isAuthenticated]); 
-  
   useEffect(() => {
     setQuote(getRandomQuote());
   }, []);
-  
+
   useEffect(() => {
     requireAuth();
   }, [requireAuth]);
@@ -116,6 +76,8 @@ export default function DashboardPage() {
   // HANLDE ADDING A NEW TASK  
   const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      const {data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id;
       if (!task.trim() || !userId) return;
 
       // INSERT THE NEW TASK ALONG WITH THE USER'S ID, TITLE, AND PRIORITY
@@ -261,7 +223,8 @@ export default function DashboardPage() {
       <div className="min-h-screen relative">
       
       <Sidebar
-        userFullName={userFullName} 
+        userFullName={userFullName}
+        profilePicture={profilePicture}
         handleLogout={logout}
       />
       

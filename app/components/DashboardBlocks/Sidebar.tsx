@@ -13,9 +13,6 @@ import { supabase } from '../../../lib/supabaseClient';
 import { useAuth } from '../../hooks/auth/useAuth';
 
 const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
-  const { user } = useAuth()
-  const [profilePicture, setProfilePicture] = useState<string | null>(null)
-
   const {
     isOpen,
     sidebarRef,
@@ -23,32 +20,12 @@ const Sidebar = ({ userFullName, handleLogout }: SidebarProps) => {
     closeSidebar,
     toggleDropdown,
     handleLogoutAction,
+    profilePicture,
   } = useSidebar();
 
   const pathname = usePathname();
 
-  // Fetch user profile picture
-  useEffect(() => {
-    const fetchProfilePicture = async () => {
-      if (!user) return
-
-      try {
-        const { data: profileData, error } = await supabase
-          .from('profiles')
-          .select('avatar_url')
-          .eq('id', user.id)
-          .single()
-
-        if (!error && profileData?.avatar_url) {
-          setProfilePicture(profileData.avatar_url)
-        }
-      } catch (error) {
-        console.error('Error fetching profile picture:', error)
-      }
-    }
-
-    fetchProfilePicture()
-  }, [user])
+  // Profile picture and userFullName now come from useSidebar
 
   return (
     <>

@@ -4,8 +4,49 @@ const useSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userFullName, setUserFullName] = useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
   const sidebarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  
+  // Fetch user info and profile picture
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      // Try to get user from localStorage/sessionStorage or supabase
+      const { data: { session } } = await import('../../../lib/supabaseClient').then(m => m.supabase.auth.getSession());
+      const user = session?.user;
+      if (!user) {
+        setUserFullName(null);
+        setProfilePicture(null);
+        return;
+      }
+      // Fetch full name from tbl_users
+      const { data: userData, error: userError } = await import('../../../lib/supabaseClient').then(m => m.supabase
+        .from('tbl_users')
+        .select('full_name')
+        .eq('id', user.id)
+        .single());
+      if (!userError && userData) {
+        setUserFullName(userData.full_name);
+      } else {
+        setUserFullName(null);
+      }
+      // Fetch avatar from profiles
+      const { data: profileData, error: profileError } = await import('../../../lib/supabaseClient').then(m => m.supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', user.id)
+        .single());
+      if (!profileError && profileData?.avatar_url) {
+        setProfilePicture(profileData.avatar_url);
+      } else {
+        setProfilePicture(null);
+      }
+    };
+    fetchUserInfo();
+  }, []);
+  
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -56,28 +97,29 @@ const useSidebar = () => {
 
   return {
     // State
-    isOpen,
-    userFullName,
-    dropdownOpen,
-    
-    // Refs
-    sidebarRef,
-    dropdownRef,
-    
-    // Sidebar actions
-    openSidebar,
-    setUserFullName,
-    closeSidebar,
-    toggleSidebar,
-    
-    // Dropdown actions
-    openDropdown,
-    closeDropdown,
-    toggleDropdown,
-    
-    // Combined actions
-    closeAll,
-    handleLogoutAction,
+  isOpen,
+  userFullName,
+  profilePicture,
+  dropdownOpen,
+
+  // Refs
+  sidebarRef,
+  dropdownRef,
+
+  // Sidebar actions
+  openSidebar,
+  setUserFullName,
+  closeSidebar,
+  toggleSidebar,
+
+  // Dropdown actions
+  openDropdown,
+  closeDropdown,
+  toggleDropdown,
+
+  // Combined actions
+  closeAll,
+  handleLogoutAction,
 
   };
 };

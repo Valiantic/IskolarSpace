@@ -23,7 +23,7 @@ export interface HeaderProps {
 // Sidebar Component Types
 export type SidebarProps = {
   userFullName: string | null;
-  setUserFullName?: ((name: string) => void);
+  profilePicture?: string | null;
   handleLogout: () => void;
   activePage?: string;
 }
