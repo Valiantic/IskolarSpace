@@ -4,6 +4,8 @@ import React from 'react'
 import Sidebar from '../components/DashboardBlocks/Sidebar'
 import SpaceBackground from '../components/DashboardBlocks/SpaceBackground'
 import useSidebar from '../hooks/dashboard/useSidebar'
+import JoinSpace from '../components/JoinSpaceBlocks/JoinSpace';
+import CreateSpaceButton from '../components/JoinSpaceBlocks/CreateSpaceButton';
 import { useAuth } from '../hooks/auth/useAuth'
 
 const page = () => {
@@ -11,12 +13,18 @@ const page = () => {
   const { userFullName } = useSidebar();
 
   return (
-    <div>
+    <div className="relative min-h-screen">
+      <SpaceBackground/>
       <Sidebar 
       userFullName={userFullName}
       handleLogout={logout}
       />
-      <SpaceBackground />
+      <div className='flex justify-center align-items-center'>
+        <JoinSpace />
+      </div>
+      <div className='absolute bottom-9 right-10'>
+        <CreateSpaceButton />
+      </div>
     </div>
   )
 }
