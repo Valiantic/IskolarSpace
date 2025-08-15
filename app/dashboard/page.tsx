@@ -15,20 +15,13 @@ import SearchBar from "../components/DashboardBlocks/SearchBar";
 import PriorityFilter from "../components/DashboardBlocks/PriorityFilter";
 import LoadingSpinner from "../components/DashboardBlocks/LoadingSpinner";
 import { useAuth } from "../hooks/auth/useAuth";
-
-interface Todo {
-  id: string;
-  title?: string;
-  content: string;
-  user_id: string;
-  created_at: string;
-  priority: 'low' | 'moderate' | 'high';
-}
+import useSidebar from "../hooks/dashboard/useSidebar";
+import { Todo } from "../types/dashboard";
 
 export default function DashboardPage() {
   const { isAuthenticated, authLoading, user, logout, requireAuth } = useAuth();
+  const { userFullName, setUserFullName } = useSidebar();
   
-  const [userFullName, setUserFullName] = useState<string | null>(null);
   const [isNewUser, setIsNewUser] = useState(false);
   const router = useRouter();
   const [task, setTask] = useState("");

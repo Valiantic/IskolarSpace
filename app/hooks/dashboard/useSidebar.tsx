@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 const useSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userFullName, setUserFullName] = useState<string | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +57,7 @@ const useSidebar = () => {
   return {
     // State
     isOpen,
+    userFullName,
     dropdownOpen,
     
     // Refs
@@ -64,6 +66,7 @@ const useSidebar = () => {
     
     // Sidebar actions
     openSidebar,
+    setUserFullName,
     closeSidebar,
     toggleSidebar,
     
@@ -75,6 +78,7 @@ const useSidebar = () => {
     // Combined actions
     closeAll,
     handleLogoutAction,
+
   };
 };
 

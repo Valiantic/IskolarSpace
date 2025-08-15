@@ -9,13 +9,13 @@ export interface TabNavItem {
   match: (pathname: string) => boolean;
 }
 
-import { Rocket, Orbit, Settings, LogOut } from 'lucide-react';
+import { Rocket, Orbit, Telescope, Settings, LogOut } from 'lucide-react';
 
 export const TAB_NAVIGATION: TabNavItem[] = [
   {
     label: 'Explore universe',
     href: '/space',
-    icon: <Rocket size={25} className="mr-3" />,
+    icon: <Telescope size={25} className="mr-3" />,
     match: (pathname) => pathname.startsWith('/space'),
   },
   {
@@ -23,6 +23,12 @@ export const TAB_NAVIGATION: TabNavItem[] = [
     href: '/dashboard',
     icon: <Orbit size={25} className="mr-3" />,
     match: (pathname) => pathname.startsWith('/dashboard'),
+  },
+  {
+    label: 'Join Space',
+    href: '/join-space',
+    icon: <Rocket size={25} className="mr-3" />,
+    match: (pathname) => pathname.startsWith('/join-space'),
   },
   {
     label: 'Settings',
