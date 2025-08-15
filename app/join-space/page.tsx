@@ -8,7 +8,7 @@ import JoinSpace from '../components/JoinSpaceBlocks/JoinSpace';
 import CreateSpaceButton from '../components/JoinSpaceBlocks/CreateSpaceButton';
 import { useAuth } from '../hooks/auth/useAuth'
 
-const page = () => {
+const Page = () => {
   const { logout } = useAuth();
   const { userFullName } = useSidebar();
 
@@ -29,4 +29,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
