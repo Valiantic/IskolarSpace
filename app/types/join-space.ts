@@ -34,8 +34,3 @@ export interface UseCreateSpaceReturn {
     userId: number;
  }
 
- export type SpacePageProps = {
-  params: {
-    space_id: string;
-  };
-};
