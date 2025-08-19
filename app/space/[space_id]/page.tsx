@@ -2,9 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import useClipboard from '../../hooks/utils/useClipboard';
 import TaskGrid from '../../components/DashboardBlocks/TaskGrid';
-import { Plus } from 'lucide-react';
+import { Plus, Info } from 'lucide-react';
 import AddTaskModal from '../../components/DashboardBlocks/AddTaskModal';
 import Sidebar from '../../components/DashboardBlocks/Sidebar';
 import SpaceBackground from '../../components/DashboardBlocks/SpaceBackground';
@@ -207,6 +206,11 @@ const SpacePage = () => {
                         <PriorityFilter
                           onFilterChange={(filters) => setPriorityFilters(filters as ('low' | 'moderate' | 'high')[])}
                         />
+                      </div> 
+                      <div className="lg:ml-4">
+                        <button className='sm:h-10 sm:w-10 md:h-12 md:w-12 flex justify-center items-center'>
+                           <Info className='text-white'/>
+                        </button>
                       </div>
                     </div>
                   </div>
