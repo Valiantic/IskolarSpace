@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { X, Trash2, Sparkles } from 'lucide-react'
-import { EditNoteModalProps } from '../../types/'
+import { EditNoteModalProps } from '../../types/universe'
 
 const EditNoteModal: React.FC<EditNoteModalProps> = ({
   isOpen,

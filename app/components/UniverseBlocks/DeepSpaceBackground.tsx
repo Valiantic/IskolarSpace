@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import { Star, ShootingStar } from '../../types/';
+import { Star, ShootingStar } from '../../types/universe'
 
 const DeepSpaceBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
