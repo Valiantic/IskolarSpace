@@ -34,3 +34,17 @@ export interface UseCreateSpaceReturn {
     userId: number;
  }
 
+export interface  Member {
+  user_id: string;
+  tbl_users?: Array<{ full_name?: string }> | { full_name?: string };
+}
+
+export interface SpaceInfoModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  members: Member[];
+  spaceCode: string;
+  isLoading: boolean;
+  error?: string | null;
+}
+

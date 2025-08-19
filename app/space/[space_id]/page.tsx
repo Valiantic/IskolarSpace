@@ -17,6 +17,7 @@ import DeleteConfirmationModal from '../../components/DashboardBlocks/DeleteConf
 import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
+import SpaceInfoModal from '../../components/DashboardBlocks/SpaceInfoModal';
 
 const SpacePage = () => {
   // Use useParams from next/navigation
@@ -33,6 +34,11 @@ const SpacePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
   const [spaceCode, setSpaceCode] = useState('');
+
+  // Space Info Modal state
+  const [showSpaceInfoModal, setShowSpaceInfoModal] = useState(false);
+  const openSpaceInfoModal = () => setShowSpaceInfoModal(true);
+  const closeSpaceInfoModal = () => setShowSpaceInfoModal(false);
 
   // Task Grid
   const [tasks, setTasks] = useState<any[]>([]);
@@ -107,12 +113,12 @@ const SpacePage = () => {
       }
       setIsLoadingMembers(true);
       try {
-        const { space, members } = await getSpaceMembers(spaceId);
-        setMembers(members);
-    const userSpaces = await getUserSpaces(user.id);
-    const currentSpace = userSpaces.find((s: any) => s.space_id === spaceId);
-    setSpaceName(currentSpace?.tbl_spaces?.name || space?.name || 'Space');
-    setSpaceCode(currentSpace?.tbl_spaces?.code || '');
+        const membersArray = await getSpaceMembers(spaceId);
+        setMembers(membersArray);
+        const userSpaces = await getUserSpaces(user.id);
+        const currentSpace = userSpaces.find((s: any) => s.space_id === spaceId);
+        setSpaceName(currentSpace?.tbl_spaces?.name || 'Space');
+        setSpaceCode(currentSpace?.tbl_spaces?.code || '');
         setMembersError(null);
       } catch (err: any) {
         setSpaceName('Space');
@@ -208,8 +214,12 @@ const SpacePage = () => {
                         />
                       </div> 
                       <div className="lg:ml-4">
-                        <button className='sm:h-10 sm:w-10 md:h-12 md:w-12 flex justify-center items-center'>
-                           <Info className='text-white'/>
+                        <button
+                          className='sm:h-10 sm:w-10 md:h-12 md:w-12 flex justify-center items-center'
+                          onClick={openSpaceInfoModal}
+                          aria-label="Show space info"
+                        >
+                          <Info className='text-white'/>
                         </button>
                       </div>
                     </div>
@@ -335,6 +345,15 @@ const SpacePage = () => {
                 showDeleteModal={showDeleteModal}
                 handleDelete={handleDelete}
                 setShowDeleteModal={setShowDeleteModal}
+              />
+              {/* Space Info Modal */}
+              <SpaceInfoModal
+                isOpen={showSpaceInfoModal}
+                onClose={closeSpaceInfoModal}
+                members={members}
+                spaceCode={spaceCode}
+                isLoading={isLoadingMembers}
+                error={membersError}
               />
             </>
           )}
