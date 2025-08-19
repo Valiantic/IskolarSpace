@@ -33,3 +33,9 @@ export interface UseCreateSpaceReturn {
     onGenerateCode: () => void;
     userId: number;
  }
+
+ export type SpacePageProps = {
+  params: {
+    space_id: string;
+  };
+};

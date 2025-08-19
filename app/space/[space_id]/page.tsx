@@ -17,8 +17,9 @@ import DeleteConfirmationModal from '../../components/DashboardBlocks/DeleteConf
 import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
+import { SpacePageProps } from '../../types/join-space';
 
-const SpacePage = ({ params }: { params: { space_id: string } }) => {
+const SpacePage = ({ params }: SpacePageProps) => {
 
   // Use params directly
   const spaceId = params.space_id;
