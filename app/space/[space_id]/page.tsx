@@ -17,7 +17,7 @@ import DeleteConfirmationModal from '../../components/DashboardBlocks/DeleteConf
 import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
-import SpaceInfoModal from '../../components/DashboardBlocks/SpaceInfoModal';
+import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
 
 const SpacePage = () => {
   // Use useParams from next/navigation
@@ -227,7 +227,7 @@ const SpacePage = () => {
                 </div>
                 {/* Space Name below search/filter */}
                 <h1 className="text-3xl text-white font-bold mt-5 text-center font-poppins">
-                  {isLoadingMembers ? 'Loading...' : `${spaceName} Space`}
+                  {isLoadingMembers ? 'Loading...' : `${spaceName}`}
                 </h1>
                 {(searchTerm.trim() || priorityFilters.length > 0) && (
                   <div className="text-center space-y-2">

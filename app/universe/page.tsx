@@ -2,15 +2,15 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { toast } from 'react-hot-toast'
-import DeepSpaceBackground from '../components/SpaceBlocks/DeepSpaceBackground'
-import CosmicArrowButton from '../components/SpaceBlocks/CosmicArrowButton'
-import AddNoteButton from '../components/SpaceBlocks/AddNoteButton'
-import AddNoteModal from '../components/SpaceBlocks/AddNoteModal'
-import EditNoteModal from '../components/SpaceBlocks/EditNoteModal'
-import FloatingNoteBubble from '../components/SpaceBlocks/FloatingNoteBubble'
+import DeepSpaceBackground from '../components/UniverseBlocks/DeepSpaceBackground'
+import CosmicArrowButton from '../components/UniverseBlocks/CosmicArrowButton'
+import AddNoteButton from '../components/UniverseBlocks/AddNoteButton'
+import AddNoteModal from '../components/UniverseBlocks/AddNoteModal'
+import EditNoteModal from '../components/UniverseBlocks/EditNoteModal'
+import FloatingNoteBubble from '../components/UniverseBlocks/FloatingNoteBubble'
 import { useAuth } from '../hooks/auth/useAuth'
 import { supabase } from '../../lib/supabaseClient'
-import { SpaceNote } from '../types/space'
+import { SpaceNote } from '../types/universe'
 
 const SpacePage = () => {
   const { user, authLoading, requireAuth } = useAuth()
