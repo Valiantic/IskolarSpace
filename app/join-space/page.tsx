@@ -24,8 +24,10 @@ const Page = () => {
     onCreateSpace,
   } = useCreateSpaceModal();
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { userFullName } = useSidebar();
+
+  const userId = user?.id;
 
   return (
     <div className="relative min-h-screen">
@@ -54,6 +56,7 @@ const Page = () => {
         onSpaceNameChange={handleSpaceNameChange}
         onSpaceCodeChange={handleSpaceCodeChange}
         onGenerateCode={handleGenerateCode}
+        userId={userId}
       />
     </div>
   )

@@ -1,21 +1,31 @@
-// components/CreateSpaceModal.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
+import useCreateSpaceModal from '../../hooks/join-space/useCreateSpaceModal';
 import { CreateSpaceModalProps } from '../../types/join-space';
+import { createSpace } from '../../services/iskolarspace-api';
 import IskolarSpaceLogo from '../../../public/images/iskolarspace_logo.png';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const CreateSpaceModal: React.FC<CreateSpaceModalProps> = ({
   isOpen,
   onClose,
-  onCreateSpace,
   spaceName,
   spaceCode,
   isGenerating,
   onSpaceNameChange,
   onSpaceCodeChange,
-  onGenerateCode
+  onGenerateCode,
+  userId,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const {
+    loading,
+    error,
+    setLoading,
+    setError 
+  } = useCreateSpaceModal();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (isOpen) {
@@ -26,9 +36,22 @@ const CreateSpaceModal: React.FC<CreateSpaceModalProps> = ({
     }
   }, [isOpen]);
 
-  const handleCreateSpace = () => {
-    if (spaceName.trim() && spaceCode.trim()) {
-      onCreateSpace({ name: spaceName, code: spaceCode });
+  const handleCreateSpace = async () => {
+    if (!spaceName.trim() || !spaceCode.trim() || !userId) return;
+
+    setLoading(true);
+    setError('');
+    try {
+      const apiResult = await createSpace(spaceName, spaceCode, userId);
+      setLoading(false);
+      onClose();
+      if(apiResult && apiResult.space && apiResult.space.id){
+        router.push(`/space/${apiResult.space.id}`);
+      }
+    } catch (error) {
+      setLoading(false);
+      setError('Failed to create space');
+      console.error('Error creating space:', error);
     }
   };
 
@@ -162,8 +185,9 @@ const CreateSpaceModal: React.FC<CreateSpaceModalProps> = ({
               disabled={!spaceName.trim() || !spaceCode.trim()}
               className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 text-sm sm:text-base"
             >
-              Create Space
+              {loading ? 'Creating...': 'Create Space'}
             </button>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
         </div>
       </div>
