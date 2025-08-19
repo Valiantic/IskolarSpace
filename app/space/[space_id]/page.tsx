@@ -20,10 +20,8 @@ import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 
 const SpacePage = ({ params }: { params: { space_id: string } }) => {
 
-  // Unwrap params for future Next.js compatibility
-  // @ts-expect-error: React.use is experimental for route params in Next.js
-  const resolvedParams = React.use(params) as { space_id: string };
-  const spaceId = resolvedParams.space_id; // Use string UUID
+  // Use params directly
+  const spaceId = params.space_id;
 
   const { user, logout } = useAuth();
   const userId = user?.id;
