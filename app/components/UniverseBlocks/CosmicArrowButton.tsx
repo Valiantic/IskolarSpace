@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowDown } from 'lucide-react'
-import { CosmicArrowButtonProps } from '../../types/space'
+import { CosmicArrowButtonProps } from '../../types/'
 
 const CosmicArrowButton: React.FC<CosmicArrowButtonProps> = ({
   href,
