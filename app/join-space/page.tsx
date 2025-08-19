@@ -37,7 +37,7 @@ const Page = () => {
       handleLogout={logout}
       />
       <div className='flex justify-center align-items-center'>
-        <JoinSpace />
+        <JoinSpace userId={userId} />
       </div>
       <div className='absolute bottom-9 right-10'>
         <CreateSpaceButton 

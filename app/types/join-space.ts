@@ -48,3 +48,6 @@ export interface SpaceInfoModalProps {
   error?: string | null;
 }
 
+export interface JoinSpaceProps {
+  userId: number;
+}
