@@ -4,9 +4,9 @@ import { X, Orbit } from 'lucide-react'
 import { Member, SpaceInfoModalProps} from '../../types/join-space'
 
 const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, members, spaceCode, isLoading, error }) => {
+  const { copyToClipboard, copied } = useClipboard();
   if (!isOpen) return null;
   const safeMembers = Array.isArray(members) ? members : [];
-  const { copyToClipboard, copied } = useClipboard();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
       <div className="bg-slate-800 rounded-xl shadow-xl p-4 w-full max-w-md relative">
