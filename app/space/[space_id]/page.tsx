@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import  useClipboard from '../../hooks/utils/useClipboard';
+import { useParams } from 'next/navigation';
+import useClipboard from '../../hooks/utils/useClipboard';
 import TaskGrid from '../../components/DashboardBlocks/TaskGrid';
 import { Plus } from 'lucide-react';
 import AddTaskModal from '../../components/DashboardBlocks/AddTaskModal';
@@ -18,16 +19,10 @@ import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 
-type SpacePageProps = {
-  params: {
-    space_id: string;
-  };
-};
-
-const SpacePage = ({ params }: SpacePageProps) => {
-
-  // Use params directly
-  const spaceId = params.space_id;
+const SpacePage = () => {
+  // Use useParams from next/navigation
+  const params = useParams();
+  const spaceId = (params as { space_id: string }).space_id;
 
   const { user, logout } = useAuth();
   const userId = user?.id;
