@@ -15,6 +15,10 @@ export interface UseCreateSpaceReturn {
    handleSpaceCodeChange: (code: string) => void;
    handleGenerateCode: () => void;
    onCreateSpace: () => void;
+   loading: boolean;
+   error: string | null;
+   setLoading: (loading: boolean) => void;
+   setError: (error: string) => void;
 }
 
  export interface CreateSpaceModalProps {
@@ -27,4 +31,6 @@ export interface UseCreateSpaceReturn {
     onSpaceNameChange: (name: string) => void;
     onSpaceCodeChange: (code: string) => void;
     onGenerateCode: () => void;
+    userId: number;
  }
+

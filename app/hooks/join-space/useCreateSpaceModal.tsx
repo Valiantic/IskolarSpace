@@ -6,6 +6,8 @@ const useCreateSpaceModal = (onSpaceCreated?: (data: SpaceData) => void): UseCre
   const [spaceCode, setSpaceCode] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const generateRandomCode = useCallback((): string => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -68,6 +70,10 @@ const useCreateSpaceModal = (onSpaceCreated?: (data: SpaceData) => void): UseCre
     handleSpaceCodeChange,
     handleGenerateCode: generateCode,
     onCreateSpace: createSpace,
+    loading,
+    error,
+    setLoading,
+    setError,
   };
 };
 

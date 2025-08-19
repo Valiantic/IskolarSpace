@@ -14,9 +14,9 @@ import { Rocket, Orbit, Telescope, Settings, LogOut } from 'lucide-react';
 export const TAB_NAVIGATION: TabNavItem[] = [
   {
     label: 'Explore universe',
-    href: '/space',
+    href: '/universe',
     icon: <Telescope size={25} className="mr-3" />,
-    match: (pathname) => pathname.startsWith('/space'),
+    match: (pathname) => pathname.startsWith('/universe'),
   },
   {
     label: 'My Space',

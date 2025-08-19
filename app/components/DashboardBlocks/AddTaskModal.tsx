@@ -17,6 +17,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 }) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [showEmptyError, setShowEmptyError] = useState(false);
 
   if (!showInput) return null;
 
@@ -36,6 +37,11 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!task.trim()) {
+      setShowEmptyError(true);
+      return;
+    }
+    setShowEmptyError(false);
     handleAddTask(e);
   };
 
@@ -83,11 +89,14 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <textarea
               className={`w-full p-3 sm:p-4 rounded-lg mb-3 sm:mb-4 resize-none text-white bg-transparent focus:outline-none border-0 text-sm sm:text-base md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
                 isScrolling ? 'h-[200px] sm:h-[300px]' : 'h-32 sm:h-48 md:h-60'
-              }`}
+              } ${showEmptyError ? 'border-2 border-red-400' : ''}`}
               value={task}
-              onChange={(e) => setTask(e.target.value)}
+              onChange={(e) => {
+                setTask(e.target.value);
+                if (showEmptyError && e.target.value.trim()) setShowEmptyError(false);
+              }}
               onScroll={handleTextareaScroll}
-              placeholder="Enter your task details..."
+              placeholder={showEmptyError ? 'Please enter your task details before adding.' : 'Enter your task details...'}
               autoFocus
             />
             

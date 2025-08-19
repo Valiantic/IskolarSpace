@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import QueryProvider from "./providers/QueryProvider";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
 import "./globals.css";
@@ -38,7 +39,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}`}>
-        {children}
+        <QueryProvider>{children}
         <Toaster
           position="top-right"
           toastOptions={{
@@ -63,6 +64,7 @@ export default function RootLayout({
             },
           }}
         />
+        </QueryProvider>
       </body>
     </html>
   );
