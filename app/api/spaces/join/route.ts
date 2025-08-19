@@ -38,5 +38,5 @@ if (!code || !userId) {
     return new Response(JSON.stringify({ error: joinError.message }), { status: 500 });
   }
 
-  return new Response(JSON.stringify({ success: true }), { status: 200 });
+  return new Response(JSON.stringify({ success: true, spaceId: space.id }), { status: 200 });
 }
