@@ -8,6 +8,8 @@ export interface Todo {
   user_id: string;
   created_at: string;
   priority: 'low' | 'moderate' | 'high';
+  assigned_to?: string;
+  assigned_member?: string;
 }
 
 // Priority type for consistent typing
@@ -145,3 +147,9 @@ export type TaskFormEvent = React.FormEvent<HTMLFormElement>;
 export type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;
 export type TextareaChangeEvent = React.ChangeEvent<HTMLTextAreaElement>;
 export type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>;
+
+// Extend TaskGridProps to include showAssignedMember
+export type ExtendedTaskGridProps = TaskGridProps & {
+  todos: Todo[];
+  showAssignedMember?: boolean;
+};

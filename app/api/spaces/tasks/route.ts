@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sendAssignmentEmail } from "../../../../lib/emailSender/template";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,6 +44,35 @@ export async function POST(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+    if (assigned_to) {
+    try {
+      const { data: userProfile } = await supabase
+        .from('profiles')
+        .select('email, full_name')
+        .eq('id', assigned_to)
+        .single();
+      let assignerName = 'Unknown';
+      if (created_by) {
+        const { data: assignerProfile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', created_by)
+          .single();
+        if (assignerProfile?.full_name) {
+          assignerName = assignerProfile.full_name;
+        }
+      }
+      if (userProfile?.email && process.env.GMAIL_USER && process.env.GMAIL_PASS) {
+        await sendAssignmentEmail(userProfile.email, userProfile.full_name, title, assignerName, status, spaceId);
+      } else {
+        console.error('GMAIL_USER or GMAIL_PASS not set, email not sent.', error);
+      }
+    } catch (emailErr) {
+      console.error('Email send error:', emailErr);
+    }
+  }
+
   return NextResponse.json({ task: data }, { status: 200 });
 }
 

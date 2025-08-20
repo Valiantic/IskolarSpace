@@ -18,6 +18,7 @@ import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
+import toast from 'react-hot-toast';
 
 const SpacePage = () => {
   // Use useParams from next/navigation
@@ -48,8 +49,9 @@ const SpacePage = () => {
   const [task, setTask] = useState('');
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
+  const [assignedTo, setAssignedTo] = useState<string | null>(null);
   
-  // Delet Confirmation Modal
+  // Delete Confirmation Modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
@@ -80,23 +82,32 @@ const SpacePage = () => {
   }, [spaceId]);
 
   // Add task
-  const handleAddTask = async (e?: React.FormEvent) => {
+  const handleAddTask = async (e?: React.FormEvent<any>, assignedToArg?: string | null) => {
     if (e) e.preventDefault();
     if (!task.trim() || !user?.id || !spaceId) return;
     try {
-      await createTask(spaceId, {
+      const result = await createTask(spaceId, {
         title: title.trim() || null,
         description: task,
         status: priority,
         created_by: user.id,
+        assigned_to: assignedToArg,
       });
+      toast.success('Task created successfully!');
       setTask('');
       setTitle('');
       setPriority('low');
       setShowInput(false);
+      setAssignedTo(null);
       fetchTasks();
-    } catch (err) {
-      console.error('Error creating task:', err);
+    } catch (err: any) {
+      if (err?.response) {
+        toast.error(`Error creating task: ${err.response.data.error || 'Unknown error'}`);
+        console.error('Error creating task:', err.response.data, 'Status:', err.response.status);
+      } else {
+        toast.error('Error creating task: ' + (err.message || 'Unknown error'));
+        console.error('Error creating task:', err);
+      }
     }
   };
 
@@ -114,7 +125,14 @@ const SpacePage = () => {
       setIsLoadingMembers(true);
       try {
         const membersArray = await getSpaceMembers(spaceId);
-        setMembers(membersArray);
+        // Ensure each member has tbl_users.id set to user_id if missing
+        const mappedMembers = membersArray.map((m: { user_id: string; tbl_users: { id?: string; full_name: string } }) => ({
+          tbl_users: {
+            id: m.tbl_users.id || m.user_id,
+            full_name: m.tbl_users.full_name
+          }
+        }));
+        setMembers(mappedMembers);
         const userSpaces = await getUserSpaces(user.id);
         const currentSpace = userSpaces.find((s: any) => s.space_id === spaceId);
         setSpaceName(currentSpace?.tbl_spaces?.name || 'Space');
@@ -289,6 +307,9 @@ const SpacePage = () => {
                 setPriority={setPriority}
                 handleAddTask={handleAddTask}
                 setShowInput={setShowInput}
+                assignedTo={assignedTo}
+                setAssignedTo={setAssignedTo}
+                members={members}
               />
               <TaskGrid
                 todos={tasks
@@ -300,6 +321,8 @@ const SpacePage = () => {
                     ...task,
                     priority: (task.priority || task.status || 'low'),
                     content: task.content || task.description || '',
+                    assigned_to: task.assigned_to,
+                    assigned_member: members.find(m => m.tbl_users.id === task.assigned_to)?.tbl_users.full_name || 'Unassigned',
                   }))
                 }
                 fetchTodos={fetchTasks}
@@ -322,6 +345,7 @@ const SpacePage = () => {
                 searchTerm={searchTerm}
                 priorityFilters={priorityFilters}
                 totalTasks={tasks.length}
+                showAssignedMember={true}
               />
               {showEditModal && (
                 <EditTaskModal
