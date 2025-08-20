@@ -51,3 +51,17 @@ export interface SpaceInfoModalProps {
 export interface JoinSpaceProps {
   userId: number;
 }
+export interface AddTaskModalProps {
+  showInput: boolean;
+  title: string;
+  task: string;
+  priority: 'low' | 'moderate' | 'high';
+  setTitle: (title: string) => void;
+  setTask: (task: string) => void;
+  setPriority: (priority: 'low' | 'moderate' | 'high') => void;
+  handleAddTask: (e?: React.FormEvent<any>, assignedToArg?: string | null) => void;
+  setShowInput: (show: boolean) => void;
+  members?: Member[];
+  assignedTo?: string | null;
+  setAssignedTo?: (id: string | null) => void;
+}

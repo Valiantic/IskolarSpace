@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   // Get members of the space
   const { data, error } = await supabase
     .from('tbl_space_members')
-    .select('user_id, tbl_users(full_name)')
+    .select('user_id, tbl_users(id, full_name)')
     .eq('space_id', spaceId);
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });

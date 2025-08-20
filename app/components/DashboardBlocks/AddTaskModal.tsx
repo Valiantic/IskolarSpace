@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { Rocket, Clock, AlertCircle, Zap, X } from 'lucide-react';
-import { AddTaskModalProps, Priority } from '../../types/dashboard';
+import { Priority } from '../../types/dashboard';
+import { Member, AddTaskModalProps } from '../../types/join-space';
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({
   showInput,
@@ -14,10 +15,16 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   setPriority,
   handleAddTask,
   setShowInput,
+  members,
+  assignedTo,
+  setAssignedTo,
 }) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showEmptyError, setShowEmptyError] = useState(false);
+  const [localAssignedTo, setLocalAssignedTo] = useState<string | null>(null);
+  const effectiveAssignedTo = typeof assignedTo !== 'undefined' ? assignedTo : localAssignedTo;
+  const effectiveSetAssignedTo = typeof setAssignedTo !== 'undefined' ? setAssignedTo : setLocalAssignedTo;
 
   if (!showInput) return null;
 
@@ -42,7 +49,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       return;
     }
     setShowEmptyError(false);
-    handleAddTask(e);
+  handleAddTask(e, effectiveAssignedTo ?? null);
   };
 
   const getPriorityIcon = (priorityLevel: Priority) => {
@@ -84,7 +91,28 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 placeholder="Task title (optional)..."
               />
             </div>
-            
+
+            {/* Only show assign dropdown if members prop is provided (space page) */}
+            {typeof members !== 'undefined' && Array.isArray(members) && members.length > 0 && (
+              <select
+                value={effectiveAssignedTo ?? ""}
+                onChange={e => effectiveSetAssignedTo(e.target.value)}
+                className="w-full p-2 rounded-lg bg-gray-800 text-white mb-3 p-2 px-2 font-poppins"
+              >
+                <option value="">Assign to...</option>
+                {members.map((member: Member) => {
+                  // Safely cast tbl_users to expected shape
+                  const user = Array.isArray(member.tbl_users)
+                    ? member.tbl_users[0] as { id?: string; full_name?: string }
+                    : member.tbl_users as { id?: string; full_name?: string };
+                  return user && typeof user.id === 'string' ? (
+                    <option key={user.id} value={user.id}>
+                      {user.full_name ?? 'Unnamed Member'}
+                    </option>
+                  ) : null;
+                })}
+              </select>
+            )}
             {/* Content Textarea */}
             <textarea
               className={`w-full p-3 sm:p-4 rounded-lg mb-3 sm:mb-4 resize-none text-white bg-transparent focus:outline-none border-0 text-sm sm:text-base md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
@@ -99,7 +127,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               placeholder={showEmptyError ? 'Please enter your task details before adding.' : 'Enter your task details...'}
               autoFocus
             />
-            
             {/* Priority Selection - Hidden during scroll */}
             <div className={`transition-all duration-300 mb-3 sm:mb-4 ${isScrolling ? 'opacity-0 -translate-y-2' : 'opacity-100 translate-y-0'}`}>
               <label className="block text-sm sm:text-base font-semibold text-white/90 mb-2 sm:mb-3 font-poppins">Priority Level</label>
@@ -145,7 +172,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 </button>
               </div>
             </div>
-            
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
               <button
