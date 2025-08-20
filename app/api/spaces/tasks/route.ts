@@ -79,17 +79,52 @@ export async function POST(request: NextRequest) {
 // PUT: Edit a task
 export async function PUT(request: NextRequest) {
   const body = await request.json();
-  const { id, ...updates } = body;
+  const { id, title, description, status, assigned_to, created_by } = body;
   if (!id) {
     return NextResponse.json({ error: "Missing task id" }, { status: 400 });
   }
+  const updateFields: any = {};
+  if (title !== undefined) updateFields.title = title;
+  if (description !== undefined) updateFields.description = description;
+  if (status !== undefined) updateFields.status = status;
+  if (assigned_to !== undefined) updateFields.assigned_to = assigned_to;
   const { data, error } = await supabase
     .from("tbl_tasks")
-    .update(updates)
+    .update(updateFields)
     .eq("id", id);
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Send assignment email if assigned_to is present
+  if (assigned_to) {
+    try {
+      const { data: userProfile } = await supabase
+        .from('profiles')
+        .select('email, full_name')
+        .eq('id', assigned_to)
+        .single();
+      let assignerName = 'Unknown';
+      if (created_by) {
+        const { data: assignerProfile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', created_by)
+          .single();
+        if (assignerProfile?.full_name) {
+          assignerName = assignerProfile.full_name;
+        }
+      }
+      if (userProfile?.email && process.env.GMAIL_USER && process.env.GMAIL_PASS) {
+        await sendAssignmentEmail(userProfile.email, userProfile.full_name, title ?? '', assignerName, status ?? '', id);
+      } else {
+        console.error('GMAIL_USER or GMAIL_PASS not set, email not sent.', error);
+      }
+    } catch (emailErr) {
+      console.error('Email send error:', emailErr);
+    }
+  }
+
   return NextResponse.json({ task: data }, { status: 200 });
 }
 

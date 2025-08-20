@@ -178,7 +178,10 @@ const SpacePage = () => {
         title: editedTitle.trim() || null,
         description: editedContent,
         status: editedPriority,
+        assigned_to: assignedTo,
+        created_by: user?.id,
       });
+      toast.success('Task updated successfully!');
       cancelEditing();
       fetchTasks();
     } catch (err) {
@@ -362,6 +365,9 @@ const SpacePage = () => {
                   setShowDeleteModal={setShowDeleteModal}
                   setTodoToDelete={setTodoToDelete}
                   cancelEditing={cancelEditing}
+                  assignedTo={assignedTo}
+                  setAssignedTo={setAssignedTo}
+                  members={members}
                 />
               )}
               {/* Delete Confirmation Modal */}
