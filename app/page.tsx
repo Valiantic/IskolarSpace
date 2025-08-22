@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
+import { useMiniKit } from '@coinbase/onchainkit/minikit';
 import { SparklesCore } from "./components/DashboardBlocks/ui/sparkles";
 import Link from "next/link";
 import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
@@ -15,7 +16,12 @@ import ScrollToTop from "./components/LandingBlocks/ScrollToTop";
 
 function PageContent() {
   const { backgroundColor } = useBackground();
-  
+  const { setFrameReady, isFrameReady } = useMiniKit();
+
+  useEffect(() => {
+    if (!isFrameReady) setFrameReady();
+  }, [isFrameReady, setFrameReady]);
+
   useEffect(() => {
     async function initAOS() {
       const AOS = (await import('aos')).default;

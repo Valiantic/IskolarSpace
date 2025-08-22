@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MiniKitContextProvider } from './providers/MiniKitProvider';
 import QueryProvider from "./providers/QueryProvider";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
@@ -56,32 +57,34 @@ export default function RootLayout({
         <meta name="twitter:image" content="https://iskolarspace.com/images/iskolarspace_logo.png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}`}>
-        <QueryProvider>{children}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: 'rgba(15, 23, 42, 0.95)',
-              color: '#fff',
-              border: '1px solid rgba(34, 211, 238, 0.3)',
-              backdropFilter: 'blur(10px)',
-            },
-            success: {
-              iconTheme: {
-                primary: '#22d3ee',
-                secondary: '#0f172a',
-              },
-            },
-            error: {
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#0f172a',
-              },
-            },
-          }}
-        />
-        </QueryProvider>
+        <MiniKitContextProvider>
+          <QueryProvider>{children}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: 'rgba(15, 23, 42, 0.95)',
+                  color: '#fff',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  backdropFilter: 'blur(10px)',
+                },
+                success: {
+                  iconTheme: {
+                    primary: '#22d3ee',
+                    secondary: '#0f172a',
+                  },
+                },
+                error: {
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#0f172a',
+                  },
+                },
+              }}
+            />
+          </QueryProvider>
+        </MiniKitContextProvider>
       </body>
     </html>
   );

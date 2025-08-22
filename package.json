@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.38.19",
     "@supabase/supabase-js": "^2.48.1",
     "@tanstack/react-query": "^5.85.3",
     "@tsparticles/engine": "^3.8.1",
@@ -30,7 +31,8 @@
     "react-icons": "^5.4.0",
     "resend": "^6.0.1",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "viem": "^2.34.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
