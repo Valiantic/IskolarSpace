@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from '@supabase/supabase-js';
+import { sendWelcomeEmail } from "../../../../lib/emailSender/welcomeMember";
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
@@ -38,5 +39,31 @@ if (!code || !userId) {
     return new Response(JSON.stringify({ error: joinError.message }), { status: 500 });
   }
 
-  return new Response(JSON.stringify({ success: true, spaceId: space.id }), { status: 200 });
+    // Fetch user email and space name for the welcome email
+    const { data: userData, error: userError } = await supabase
+      .from('profiles')
+      .select('email, full_name')
+      .eq('id', userId)
+      .single();
+    const { data: spaceData, error: spaceNameError } = await supabase
+      .from('tbl_spaces')
+      .select('name')
+      .eq('id', space.id)
+      .single();
+
+    if (!userError && !spaceNameError && userData?.email && spaceData?.name) {
+      try {
+        await sendWelcomeEmail(
+          userData.email,
+          userData.full_name,
+          spaceData.name,
+          space.id,
+          '' // invitedBy, can be set to the admin's name if available
+        );
+      } catch (e) {
+        console.error('Failed to send welcome email:', e);
+      }
+    }
+
+    return new Response(JSON.stringify({ success: true, spaceId: space.id }), { status: 200 });
 }
