@@ -33,7 +33,7 @@ if (!code || !userId) {
   // Add member
   const { error: joinError } = await supabase
     .from('tbl_space_members')
-    .insert([{ user_id: userId, space_id: space.id }]);
+    .insert([{ user_id: userId, space_id: space.id, role: 'member' }]);
   if (joinError) {
     return new Response(JSON.stringify({ error: joinError.message }), { status: 500 });
   }

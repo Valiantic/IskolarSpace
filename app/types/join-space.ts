@@ -37,6 +37,7 @@ export interface UseCreateSpaceReturn {
 export interface  Member {
   user_id: string;
   tbl_users?: Array<{ full_name?: string }> | { full_name?: string };
+  role: 'admin' | 'member';
 }
 
 export interface SpaceInfoModalProps {
