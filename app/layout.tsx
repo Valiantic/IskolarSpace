@@ -23,7 +23,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "IskolarSpace",
-  description: "Plan. Prioritize. Conquer.",
+  description: "Plan. Prioritize. Collaborate.",
 };
 
 export default function RootLayout({
@@ -37,6 +37,23 @@ export default function RootLayout({
         <link rel="icon" href="/svgs/iskolarspace_logo.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* SEO Meta Tags */}
+        <meta name="keywords" content="task management, productivity, collaboration, iskolarspace, student, education, teamwork, organize, prioritize, task app" />
+        <meta name="author" content="IskolarSpace Team" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href="https://iskolarspace.com/" />
+        {/* Open Graph Meta Tags */}
+        <meta property="og:title" content="IskolarSpace" />
+        <meta property="og:description" content="Plan. Prioritize. Collaborate. Organize your student life and collaborate with your peers." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://iskolarspace.com/" />
+        <meta property="og:image" content="https://iskolarspace.com/images/iskolarspace_logo.png" />
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="IskolarSpace" />
+        <meta name="twitter:description" content="Plan. Prioritize. Collaborate. Organize your student life and collaborate with your peers." />
+        <meta name="twitter:image" content="https://iskolarspace.com/images/iskolarspace_logo.png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}`}>
         <QueryProvider>{children}

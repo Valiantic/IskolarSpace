@@ -35,7 +35,7 @@ function PageContent() {
       <div id="home" className="h-screen w-full flex flex-col items-center justify-center overflow-hidden mt-20 p-4" style={{ backgroundColor }}>
         
         <h1 className="text-2xl font-bold text-white sm:text-lg md:text-4xl lg:text-4xl font-bold text-center mb-4 z-10" data-aos="fade-up">
-          Your No. 1 A.I Powered Task Management App
+          Your No. 1 Task Management App
         </h1>
 
         <h1 
@@ -69,7 +69,7 @@ function PageContent() {
 
         <div className="flex gap-4 mt-8" data-aos="fade-up">
           <h2 className="text-white text-center">
-          Plan. Prioritize. Conquer.
+          Plan. Prioritize. Collaborate.
           </h2>
         </div>
 
