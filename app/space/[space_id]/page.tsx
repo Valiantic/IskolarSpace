@@ -129,8 +129,9 @@ const SpacePage = () => {
       setIsLoadingMembers(true);
       try {
         const membersArray = await getSpaceMembers(spaceId);
-        // Ensure each member has tbl_users.id set to user_id if missing
-        const mappedMembers = membersArray.map((m: { user_id: string; tbl_users: { id?: string; full_name: string } }) => ({
+        const mappedMembers = membersArray.map((m: { user_id: string; role?: string; tbl_users: { id?: string; full_name: string } }) => ({
+          user_id: m.user_id,
+          role: m.role,
           tbl_users: {
             id: m.tbl_users.id || m.user_id,
             full_name: m.tbl_users.full_name

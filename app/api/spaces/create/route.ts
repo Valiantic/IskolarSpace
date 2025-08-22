@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   // Add Creator as Member
   const { error: memberError } = await supabase
     .from('tbl_space_members')
-    .insert([{ user_id: userId, space_id: space.id }]);
+    .insert([{ user_id: userId, space_id: space.id, role: 'admin' }]);
   if (memberError) {
     return new Response(JSON.stringify({ error: memberError.message }), { status: 500 });
   }

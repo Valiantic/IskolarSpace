@@ -12,10 +12,10 @@ export async function GET(req: NextRequest) {
     return new Response(JSON.stringify({ error: 'Missing spaceId' }), { status: 400 });
   }
 
-  // Get members of the space
+    // Get members of the space, including their role
   const { data, error } = await supabase
     .from('tbl_space_members')
-    .select('user_id, tbl_users(id, full_name)')
+      .select('user_id, role, tbl_users(id, full_name)')
     .eq('space_id', spaceId);
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });

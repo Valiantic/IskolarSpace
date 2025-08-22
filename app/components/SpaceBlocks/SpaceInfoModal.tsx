@@ -1,6 +1,6 @@
 import React from 'react';
 import useClipboard from '../../hooks/utils/useClipboard';
-import { X, Orbit, User } from 'lucide-react'
+import { X, Orbit, User, Crown } from 'lucide-react'
 import { Member, SpaceInfoModalProps} from '../../types/join-space'
 
 const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, members, spaceCode, isLoading, error }) => {
@@ -39,13 +39,14 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, member
             } else if (member.tbl_users && typeof member.tbl_users === 'object' && 'full_name' in member.tbl_users) {
               fullName = member.tbl_users.full_name || 'Unnamed Member';
             }
+            const isAdmin = member.role === 'admin';
             return (
               <li
                 key={member.user_id}
                 className="flex items-center gap-2 text-white font-poppins"
                 style={{ listStyleType: 'disc', color: 'white' }}
               >
-                <User className="inline-block mr-2" />
+                {isAdmin ? <Crown className="inline-block mr-2 text-yellow-400" /> : <User className="inline-block mr-2" />}
                 <span className="font-semibold">{fullName}</span>
               </li>
             );
