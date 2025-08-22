@@ -66,7 +66,7 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
         }`}
       >
         <Filter size={20} />
-        <span className="text-sm font-medium">
+        <span className="text-sm font-medium hidden md:inline">
           {selectedPriorities.length === 0 
             ? 'Filter Priority' 
             : `${selectedPriorities.length} Selected`
@@ -85,7 +85,9 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
           <div className="p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-white font-semibold font-poppins text-sm">Filter by Priority</h3>
+              <h3 className="hidden sm:inline text-white font-semibold font-poppins text-sm">
+                Filter by Priority
+              </h3>
               {selectedPriorities.length > 0 && (
                 <button
                   onClick={clearFilters}

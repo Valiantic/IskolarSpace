@@ -1,4 +1,7 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getUserSpaces } from '../../services/iskolarspace-api';
+import { useAuth } from '../../hooks/auth/useAuth';
 
 const useSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +11,24 @@ const useSidebar = () => {
 
   const sidebarRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Spaces dropdown state
+  const [spacesDropdownOpen, setSpacesDropdownOpen] = useState(false);
+  const { user } = useAuth();
+
+  // Fetch joined spaces using TanStack Query
+  const {
+    data: joinedSpaces = [],
+    isLoading: joinedSpacesLoading,
+    error: joinedSpacesError,
+    refetch: refetchJoinedSpaces,
+  } = useQuery({
+    queryKey: ['joinedSpaces', user?.id],
+    queryFn: () => (user?.id ? getUserSpaces(user.id) : Promise.resolve([])),
+    enabled: !!user?.id,
+  });
+
+  const toggleSpacesDropdown = () => setSpacesDropdownOpen(prev => !prev);
 
   
   // Fetch user info and profile picture
@@ -46,7 +67,7 @@ const useSidebar = () => {
     };
     fetchUserInfo();
   }, []);
-  
+   
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -97,30 +118,32 @@ const useSidebar = () => {
 
   return {
     // State
-  isOpen,
-  userFullName,
-  profilePicture,
-  dropdownOpen,
+    isOpen,
+    userFullName,
+    profilePicture,
+    dropdownOpen,
+    spacesDropdownOpen,
+    joinedSpaces,
 
-  // Refs
-  sidebarRef,
-  dropdownRef,
+    // Refs
+    sidebarRef,
+    dropdownRef,
 
-  // Sidebar actions
-  openSidebar,
-  setUserFullName,
-  closeSidebar,
-  toggleSidebar,
+    // Sidebar actions
+    openSidebar,
+    setUserFullName,
+    closeSidebar,
+    toggleSidebar,
 
-  // Dropdown actions
-  openDropdown,
-  closeDropdown,
-  toggleDropdown,
+    // Dropdown actions
+    openDropdown,
+    closeDropdown,
+    toggleDropdown,
+    toggleSpacesDropdown,
 
-  // Combined actions
-  closeAll,
-  handleLogoutAction,
-
+    // Combined actions
+    closeAll,
+    handleLogoutAction,
   };
 };
 

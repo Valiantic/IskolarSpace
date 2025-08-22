@@ -74,8 +74,8 @@ export default function DashboardPage() {
   }, [requireAuth]);
 
   // HANLDE ADDING A NEW TASK  
-  const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const handleAddTask = async (e?: React.FormEvent<HTMLFormElement>) => {
+      if (e) e.preventDefault();
       const {data: { session } } = await supabase.auth.getSession();
       const userId = session?.user?.id;
       if (!task.trim() || !userId) return;

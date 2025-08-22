@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { X, PenTool, Sparkles } from 'lucide-react'
-import { AddNoteModalProps } from '../../types/space'
+import { AddNoteModalProps } from '../../types/universe'
 
 const AddNoteModal: React.FC<AddNoteModalProps> = ({
   isOpen,

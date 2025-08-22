@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Edit3, Clock } from 'lucide-react'
-import { FloatingNoteBubbleProps } from '../../types/space'
+import { FloatingNoteBubbleProps } from '../../types/universe'
 
 const FloatingNoteBubble: React.FC<FloatingNoteBubbleProps> = ({
   note,

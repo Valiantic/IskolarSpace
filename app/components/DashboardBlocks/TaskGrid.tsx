@@ -1,16 +1,17 @@
 import React from 'react';
-import { AlertCircle, Clock, Zap, ChevronDown } from 'lucide-react';
+import { AlertCircle, Clock, Zap, ChevronDown, Pin } from 'lucide-react';
 import NoTaskBanner from './NoTask';
-import { Todo, TaskGridProps, Priority } from '../../types/dashboard';
+import { TaskGridProps, Todo, ExtendedTaskGridProps } from '../../types/dashboard';
 
-const TaskGrid: React.FC<TaskGridProps> = ({ 
+const TaskGrid: React.FC<ExtendedTaskGridProps> = ({ 
   todos, 
   fetchTodos, 
   startEditing, 
   handlePriorityChange,
   searchTerm = '',
   priorityFilters = [],
-  totalTasks = 0
+  totalTasks = 0,
+  showAssignedMember = false
 }) => {
   const cardColors = [
     'bg-sky-500',
@@ -106,6 +107,15 @@ const TaskGrid: React.FC<TaskGridProps> = ({
                     {todo.content}
                   </p>
                 )}
+
+              {showAssignedMember && (
+                <div>
+                  <span className="text-sm text-white font-bold">
+                       <Pin className="inline-block mr-1" /> Assigned to: {todo.assigned_member}
+                  </span>
+                </div>
+              )}
+
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <div className="relative flex items-center">

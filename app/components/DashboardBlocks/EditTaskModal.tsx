@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Trash } from 'lucide-react';
 import { Todo, EditTaskModalProps } from '../../types/dashboard';
+import { Member } from '../../types/join-space';
 
-const EditTaskModal: React.FC<EditTaskModalProps> = ({
+const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assignedTo?: string | null, setAssignedTo?: (id: string | null) => void }> = ({
   editingTaskId,
   todos,
   editedContent,
@@ -15,7 +16,14 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
   setShowDeleteModal,
   setTodoToDelete,
   cancelEditing,
+  members,
+  assignedTo,
+  setAssignedTo,
 }) => {
+  // Local state for assignment dropdown
+  const [localAssignedTo, setLocalAssignedTo] = useState<string | null>(assignedTo ?? null);
+  const effectiveAssignedTo = typeof assignedTo !== 'undefined' ? assignedTo : localAssignedTo;
+  const effectiveSetAssignedTo = typeof setAssignedTo !== 'undefined' ? setAssignedTo : setLocalAssignedTo;
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -81,6 +89,26 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             />
           </div>
           
+          {/* Assignment Dropdown for space page */}
+          {typeof members !== 'undefined' && Array.isArray(members) && members.length > 0 && (
+            <select
+              value={effectiveAssignedTo ?? ""}
+              onChange={e => effectiveSetAssignedTo(e.target.value)}
+              className="w-full p-2 rounded-lg bg-gray-800 text-white mb-3 p-2 px-2 font-poppins"
+            >
+              <option value="">Assign to...</option>
+              {members.map((member: Member) => {
+                const user = Array.isArray(member.tbl_users)
+                  ? member.tbl_users[0] as { id?: string; full_name?: string }
+                  : member.tbl_users as { id?: string; full_name?: string };
+                return user && typeof user.id === 'string' ? (
+                  <option key={user.id} value={user.id}>
+                    {user.full_name ?? 'Unnamed Member'}
+                  </option>
+                ) : null;
+              })}
+            </select>
+          )}
           {/* Content Textarea */}
           <textarea
             className={`w-full p-6 rounded-lg mb-6 resize-none text-white bg-transparent focus:outline-none border-0 text-lg md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
