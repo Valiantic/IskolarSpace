@@ -1,6 +1,6 @@
 import React from 'react';
 import useClipboard from '../../hooks/utils/useClipboard';
-import { X, Orbit } from 'lucide-react'
+import { X, Orbit, User } from 'lucide-react'
 import { Member, SpaceInfoModalProps} from '../../types/join-space'
 
 const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, members, spaceCode, isLoading, error }) => {
@@ -22,29 +22,34 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, member
           <Orbit size={25} className="inline-block text-blue-500 ml-2" />
         </h2>
         <div className="text-lg sm:text-sm md:text-lg text-white mb-2">Members:</div>
-        <div className='bg-white p-4 rounded-lg mb-2'>
-                    {isLoading ? (
-            <div className="text-center py-4 text-gray-500">Loading members...</div>
+        <div className="p-4 rounded-lg mb-2 bg-slate-700">
+          {isLoading ? (
+            <div className="text-center py-4 text-gray-300">Loading members...</div>
           ) : error ? (
-            <div className="text-center py-4 text-red-500">{error}</div>
+            <div className="text-center py-4 text-red-400">{error}</div>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-2 list-disc list-inside">
               {safeMembers.length === 0 ? (
-                <li className="text-gray-400 text-center">No members found.</li>
+          <li className="text-gray-400 text-center">No members found.</li>
               ) : (
-                safeMembers.map((member) => {
-                  let fullName = 'Unnamed Member';
-                  if (Array.isArray(member.tbl_users) && member.tbl_users.length > 0) {
-                    fullName = member.tbl_users[0]?.full_name || 'Unnamed Member';
-                  } else if (member.tbl_users && typeof member.tbl_users === 'object' && 'full_name' in member.tbl_users) {
-                    fullName = member.tbl_users.full_name || 'Unnamed Member';
-                  }
-                  return (
-                    <li key={member.user_id} className="flex items-center gap-2 text-gray-700">
-                      <span className="font-semibold">{fullName}</span>
-                    </li>
-                  );
-                })
+          safeMembers.map((member) => {
+            let fullName = 'Unnamed Member';
+            if (Array.isArray(member.tbl_users) && member.tbl_users.length > 0) {
+              fullName = member.tbl_users[0]?.full_name || 'Unnamed Member';
+            } else if (member.tbl_users && typeof member.tbl_users === 'object' && 'full_name' in member.tbl_users) {
+              fullName = member.tbl_users.full_name || 'Unnamed Member';
+            }
+            return (
+              <li
+                key={member.user_id}
+                className="flex items-center gap-2 text-white font-poppins"
+                style={{ listStyleType: 'disc', color: 'white' }}
+              >
+                <User className="inline-block mr-2" />
+                <span className="font-semibold">{fullName}</span>
+              </li>
+            );
+          })
               )}
             </ul>
           )}
