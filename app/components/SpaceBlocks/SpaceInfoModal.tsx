@@ -1,9 +1,9 @@
 import React from 'react';
 import useClipboard from '../../hooks/utils/useClipboard';
-import { X, Orbit, User, Crown } from 'lucide-react'
-import { Member, SpaceInfoModalProps} from '../../types/join-space'
+import { X, Orbit, User, Crown } from 'lucide-react';
+import { Member, SpaceInfoModalProps } from '../../types/join-space';
 
-const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, members, spaceCode, isLoading, error }) => {
+const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, members, spaceCode, spaceName, isLoading, error, onLeaveSpace, leaving }) => {
   const { copyToClipboard, copied } = useClipboard();
   if (!isOpen) return null;
   const safeMembers = Array.isArray(members) ? members : [];
@@ -18,7 +18,7 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, member
           <X className='w-8 h-8' />
         </button>
         <h2 className="text-2xl font-bold mb-4 text-center text-white font-poppins">
-          Space Info
+          {spaceName ? spaceName : 'Space Info'}
           <Orbit size={25} className="inline-block text-blue-500 ml-2" />
         </h2>
         <div className="text-lg sm:text-sm md:text-lg text-white mb-2">Members:</div>
@@ -67,6 +67,13 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, member
               {copied ? 'Copied!' : (spaceCode || 'N/A')}
             </span>
           </div>
+          <button
+            className="w-full mt-4 py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 font-bold"
+            onClick={onLeaveSpace}
+            disabled={leaving}
+          >
+            {leaving ? 'Leaving...' : 'Leave Space'}
+          </button>
         </div>
       </div>
     </div>

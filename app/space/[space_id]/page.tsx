@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import TaskGrid from '../../components/DashboardBlocks/TaskGrid';
-import { Plus, Info } from 'lucide-react';
+import { Plus, Orbit } from 'lucide-react';
 import AddTaskModal from '../../components/DashboardBlocks/AddTaskModal';
 import Sidebar from '../../components/DashboardBlocks/Sidebar';
 import SpaceBackground from '../../components/DashboardBlocks/SpaceBackground';
@@ -19,6 +19,7 @@ import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
 import useRequireAuth from '../../hooks/auth/useRequireAuth';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 const SpacePage = () => {
@@ -28,6 +29,7 @@ const SpacePage = () => {
 
   const { user, logout } = useAuth();
   const { authLoading } = useRequireAuth();
+  const router = useRouter();
 
   // Ensure hooks are called in a consistent order
   const userId = user?.id;
@@ -211,6 +213,34 @@ const SpacePage = () => {
     setTaskToDelete(null);
   };
 
+    // Leave Space handler
+  const [leaving, setLeaving] = useState(false);
+  const handleLeaveSpace = async () => {
+    if (!userId || !spaceId) return;
+    setLeaving(true);
+    try {
+      // Use the leaveSpace API from services
+      // leaveSpace expects (spaceId: string, userId: number)
+      // It uses POST /api/spaces/user-spaces with { spaceId, userId, action: 'leave_space' }
+      const res = await fetch('/api/spaces/user-spaces', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spaceId, userId, action: 'leave_space' }),
+      });
+      if (res.ok) {
+        toast.success('You have left the space.');
+        setShowSpaceInfoModal(false);
+        router.push('/dashboard'); 
+        // Optionally redirect or update UI here
+      } else {
+        toast.error('Failed to leave space.');
+      }
+    } catch (err) {
+      toast.error('Error leaving space.');
+    }
+    setLeaving(false);
+  };
+
   if (authLoading || !user) {
     return null; 
   }
@@ -249,7 +279,7 @@ const SpacePage = () => {
                           onClick={openSpaceInfoModal}
                           aria-label="Show space info"
                         >
-                          <Info className='text-white'/>
+                          <Orbit className='text-white w-7 h-7 text-sky-400' />
                         </button>
                       </div>
                     </div>
@@ -391,8 +421,11 @@ const SpacePage = () => {
                 onClose={closeSpaceInfoModal}
                 members={members}
                 spaceCode={spaceCode}
+                spaceName={spaceName}
                 isLoading={isLoadingMembers}
                 error={membersError}
+                onLeaveSpace={handleLeaveSpace}
+                leaving={leaving}
               />
             </>
           )}

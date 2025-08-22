@@ -54,3 +54,27 @@ export const deleteTask = async (spaceId: string, id: string) => {
   const res = await axios.delete(`/api/spaces/tasks?spaceId=${spaceId}`, { data: { id } });
   return res.data.success;
 };
+
+// Edit space name
+export const editSpaceName = async (spaceId: string, newName: string) => {
+  const res = await axios.put(`/api/spaces/user-spaces?spaceId=${spaceId}`, { name: newName });
+  return res.data.space;
+};
+
+// Delete space
+export const deleteSpace = async (spaceId: string) => {
+  const res = await axios.delete(`/api/spaces/user-spaces?spaceId=${spaceId}`);
+  return res.data.success;
+};
+
+// Leave space
+export const leaveSpace = async (spaceId: string, userId: number) => {
+  const res = await axios.post(`/api/spaces/user-spaces`, { spaceId, userId });
+  return res.data.success;
+};
+
+// Make a space member admin
+export const makeMemberAdmin = async (spaceId: string, memberId: number) => {
+  const res = await axios.post(`/api/spaces/user-spaces`, { spaceId, memberId });
+  return res.data.success;
+};
