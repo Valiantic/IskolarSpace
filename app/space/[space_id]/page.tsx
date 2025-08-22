@@ -22,14 +22,14 @@ import useRequireAuth from '../../hooks/auth/useRequireAuth';
 import toast from 'react-hot-toast';
 
 const SpacePage = () => {
-
   // Use useParams from next/navigation
   const params = useParams();
   const spaceId = (params as { space_id: string }).space_id;
 
   const { user, logout } = useAuth();
-    // Use custom hook for authentication guard
   const { authLoading } = useRequireAuth();
+
+  // Ensure hooks are called in a consistent order
   const userId = user?.id;
   const { userFullName } = useSidebar();
 
@@ -54,12 +54,12 @@ const SpacePage = () => {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [assignedTo, setAssignedTo] = useState<string | null>(null);
-  
+
   // Delete Confirmation Modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
-   // For EditTaskModal
+  // For EditTaskModal
   const [showEditModal, setShowEditModal] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
   const [membersError, setMembersError] = useState<string | null>(null);
@@ -209,6 +209,10 @@ const SpacePage = () => {
     setTodoToDelete(null);
     setTaskToDelete(null);
   };
+
+  if (authLoading || !user) {
+    return null; 
+  }
 
   return (
     <div className="relative">
