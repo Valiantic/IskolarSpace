@@ -47,6 +47,9 @@ export interface SpaceInfoModalProps {
   spaceCode: string;
   isLoading: boolean;
   error?: string | null;
+  spaceName?: string;
+  onLeaveSpace?: () => void;
+  leaving?: boolean;
 }
 
 export interface JoinSpaceProps {
