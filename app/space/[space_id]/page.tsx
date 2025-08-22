@@ -18,14 +18,18 @@ import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
+import useRequireAuth from '../../hooks/auth/useRequireAuth';
 import toast from 'react-hot-toast';
 
 const SpacePage = () => {
+
   // Use useParams from next/navigation
   const params = useParams();
   const spaceId = (params as { space_id: string }).space_id;
 
   const { user, logout } = useAuth();
+    // Use custom hook for authentication guard
+  const { authLoading } = useRequireAuth();
   const userId = user?.id;
   const { userFullName } = useSidebar();
 
