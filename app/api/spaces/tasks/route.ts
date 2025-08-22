@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { sendAssignmentEmail } from "../../../../lib/emailSender/template";
+import { sendAssignmentEmail } from "../../../../lib/emailSender/sendAssignment";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
