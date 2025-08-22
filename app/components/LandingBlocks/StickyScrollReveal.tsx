@@ -7,7 +7,7 @@ const content = [
   {
     title: "Organize Seamlessly",
     description:
-      "Take control of your academic workflow with structured task management and smart note-taking. Prioritize assignments, track deadlines, and streamline your study sessions effortlessly",
+      "Take control of your academic workflow with structured task management. Prioritize assignments and streamline your study sessions effortlessly",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
       Organize Seamlessly
@@ -15,22 +15,22 @@ const content = [
     ),
   },
   {
-    title: "Master Your Productivity",
+   title: "Manage Team Tasks",
     description:
-      "Stay on top of your daily tasks with an intuitive platform designed for efficiency. Create, organize, and refine your study plans—ensuring every goal is within reach",
+      "Coordinate and assign tasks within your team effortlessly. Track progress, set priorities, and ensure everyone stays aligned for successful project completion.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-500),var(--emerald-200))] flex items-center justify-center text-white">
-        Master Your Productivity
+      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
+        Manage Team Tasks
       </div>
     ),
   },
   {
-    title: "Explore New Horizons",
+    title: "Share Thoughts on Notes",
     description:
-      "Our platform is more than just notes; it's a space for discovery. Uncover new ideas, gain deeper understanding, and unlock your full academic potential.",
+      "Collaborate by sharing insights and feedback directly on notes. Foster discussion, clarify concepts, and enhance collective understanding within students across the space!.",
     content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--blue-300),var(--emerald-500))] flex items-center justify-center text-white">
-        Explore New Horizons
+      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--sky-500),var(--emerald-200))] flex items-center justify-center text-white">
+        Share Thoughts on Notes
       </div>
     ),
   },
