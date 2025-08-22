@@ -41,6 +41,7 @@ const SpacePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
   const [spaceCode, setSpaceCode] = useState('');
+  const [isMember, setIsMember] = useState<null | boolean>(null);
 
   // Space Info Modal state
   const [showSpaceInfoModal, setShowSpaceInfoModal] = useState(false);
@@ -145,6 +146,12 @@ const SpacePage = () => {
         setSpaceName(currentSpace?.tbl_spaces?.name || 'Space');
         setSpaceCode(currentSpace?.tbl_spaces?.code || '');
         setMembersError(null);
+        // Membership check
+        const memberCheck = mappedMembers.some((m: any) => m.tbl_users.id === user.id);
+        setIsMember(memberCheck);
+        if (!memberCheck) {
+          router.replace('/not-found');
+        }
       } catch (err: any) {
         setSpaceName('Space');
         setMembers([]);
@@ -242,7 +249,15 @@ const SpacePage = () => {
   };
 
   if (authLoading || !user) {
-    return null; 
+    return null;
+  }
+
+  // Wait for membership check before rendering anything
+  if (isMember === null) {
+    return <div className="bg-black flex items-center justify-center min-h-screen"><LoadingSpinner /></div>;
+  }
+  if (!isMember) {
+    return null;
   }
 
   return (
