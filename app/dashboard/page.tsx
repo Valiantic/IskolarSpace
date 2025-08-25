@@ -13,7 +13,7 @@ import AddTaskModal from "../components/DashboardBlocks/AddTaskModal";
 import DeleteConfirmationModal from "../components/DashboardBlocks/DeleteConfirmationModal";
 import SearchBar from "../components/DashboardBlocks/SearchBar";
 import PriorityFilter from "../components/DashboardBlocks/PriorityFilter";
-import LoadingSpinner from "../components/DashboardBlocks/LoadingSpinner";
+import LoadingSpinner from "../components/DashboardBlocks/Loader";
 import { useAuth } from "../hooks/auth/useAuth";
 import useSidebar from "../hooks/dashboard/useSidebar";
 import { Todo } from "../types/dashboard";
