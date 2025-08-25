@@ -60,6 +60,7 @@ export interface AddTaskModalProps {
   title: string;
   task: string;
   priority: 'low' | 'moderate' | 'high';
+  deadline: Date | null;
   setTitle: (title: string) => void;
   setTask: (task: string) => void;
   setPriority: (priority: 'low' | 'moderate' | 'high') => void;
@@ -68,4 +69,5 @@ export interface AddTaskModalProps {
   members?: Member[];
   assignedTo?: string | null;
   setAssignedTo?: (id: string | null) => void;
+  setDeadline: (date: Date | null) => void;
 }

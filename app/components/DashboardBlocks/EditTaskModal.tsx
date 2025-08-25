@@ -1,17 +1,21 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Check, Trash } from 'lucide-react';
-import { Todo, EditTaskModalProps } from '../../types/dashboard';
+import { Check, Trash, Clock } from 'lucide-react';
+import { EditTaskModalProps } from '../../types/dashboard';
 import { Member } from '../../types/join-space';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assignedTo?: string | null, setAssignedTo?: (id: string | null) => void }> = ({
   editingTaskId,
   todos,
   editedContent,
   editedTitle,
+  editedDeadline,
   setEditedContent,
   setEditedTitle,
+  setEditedDeadline,  
   handleSaveEdit,
   setShowDeleteModal,
   setTodoToDelete,
@@ -27,7 +31,7 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  // Cleanup timeout on unmount - MUST be before conditional return
+  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (scrollTimeout) {
@@ -36,10 +40,23 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
     };
   }, [scrollTimeout]);
 
+  const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
+  const editingTodo = todoIndex >= 0 ? todos[todoIndex] : null;
+
+  // When editingTaskId changes, always reset editedDeadline to the correct value for that task
+  useEffect(() => {
+    if (editingTodo) {
+      if (editingTodo.deadline) {
+        const deadlineDate = typeof editingTodo.deadline === 'string' ? new Date(editingTodo.deadline) : editingTodo.deadline;
+        setEditedDeadline(deadlineDate);
+      } else {
+        setEditedDeadline(null);
+      }
+    }
+  }, [editingTaskId]);
+
   if (!editingTaskId) return null;
 
-  const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
-  
   // Darker, smoother color palette
   const cardColors = [
     'bg-slate-700',
@@ -54,17 +71,14 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
 
   const handleTextareaScroll = () => {
     setIsScrolling(true);
-    
     // Clear existing timeout
     if (scrollTimeout) {
       clearTimeout(scrollTimeout);
     }
-    
     // Set new timeout to hide scrolling state after 1.5 seconds
     const newTimeout = setTimeout(() => {
       setIsScrolling(false);
     }, 1500);
-    
     setScrollTimeout(newTimeout);
   };
 
@@ -79,7 +93,7 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
           onClick={(e) => e.stopPropagation()} 
         >
           {/* Title Input (Optional) - Hidden during scroll */}
-          <div className={`transition-all duration-300 ${isScrolling ? 'opacity-0 -translate-y-2' : 'opacity-100 translate-y-0'}`}>
+          <div className={`transition-all duration-300 ${isScrolling ? 'opacity-0 -translate-y-2' : 'opacity-100 translate-y-0'}`}> 
             <input
               type="text"
               className="w-full p-4 rounded-lg mb-4 text-center text-white bg-white/10 focus:outline-none border-2 border-white/20 focus:border-white/40 text-xl font-bold font-poppins placeholder:text-white/50 backdrop-blur-sm"
@@ -121,24 +135,61 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
           />
           
           {/* Save and Delete Buttons */}
-          <div className="flex justify-end gap-4 mt-6">
-            <button
-              onClick={() => {
-                if (editingTaskId) {
+          <div className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
+            <div className={`flex items-center px-2 py-1 rounded-lg mr-2 w-full max-w-xs relative ${(() => {
+              if (!editedDeadline) return 'bg-black/20';
+              const deadlineDate = new Date(editedDeadline);
+              const today = new Date();
+              return deadlineDate.getFullYear() === today.getFullYear() &&
+                deadlineDate.getMonth() === today.getMonth() &&
+                deadlineDate.getDate() === today.getDate()
+                ? 'bg-red-700/80' : 'bg-black/20';
+            })()}`}>
+              <Clock size={18} className={`${editedDeadline && (() => {
+                const deadlineDate = new Date(editedDeadline);
+                const today = new Date();
+                return deadlineDate.getFullYear() === today.getFullYear() &&
+                  deadlineDate.getMonth() === today.getMonth() &&
+                  deadlineDate.getDate() === today.getDate()
+                  ? 'text-red-300' : 'text-white';
+              })() || 'text-white'} mr-1 absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none`} />
+              <DatePicker
+                selected={editedDeadline}
+                value={editedDeadline ? new Date(editedDeadline).toLocaleDateString() : ''}
+                onChange={(date) => setEditedDeadline(date)}
+                className={`w-full text-start p-2 rounded-lg bg-transparent font-poppins pl-8 border-0 focus:outline-none ${editedDeadline && (() => {
+                  const deadlineDate = new Date(editedDeadline);
+                  const today = new Date();
+                  return deadlineDate.getFullYear() === today.getFullYear() &&
+                    deadlineDate.getMonth() === today.getMonth() &&
+                    deadlineDate.getDate() === today.getDate()
+                    ? 'text-red-300 font-bold' : 'text-white';
+                })() || 'text-white'}`}
+                dateFormat="dd-MM-yyyy"
+                placeholderText="Set a deadline"
+              />
+            </div>
+            <div className="flex flex-row gap-2 justify-center w-full mt-2 sm:mt-0">
+                <button
+                onClick={() => {
+                  if (editingTaskId) {
                   setTodoToDelete(editingTaskId);
                   setShowDeleteModal(true);
-                }
-              }}
-              className="text-red-700 hover:text-red-900 px-8 py-4 rounded-full bg-white/80 hover:bg-white/90 transition-all duration-200 shadow-lg backdrop-blur-sm border border-white/20"
-            >
-              <Trash size={28} />
-            </button>
-            <button
-              onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}
-              className="text-slate-700 hover:text-slate-900 px-8 py-4 rounded-full bg-white/80 hover:bg-white/90 transition-all duration-200 shadow-lg backdrop-blur-sm border border-white/20"
-            >
-              <Check size={28} />
-            </button>
+                  }
+                }}
+                className="flex items-center justify-start gap-2 text-red-700 hover:text-red-900 px-6 py-3 rounded-full bg-white/80 hover:bg-white/90 transition-all duration-200 shadow-lg backdrop-blur-sm border border-white/20 flex-1"
+                >
+                <Trash size={28} className="mr-2" />
+                Delete
+                </button>
+                <button
+                onClick={() => editingTaskId && handleSaveEdit(editingTaskId)}
+                className="flex items-center justify-start gap-2 text-slate-700 hover:text-slate-900 px-6 py-3 rounded-full bg-white/80 hover:bg-white/90 transition-all duration-200 shadow-lg backdrop-blur-sm border border-white/20 flex-1"
+                >
+                <Check size={28} className="mr-2" />
+                Save
+                </button>
+            </div>
           </div>
         </div>
       </div>

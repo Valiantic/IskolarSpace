@@ -10,6 +10,7 @@ export interface Todo {
   priority: 'low' | 'moderate' | 'high';
   assigned_to?: string;
   assigned_member?: string;
+  deadline?: string | Date | null;
 }
 
 // Priority type for consistent typing
@@ -47,9 +48,11 @@ export interface AddTaskModalProps {
   title: string;
   task: string;
   priority: Priority;
+  deadline: Date | null;
   setTitle: (title: string) => void;
   setTask: (task: string) => void;
   setPriority: (priority: Priority) => void;
+  setDeadline: (date: Date | null) => void;
   handleAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
   setShowInput: (show: boolean) => void;
 }
@@ -60,8 +63,10 @@ export interface EditTaskModalProps {
   todos: Todo[];
   editedContent: string;
   editedTitle: string;
+  editedDeadline: Date | null;
   setEditedContent: (content: string) => void;
   setEditedTitle: (title: string) => void;
+  setEditedDeadline: (date: Date | null) => void;
   handleSaveEdit: (todoId: string) => void;
   setShowDeleteModal: (show: boolean) => void;
   setTodoToDelete: (todoId: string | null) => void;
@@ -152,4 +157,5 @@ export type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>;
 export type ExtendedTaskGridProps = TaskGridProps & {
   todos: Todo[];
   showAssignedMember?: boolean;
+  deadline: Date | null;  
 };

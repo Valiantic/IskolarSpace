@@ -1,13 +1,14 @@
 import React from 'react';
 import { AlertCircle, Clock, Zap, ChevronDown, Pin } from 'lucide-react';
 import NoTaskBanner from './NoTask';
-import { TaskGridProps, Todo, ExtendedTaskGridProps } from '../../types/dashboard';
+import { ExtendedTaskGridProps } from '../../types/dashboard';
 
 const TaskGrid: React.FC<ExtendedTaskGridProps> = ({ 
   todos, 
   fetchTodos, 
   startEditing, 
   handlePriorityChange,
+  deadline,
   searchTerm = '',
   priorityFilters = [],
   totalTasks = 0,
@@ -119,6 +120,21 @@ const TaskGrid: React.FC<ExtendedTaskGridProps> = ({
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <div className="relative flex items-center">
+                  {todo.deadline && (() => {
+                    const deadlineDate = new Date(todo.deadline);
+                    const today = new Date();
+                    const isToday = deadlineDate.getFullYear() === today.getFullYear() &&
+                      deadlineDate.getMonth() === today.getMonth() &&
+                      deadlineDate.getDate() === today.getDate();
+                    return (
+                      <div className={`flex items-center px-2 py-1 rounded-md mr-2 ${isToday ? 'bg-red-700/80' : 'bg-black/20'}`}>
+                        <Clock size={14} className={`${isToday ? 'text-red-300' : 'text-white'} mr-1`} />
+                        <span className={`font-poppins text-lg ${isToday ? 'text-red-300 font-bold' : 'text-white'}`}>
+                          {deadlineDate.toLocaleDateString()}
+                        </span>
+                      </div>
+                    );
+                  })()}
                   {/* Priority Dropdown with Orb Inside */}
                   <div className="relative flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-md hover:bg-black hover:shadow-md transition-all duration-200">
                     {/* Pulsing Priority Orb */}

@@ -4,12 +4,15 @@ import React, { useState } from 'react';
 import { Rocket, Clock, AlertCircle, Zap, X } from 'lucide-react';
 import { Priority } from '../../types/dashboard';
 import { Member, AddTaskModalProps } from '../../types/join-space';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({
   showInput,
   title,
   task,
   priority,
+  deadline,
   setTitle,
   setTask,
   setPriority,
@@ -18,6 +21,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   members,
   assignedTo,
   setAssignedTo,
+  setDeadline,
 }) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -174,6 +178,16 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
             </div>
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
+              <div className="w-full sm:w-full md:w-[280px] flex items-center bg-black/20 px-2 py-1 rounded-lg mr-2 relative">
+                <Clock size={18} className="text-white mr-1 absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                <DatePicker
+                  selected={deadline}
+                  onChange={(date) => setDeadline(date)}
+                  className="w-full text-start p-2 rounded-lg bg-transparent text-white font-poppins pl-8 border-0 focus:outline-none"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Set a deadline"
+                />
+              </div>
               <button
                 type="button"
                 onClick={() => setShowInput(false)}
