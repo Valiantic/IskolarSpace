@@ -57,6 +57,7 @@ const SpacePage = () => {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [assignedTo, setAssignedTo] = useState<string | null>(null);
+  const [deadline, setDeadline] = useState<Date | null>(null);
 
   // Delete Confirmation Modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -70,6 +71,7 @@ const SpacePage = () => {
   const [editedContent, setEditedContent] = useState('');
   const [editedTitle, setEditedTitle] = useState('');
   const [editedPriority, setEditedPriority] = useState<'low' | 'moderate' | 'high'>('low');
+  const [editedDeadline, setEditedDeadline] = useState<Date | null>(null);
 
   // Fetch tasks
   const fetchTasks = useCallback(async () => {
@@ -92,6 +94,12 @@ const SpacePage = () => {
   const handleAddTask = async (e?: React.FormEvent<any>, assignedToArg?: string | null) => {
     if (e) e.preventDefault();
     if (!task.trim() || !user?.id || !spaceId) return;
+    let deadlineToSave = null;
+    if (deadline) {
+      const noonDate = new Date(deadline);
+      noonDate.setHours(12, 0, 0, 0);
+      deadlineToSave = noonDate.toISOString();
+    }
     try {
       const result = await createTask(spaceId, {
         title: title.trim() || null,
@@ -99,6 +107,7 @@ const SpacePage = () => {
         status: priority,
         created_by: user.id,
         assigned_to: assignedToArg,
+        deadline: deadlineToSave
       });
       toast.success('Task created successfully!');
       setTask('');
@@ -106,6 +115,7 @@ const SpacePage = () => {
       setPriority('low');
       setShowInput(false);
       setAssignedTo(null);
+      setDeadline(null);
       fetchTasks();
     } catch (err: any) {
       if (err?.response) {
@@ -186,6 +196,12 @@ const SpacePage = () => {
   };
   const handleSaveEdit = async (taskId: string) => {
     if (!editedContent.trim() || !spaceId) return;
+    let editDeadlineToSave = null;
+    if (editedDeadline) {
+        const noonDate = new Date(editedDeadline);
+        noonDate.setHours(12, 0, 0, 0);
+        editDeadlineToSave = noonDate.toISOString();
+    }
     try {
       await updateTask(spaceId, {
         id: taskId,
@@ -194,6 +210,7 @@ const SpacePage = () => {
         status: editedPriority,
         assigned_to: assignedTo,
         created_by: user?.id,
+        deadline: editDeadlineToSave
       });
       toast.success('Task updated successfully!');
       cancelEditing();
@@ -359,6 +376,8 @@ const SpacePage = () => {
                 title={title}
                 task={task}
                 priority={priority}
+                deadline={deadline}
+                setDeadline={setDeadline}
                 setTitle={setTitle}
                 setTask={setTask}
                 setPriority={setPriority}
@@ -369,19 +388,20 @@ const SpacePage = () => {
                 members={members}
               />
               <TaskGrid
-                todos={tasks
-                  .filter(task =>
-                    (!searchTerm || (task.title?.toLowerCase().includes(searchTerm.toLowerCase()) || task.description?.toLowerCase().includes(searchTerm.toLowerCase()))) &&
-                    (priorityFilters.length === 0 || priorityFilters.includes(task.priority || task.status || 'low'))
-                  )
-                  .map(task => ({
-                    ...task,
-                    priority: (task.priority || task.status || 'low'),
-                    content: task.content || task.description || '',
-                    assigned_to: task.assigned_to,
-                    assigned_member: members.find(m => m.tbl_users.id === task.assigned_to)?.tbl_users.full_name || 'Unassigned',
-                  }))
-                }
+                  todos={tasks
+                    .filter(task =>
+                      (!searchTerm || (task.title?.toLowerCase().includes(searchTerm.toLowerCase()) || task.description?.toLowerCase().includes(searchTerm.toLowerCase()))) &&
+                      (priorityFilters.length === 0 || priorityFilters.includes(task.priority || task.status || 'low'))
+                    )
+                    .map(task => ({
+                      ...task,
+                      priority: (task.priority || task.status || 'low'),
+                      content: task.content || task.description || '',
+                      assigned_to: task.assigned_to,
+                      assigned_member: members.find(m => m.tbl_users.id === task.assigned_to)?.tbl_users.full_name || 'Unassigned',
+                      deadline: task.deadline || null,
+                    }))
+                  }
                 fetchTodos={fetchTasks}
                 startEditing={startEditing}
                 handlePriorityChange={async (id, newStatus) => {
@@ -403,26 +423,30 @@ const SpacePage = () => {
                 priorityFilters={priorityFilters}
                 totalTasks={tasks.length}
                 showAssignedMember={true}
+                deadline={deadline}
               />
               {showEditModal && (
-                <EditTaskModal
-                  editingTaskId={editingTaskId}
-                  todos={tasks.map((task) => ({
-                    ...task,
-                    content: task.content || task.description || '',
-                  }))}
-                  editedContent={editedContent}
-                  editedTitle={editedTitle}
-                  setEditedContent={setEditedContent}
-                  setEditedTitle={setEditedTitle}
-                  handleSaveEdit={handleSaveEdit}
-                  setShowDeleteModal={setShowDeleteModal}
-                  setTodoToDelete={setTodoToDelete}
-                  cancelEditing={cancelEditing}
-                  assignedTo={assignedTo}
-                  setAssignedTo={setAssignedTo}
-                  members={members}
-                />
+                  <EditTaskModal
+                    editingTaskId={editingTaskId}
+                    todos={tasks.map((task) => ({
+                      ...task,
+                      content: task.content || task.description || '',
+                      deadline: task.deadline || null,
+                    }))}
+                    editedContent={editedContent}
+                    editedTitle={editedTitle}
+                    setEditedContent={setEditedContent}
+                    setEditedTitle={setEditedTitle}
+                    handleSaveEdit={handleSaveEdit}
+                    setShowDeleteModal={setShowDeleteModal}
+                    setTodoToDelete={setTodoToDelete}
+                    cancelEditing={cancelEditing}
+                    assignedTo={assignedTo}
+                    setAssignedTo={setAssignedTo}
+                    members={members}
+                    editedDeadline={editedDeadline}
+                    setEditedDeadline={setEditedDeadline}
+                  />
               )}
               {/* Delete Confirmation Modal */}
               <DeleteConfirmationModal

@@ -34,13 +34,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing spaceId" }, { status: 400 });
   }
   const body = await request.json();
-  const { title, description, assigned_to, created_by, status } = body;
+  const { title, description, assigned_to, created_by, status, deadline } = body;
   if (!title || !created_by) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
   const { data, error } = await supabase
     .from("tbl_tasks")
-    .insert([{ space_id: spaceId, title, description, assigned_to, created_by, status }]);
+    .insert([{ space_id: spaceId, title, description, assigned_to, created_by, status, deadline }]);
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 // PUT: Edit a task
 export async function PUT(request: NextRequest) {
   const body = await request.json();
-  const { id, title, description, status, assigned_to, created_by } = body;
+  const { id, title, description, status, assigned_to, created_by, deadline } = body;
   if (!id) {
     return NextResponse.json({ error: "Missing task id" }, { status: 400 });
   }

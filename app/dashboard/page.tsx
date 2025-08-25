@@ -30,11 +30,13 @@ export default function DashboardPage() {
   const [isLoadingTodos, setIsLoadingTodos] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
+  const [deadline, setDeadline] = useState<Date | null>(null);
 
   // STATES TO EDIT TASK 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const [editedTitle, setEditedTitle] = useState("");
+  const [editedDeadline, setEditedDeadline] = useState<Date | null>(null);
 
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -50,7 +52,7 @@ export default function DashboardPage() {
     setIsLoadingTodos(true);
     const { data, error } = await supabase
       .from("tbl_todos")
-      .select("id, title, content, user_id, created_at, priority")
+      .select("id, title, content, user_id, created_at, priority, deadline")
       .order("created_at", { ascending: false })
       .eq('user_id', userId);
     if (error) {
@@ -81,12 +83,20 @@ export default function DashboardPage() {
       if (!task.trim() || !userId) return;
 
       // INSERT THE NEW TASK ALONG WITH THE USER'S ID, TITLE, AND PRIORITY
+      // Set deadline time to noon to avoid UTC date shift
+      let deadlineToSave = null;
+      if (deadline) {
+        const noonDate = new Date(deadline);
+        noonDate.setHours(12, 0, 0, 0);
+        deadlineToSave = noonDate.toISOString();
+      }
       const { error } = await supabase.from("tbl_todos").insert([
         { 
           user_id: userId, 
           title: title.trim() || null, 
           content: task, 
-          priority: priority 
+          priority: priority,
+          deadline: deadlineToSave
         },
       ]);
      
@@ -96,6 +106,7 @@ export default function DashboardPage() {
         setTask("");
         setTitle("");
         setPriority('low'); // Reset priority to default
+        setDeadline(null);
         setShowInput(false); 
         fetchTodos();
       }
@@ -118,11 +129,19 @@ export default function DashboardPage() {
   const handleSaveEdit = async (todoId: string) => {
     if (!editedContent.trim()) return;
 
+    // Set deadline time to noon to avoid UTC date shift
+    let editedDeadlineToSave = null;
+    if (editedDeadline) {
+      const noonDate = new Date(editedDeadline);
+      noonDate.setHours(12, 0, 0, 0);
+      editedDeadlineToSave = noonDate.toISOString();
+    }
     const { error } = await supabase
       .from("tbl_todos")
       .update({ 
         title: editedTitle.trim() || null,
-        content: editedContent
+        content: editedContent,
+        deadline: editedDeadlineToSave
       })
       .eq("id", todoId);
 
@@ -297,6 +316,7 @@ export default function DashboardPage() {
           todos={filteredTodos} 
           fetchTodos={fetchTodos} 
           startEditing={startEditing}
+          deadline={deadline}
           handlePriorityChange={handlePriorityChange}
           searchTerm={searchTerm}
           priorityFilters={priorityFilters}
@@ -319,9 +339,11 @@ export default function DashboardPage() {
         title={title}
         task={task}
         priority={priority}
+        deadline={deadline}
         setTitle={setTitle}
         setTask={setTask}
         setPriority={setPriority}
+        setDeadline={setDeadline}
         handleAddTask={handleAddTask}
         setShowInput={setShowInput}
       />
@@ -339,8 +361,10 @@ export default function DashboardPage() {
         todos={todos}
         editedContent={editedContent}
         editedTitle={editedTitle}
+        editedDeadline={editedDeadline}
         setEditedContent={setEditedContent}
         setEditedTitle={setEditedTitle}
+        setEditedDeadline={setEditedDeadline}
         handleSaveEdit={handleSaveEdit}
         setShowDeleteModal={setShowDeleteModal}
         setTodoToDelete={setTodoToDelete}
