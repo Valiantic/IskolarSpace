@@ -3,22 +3,26 @@ import React from 'react';
 const LoadingSpinner = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-      {/* Animated Spinner */}
+      {/* WebM Loader */}
       <div className="relative">
-        {/* Outer ring */}
-        <div className="w-16 h-16 border-4 border-blue-200 border-solid rounded-full animate-spin border-t-transparent"></div>
+        <video
+          src="/videos/rocket.webm"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-40 h-40 object-contain rounded-full shadow-lg"
+        />
       </div>
-      
       {/* Loading text */}
       <div className="text-center space-y-2">
         <h3 className="text-xl font-semibold text-white font-poppins">
-          Just a moment...
+          Hang tight! 
         </h3>
         <p className="text-gray-300 text-sm font-poppins">
-          We're preparing your data for you
+          Plotting your trajectory through the stars…
         </p>
       </div>
-      
       {/* Animated dots */}
       <div className="flex space-x-1">
         <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>

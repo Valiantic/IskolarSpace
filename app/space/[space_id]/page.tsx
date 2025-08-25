@@ -12,7 +12,7 @@ import { getUserSpaces } from '../../services/iskolarspace-api';
 import { createTask, updateTask, deleteTask } from '../../services/iskolarspace-api';
 import { useAuth } from '../../hooks/auth/useAuth';
 import useSidebar from '../../hooks/dashboard/useSidebar';
-import LoadingSpinner from '../../components/DashboardBlocks/LoadingSpinner';
+import LoadingSpinner from '../../components/DashboardBlocks/Loader';
 import DeleteConfirmationModal from '../../components/DashboardBlocks/DeleteConfirmationModal';
 import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
