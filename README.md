@@ -16,6 +16,7 @@ To give students a **seamless way** to write down and manage tasks, creating an 
 - 🔍 **View ongoing tasks** in an intuitive interface  
 - 📝 **Edit tasks** to update priorities and deadlines  
 - ❌ **Remove completed or irrelevant tasks** for a cleaner workspace  
+- ⏰ **Set Deadlines** on task and todos of your workspace
 - 🛰 **Daily motivational quotes** to boost engagement  
 - 🌌 **Create and Join Space** to collaborate with other students workspace 
 - 📖 **Share your notes to the Universe** gives you way to say your thoughts outloud in space!
