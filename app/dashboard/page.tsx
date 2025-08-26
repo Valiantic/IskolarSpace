@@ -30,6 +30,7 @@ export default function DashboardPage() {
   const [isLoadingTodos, setIsLoadingTodos] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
+  const [deadlineFilters, setDeadlineFilters] = useState<string[]>([]);
   const [deadline, setDeadline] = useState<Date | null>(null);
 
   // STATES TO EDIT TASK 
@@ -175,12 +176,12 @@ export default function DashboardPage() {
     setSearchTerm(searchTerm);
   }, []);
 
-  // HANDLE PRIORITY FILTER
-  const handlePriorityFilter = useCallback((priorities: ('low' | 'moderate' | 'high')[]) => {
+  // HANDLE PRIORITY & DEADLINE FILTER
+  const handlePriorityFilter = useCallback((priorities: ('low' | 'moderate' | 'high')[], deadlines?: string[]) => {
     setPriorityFilters(priorities);
+    setDeadlineFilters(deadlines || []);
   }, []);
 
-  // FILTER TODOS BASED ON SEARCH TERM AND PRIORITY
   const filteredTodos = todos.filter(todo => {
     // Search filter
     let matchesSearch = true;
@@ -191,14 +192,38 @@ export default function DashboardPage() {
       const priorityMatch = todo.priority.toLowerCase().includes(lowerSearchTerm);
       matchesSearch = titleMatch || contentMatch || priorityMatch;
     }
-    
     // Priority filter
     let matchesPriority = true;
     if (priorityFilters.length > 0) {
       matchesPriority = priorityFilters.includes(todo.priority);
     }
-    
-    return matchesSearch && matchesPriority;
+    // Deadline filter
+    let matchesDeadline = true;
+    if (deadlineFilters.length > 0) {
+      const today = new Date();
+      const deadlineDate = todo.deadline ? new Date(todo.deadline) : null;
+      matchesDeadline = deadlineFilters.some(df => {
+        if (df === 'today') {
+          return deadlineDate && deadlineDate.getFullYear() === today.getFullYear() && deadlineDate.getMonth() === today.getMonth() && deadlineDate.getDate() === today.getDate();
+        }
+        if (df === 'week') {
+          if (!deadlineDate) return false;
+          const startOfWeek = new Date(today);
+          startOfWeek.setDate(today.getDate() - today.getDay());
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate() + 6);
+          return deadlineDate >= startOfWeek && deadlineDate <= endOfWeek;
+        }
+        if (df === 'overdue') {
+          return deadlineDate && deadlineDate < today;
+        }
+        if (df === 'none') {
+          return !deadlineDate;
+        }
+        return true;
+      });
+    }
+    return matchesSearch && matchesPriority && matchesDeadline;
   });
 
   // HANDLE DELETE TASK FROM CONFIRMATION MODAL

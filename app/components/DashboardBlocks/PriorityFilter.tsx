@@ -4,12 +4,20 @@ import React, { useState, useCallback } from 'react';
 import { Filter, Check, AlertCircle, Clock, Zap } from 'lucide-react';
 import { PriorityFilterProps, Priority } from '../../types/dashboard';
 
+const deadlineFilters = [
+  { value: 'today', label: 'Due Today' },
+  { value: 'week', label: 'Due This Week' },
+  { value: 'overdue', label: 'Overdue' },
+  { value: 'none', label: 'No Deadline' },
+];
+
 const PriorityFilter: React.FC<PriorityFilterProps> = ({
   onFilterChange,
   className = ""
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
+  const [selectedDeadlines, setSelectedDeadlines] = useState<string[]>([]);
 
   const priorities = [
     { 
@@ -42,14 +50,22 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
     const newSelected = selectedPriorities.includes(priority)
       ? selectedPriorities.filter(p => p !== priority)
       : [...selectedPriorities, priority];
-    
     setSelectedPriorities(newSelected);
-    onFilterChange(newSelected);
-  }, [selectedPriorities, onFilterChange]);
+    onFilterChange(newSelected, selectedDeadlines);
+  }, [selectedPriorities, selectedDeadlines, onFilterChange]);
+
+  const toggleDeadline = useCallback((deadline: string) => {
+    const newSelected = selectedDeadlines.includes(deadline)
+      ? selectedDeadlines.filter(d => d !== deadline)
+      : [...selectedDeadlines, deadline];
+    setSelectedDeadlines(newSelected);
+    onFilterChange(selectedPriorities, newSelected);
+  }, [selectedDeadlines, selectedPriorities, onFilterChange]);
 
   const clearFilters = useCallback(() => {
     setSelectedPriorities([]);
-    onFilterChange([]);
+    setSelectedDeadlines([]);
+    onFilterChange([], []);
   }, [onFilterChange]);
 
   const toggleDropdown = useCallback(() => {
@@ -62,33 +78,33 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
       <button
         onClick={toggleDropdown}
         className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-200 font-poppins ${
-          selectedPriorities.length > 0 ? 'ring-2 ring-blue-400/50' : ''
+          selectedPriorities.length > 0 || selectedDeadlines.length > 0 ? 'ring-2 ring-blue-400/50' : ''
         }`}
       >
         <Filter size={20} />
         <span className="text-sm font-medium hidden md:inline">
-          {selectedPriorities.length === 0 
-            ? 'Filter Priority' 
-            : `${selectedPriorities.length} Selected`
+          {selectedPriorities.length + selectedDeadlines.length === 0 
+            ? 'Filter' 
+            : `${selectedPriorities.length + selectedDeadlines.length} Selected`
           }
         </span>
-        {selectedPriorities.length > 0 && (
+        {(selectedPriorities.length + selectedDeadlines.length) > 0 && (
           <span className="ml-1 px-2 py-0.5 bg-blue-500 text-xs rounded-full">
-            {selectedPriorities.length}
+            {selectedPriorities.length + selectedDeadlines.length}
           </span>
         )}
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 lg:left-0 lg:transform-none mt-2 w-64 bg-slate-800/95 backdrop-blur-md border border-white/20 rounded-xl shadow-xl z-50 animate-scaleIn">
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 lg:left-0 lg:transform-none mt-2 w-72 bg-slate-800/95 backdrop-blur-md border border-white/20 rounded-xl shadow-xl z-50 animate-scaleIn">
           <div className="p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
               <h3 className="hidden sm:inline text-white font-semibold font-poppins text-sm">
-                Filter by Priority
+                Filter 
               </h3>
-              {selectedPriorities.length > 0 && (
+              {(selectedPriorities.length > 0 || selectedDeadlines.length > 0) && (
                 <button
                   onClick={clearFilters}
                   className="text-blue-400 hover:text-blue-300 text-xs font-poppins transition-colors"
@@ -99,7 +115,7 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
             </div>
 
             {/* Priority Options */}
-            <div className="space-y-2">
+            <div className="space-y-2 mb-4">
               {priorities.map((priority) => (
                 <button
                   key={priority.value}
@@ -123,11 +139,33 @@ const PriorityFilter: React.FC<PriorityFilterProps> = ({
               ))}
             </div>
 
+            {/* Deadline Options */}
+            <div className="space-y-2">
+              {deadlineFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  onClick={() => toggleDeadline(filter.value)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                    selectedDeadlines.includes(filter.value)
+                      ? 'bg-blue-500/20 border border-white/20'
+                      : 'hover:bg-white/10'
+                  }`}
+                >
+                  <span className={`flex-1 text-left font-poppins text-sm text-blue-300`}>
+                    {filter.label}
+                  </span>
+                  {selectedDeadlines.includes(filter.value) && (
+                    <Check size={16} className="text-white" />
+                  )}
+                </button>
+              ))}
+            </div>
+
             {/* Selected Count */}
-            {selectedPriorities.length > 0 && (
+            {(selectedPriorities.length > 0 || selectedDeadlines.length > 0) && (
               <div className="mt-3 pt-3 border-t border-white/10">
                 <p className="text-white/70 text-xs font-poppins text-center">
-                  {selectedPriorities.length} priority level{selectedPriorities.length === 1 ? '' : 's'} selected
+                  {selectedPriorities.length} priority level{selectedPriorities.length === 1 ? '' : 's'} & {selectedDeadlines.length} deadline filter{selectedDeadlines.length === 1 ? '' : 's'} selected
                 </p>
               </div>
             )}
