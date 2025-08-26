@@ -40,10 +40,16 @@ const SpacePage = () => {
   const [members, setMembers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
+  const [deadlineFilters, setDeadlineFilters] = useState<string[]>([]);
   const [spaceCode, setSpaceCode] = useState('');
   const [isMember, setIsMember] = useState<null | boolean>(null);
 
   // Space Info Modal state
+  // Deadline filter handler
+  const handlePriorityFilter = useCallback((priorities: ('low' | 'moderate' | 'high')[], deadlines?: string[]) => {
+    setPriorityFilters(priorities);
+    setDeadlineFilters(deadlines || []);
+  }, []);
   const [showSpaceInfoModal, setShowSpaceInfoModal] = useState(false);
   const openSpaceInfoModal = () => setShowSpaceInfoModal(true);
   const closeSpaceInfoModal = () => setShowSpaceInfoModal(false);
@@ -58,6 +64,7 @@ const SpacePage = () => {
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [assignedTo, setAssignedTo] = useState<string | null>(null);
   const [deadline, setDeadline] = useState<Date | null>(null);
+  const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
 
   // Delete Confirmation Modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -302,7 +309,7 @@ const SpacePage = () => {
                       </div>
                       <div className="lg:ml-4">
                         <PriorityFilter
-                          onFilterChange={(filters) => setPriorityFilters(filters as ('low' | 'moderate' | 'high')[])}
+                          onFilterChange={handlePriorityFilter}
                         />
                       </div> 
                       <div className="lg:ml-4">
@@ -388,20 +395,59 @@ const SpacePage = () => {
                 members={members}
               />
               <TaskGrid
-                  todos={tasks
-                    .filter(task =>
-                      (!searchTerm || (task.title?.toLowerCase().includes(searchTerm.toLowerCase()) || task.description?.toLowerCase().includes(searchTerm.toLowerCase()))) &&
-                      (priorityFilters.length === 0 || priorityFilters.includes(task.priority || task.status || 'low'))
-                    )
-                    .map(task => ({
-                      ...task,
-                      priority: (task.priority || task.status || 'low'),
-                      content: task.content || task.description || '',
-                      assigned_to: task.assigned_to,
-                      assigned_member: members.find(m => m.tbl_users.id === task.assigned_to)?.tbl_users.full_name || 'Unassigned',
-                      deadline: task.deadline || null,
-                    }))
-                  }
+                todos={tasks
+                  .filter(task => {
+                    // Search filter
+                    let matchesSearch = true;
+                    if (searchTerm.trim()) {
+                      const lowerSearchTerm = searchTerm.toLowerCase();
+                      const titleMatch = task.title?.toLowerCase().includes(lowerSearchTerm);
+                      const contentMatch = (task.content || task.description || '').toLowerCase().includes(lowerSearchTerm);
+                      const priorityMatch = (task.priority || task.status || 'low').toLowerCase().includes(lowerSearchTerm);
+                      matchesSearch = titleMatch || contentMatch || priorityMatch;
+                    }
+                    // Priority filter
+                    let matchesPriority = true;
+                    if (priorityFilters.length > 0) {
+                      matchesPriority = priorityFilters.includes(task.priority || task.status || 'low');
+                    }
+                    // Deadline filter
+                    let matchesDeadline = true;
+                    if (deadlineFilters.length > 0) {
+                      const today = new Date();
+                      const deadlineDate = task.deadline ? new Date(task.deadline) : null;
+                      matchesDeadline = deadlineFilters.some(df => {
+                        if (df === 'today') {
+                          return deadlineDate && deadlineDate.getFullYear() === today.getFullYear() && deadlineDate.getMonth() === today.getMonth() && deadlineDate.getDate() === today.getDate();
+                        }
+                        if (df === 'week') {
+                          if (!deadlineDate) return false;
+                          const startOfWeek = new Date(today);
+                          startOfWeek.setDate(today.getDate() - today.getDay());
+                          const endOfWeek = new Date(startOfWeek);
+                          endOfWeek.setDate(startOfWeek.getDate() + 6);
+                          return deadlineDate >= startOfWeek && deadlineDate <= endOfWeek;
+                        }
+                        if (df === 'overdue') {
+                          return deadlineDate && deadlineDate < today;
+                        }
+                        if (df === 'none') {
+                          return !deadlineDate;
+                        }
+                        return true;
+                      });
+                    }
+                    return matchesSearch && matchesPriority && matchesDeadline;
+                  })
+                  .map(task => ({
+                    ...task,
+                    priority: (task.priority || task.status || 'low'),
+                    content: task.content || task.description || '',
+                    assigned_to: task.assigned_to,
+                    assigned_member: members.find(m => m.tbl_users.id === task.assigned_to)?.tbl_users.full_name || 'Unassigned',
+                    deadline: task.deadline || null,
+                  }))
+                }
                 fetchTodos={fetchTasks}
                 startEditing={startEditing}
                 handlePriorityChange={async (id, newStatus) => {

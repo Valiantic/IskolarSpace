@@ -90,7 +90,7 @@ export interface SearchBarProps {
 
 // PriorityFilter Component Types
 export interface PriorityFilterProps {
-  onFilterChange: (priorities: Priority[]) => void;
+  onFilterChange: (priorities: Priority[], deadlines?: string[]) => void;
   className?: string;
 }
 
