@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendAssignmentEmail } from "../../../../lib/emailSender/sendAssignment";
+import { sendDeadlineReminderEmail } from "../../../../lib/emailSender/deadlineReminder";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -118,6 +119,40 @@ export async function PUT(request: NextRequest) {
       }
       if (userProfile?.email && process.env.GMAIL_USER && process.env.GMAIL_PASS) {
         await sendAssignmentEmail(userProfile.email, userProfile.full_name, title ?? '', assignerName, status ?? '', id);
+        // Send deadline reminder email if deadline is today
+        if (deadline) {
+          const today = new Date().toISOString().split('T')[0];
+          const deadlineDate = new Date(deadline).toISOString().split('T')[0];
+          if (deadlineDate === today) {
+            // Fetch space name
+            let spaceName = '';
+            if (id) {
+              const { data: taskData } = await supabase
+                .from('tbl_tasks')
+                .select('space_id')
+                .eq('id', id)
+                .single();
+              if (taskData?.space_id) {
+                const { data: spaceData } = await supabase
+                  .from('tbl_spaces')
+                  .select('name')
+                  .eq('id', taskData.space_id)
+                  .single();
+                if (spaceData?.name) {
+                  spaceName = spaceData.name;
+                }
+              }
+            }
+            await sendDeadlineReminderEmail(
+              userProfile.email,
+              userProfile.full_name,
+              title ?? '',
+              deadlineDate,
+              spaceName,
+              id
+            );
+          }
+        }
       } else {
         console.error('GMAIL_USER or GMAIL_PASS not set, email not sent.', error);
       }
