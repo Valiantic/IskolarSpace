@@ -88,6 +88,7 @@ export async function PUT(request: NextRequest) {
   if (description !== undefined) updateFields.description = description;
   if (status !== undefined) updateFields.status = status;
   if (assigned_to !== undefined) updateFields.assigned_to = assigned_to;
+  if (deadline !== undefined) updateFields.deadline = deadline;
   const { data, error } = await supabase
     .from("tbl_tasks")
     .update(updateFields)
