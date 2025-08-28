@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles} from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
 import TaskGrid from "../components/DashboardBlocks/TaskGrid";
@@ -279,19 +279,22 @@ export default function DashboardPage() {
             {/* Search Bar and Priority Filter */}
             <div className="mb-8">
               <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-center mb-4">
-                <div className="flex-1 max-w-md mx-auto lg:mx-0">
-                  <SearchBar 
-                    onSearch={handleSearch}
-                    placeholder="Search tasks by title, content, or priority..."
-                  />
-                </div>
-                <div className="mx-auto lg:mx-0 lg:ml-4">
-                  <PriorityFilter 
-                    onFilterChange={handlePriorityFilter}
-                  />
+                <div className="flex items-center gap-3 w-full">
+                  <div className="flex flex-1 justify-center items-center gap-4">
+                    <div className="max-w-md w-full">
+                      <SearchBar
+                        onSearch={handleSearch}
+                        placeholder="Search tasks by title, content, or priority..."
+                      />
+                    </div>
+                    <div className="lg:ml-4">
+                      <PriorityFilter
+                        onFilterChange={handlePriorityFilter}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-              
               {/* Search Results Count */}
               {(searchTerm.trim() || priorityFilters.length > 0) && (
                 <div className="text-center space-y-2">
@@ -301,7 +304,6 @@ export default function DashboardPage() {
                       : `${filteredTodos.length} task${filteredTodos.length === 1 ? '' : 's'} found`
                     }
                   </div>
-                  
                   {/* Active Filters Display */}
                   <div className="flex flex-wrap justify-center gap-2">
                     {searchTerm.trim() && (
@@ -330,14 +332,26 @@ export default function DashboardPage() {
             
             {/* Quote */}
             {!searchTerm.trim() && priorityFilters.length === 0 && (
-              <h1 className="text-3xl text-white font-bold mb-6 text-center font-poppins">{quote}</h1>
+              <h1 className="text-lg sm:text-base md:text-xl lg:text-3xl text-white font-bold mt-5 mr-0 text-center font-poppins">
+                {quote}
+              </h1>
             )}
           </>
         )}
+
         {isLoadingTodos ? (
           <LoadingSpinner />
         ) : (
-          <TaskGrid 
+        <>
+         <div className="flex justify-end mb-4 mt-2">
+          <button
+          className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+          >
+          <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
+          AI Study Planner
+          </button>
+        </div>
+        <TaskGrid 
           todos={filteredTodos} 
           fetchTodos={fetchTodos} 
           startEditing={startEditing}
@@ -347,13 +361,14 @@ export default function DashboardPage() {
           priorityFilters={priorityFilters}
           totalTasks={todos.length}
         />
+        </>
         )}
       </div>
       
       {/* Add Task Button */}
       <button 
         onClick={() => setShowInput((prev) => !prev)}
-        className="fixed bottom-8 right-8 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 rounded-full p-4 text-white shadow-lg"
+        className="fixed bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
       >
         <Plus size={24} />
       </button>
