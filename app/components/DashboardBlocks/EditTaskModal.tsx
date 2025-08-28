@@ -52,6 +52,11 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
       } else {
         setEditedDeadline(null);
       }
+      if (typeof setAssignedTo !== 'undefined') {
+        setAssignedTo(editingTodo.assigned_to || null);
+      } else {
+        setLocalAssignedTo(editingTodo.assigned_to || null);
+      }
     }
   }, [editingTaskId]);
 
