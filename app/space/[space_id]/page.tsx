@@ -113,7 +113,7 @@ const SpacePage = () => {
         description: task,
         status: priority,
         created_by: user.id,
-        assigned_to: assignedToArg,
+        assigned_to: assignedToArg === '' ? null : assignedToArg,
         deadline: deadlineToSave
       });
       toast.success('Task created successfully!');
@@ -215,7 +215,7 @@ const SpacePage = () => {
         title: editedTitle.trim() || null,
         description: editedContent,
         status: editedPriority,
-        assigned_to: assignedTo,
+        assigned_to: assignedTo === '' ? null : assignedTo,
         created_by: user?.id,
         deadline: editDeadlineToSave
       });
