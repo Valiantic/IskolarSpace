@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import TaskGrid from '../../components/DashboardBlocks/TaskGrid';
-import { Plus, Orbit } from 'lucide-react';
+import { Plus, Orbit, Sparkles } from 'lucide-react';
 import AddTaskModal from '../../components/DashboardBlocks/AddTaskModal';
 import Sidebar from '../../components/DashboardBlocks/Sidebar';
 import SpaceBackground from '../../components/DashboardBlocks/SpaceBackground';
@@ -325,7 +325,7 @@ const SpacePage = () => {
                   </div>
                 </div>
                 {/* Space Name below search/filter */}
-                <h1 className="text-3xl text-white font-bold mt-5 text-center font-poppins">
+                <h1 className="text-lg sm:text-base md:text-xl lg:text-3xl text-white font-bold mt-5 mr-0 text-center font-poppins">
                   {isLoadingMembers ? 'Loading...' : `${spaceName}`}
                 </h1>
                 {(searchTerm.trim() || priorityFilters.length > 0) && (
@@ -371,12 +371,20 @@ const SpacePage = () => {
                 )}
               </div>
               {/* Add Task Button */}
-              <button
+                <div className="flex justify-end mb-4 mt-2">
+                    <button
+                      className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+                    >
+                      <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
+                      AI Study Planner
+                    </button>
+                </div>
+                <button
                 onClick={() => setShowInput((prev) => !prev)}
-                className="fixed bottom-8 right-8 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 rounded-full p-4 text-white shadow-lg"
-              >
+                  className="fixed z-[1000] bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
+                >
                 <Plus size={24} />
-              </button>
+                </button>
               {/* Tasks Section */}
               <AddTaskModal
                 showInput={showInput}

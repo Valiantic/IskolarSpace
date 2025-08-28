@@ -61,7 +61,6 @@ const TaskGrid: React.FC<ExtendedTaskGridProps> = ({
   return (
     <>
       {todos.length === 0 ? (
-        // Show NoTaskBanner when there are no tasks
         <div className="mt-10 animate-fadeIn">
           <NoTaskBanner 
             searchTerm={searchTerm}
@@ -70,107 +69,101 @@ const TaskGrid: React.FC<ExtendedTaskGridProps> = ({
           />
         </div>
       ) : (
-        // Show tasks grid when there are tasks
-        <div className="mt-20 grid p-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mx-auto">
+        <div className="mt-7 flex flex-col p-4 gap-4 sm:gap-6 mx-auto w-full">
           {sortedTodos.map((todo, index) => {
             const priorityConfig = getPriorityConfig(todo.priority);
-            return (        
-            <div
-              key={todo.id}
-              className={`${cardColors[index % cardColors.length]} rounded-lg p-4 sm:p-5 shadow-lg min-h-[120px] w-full flex 
-              flex-col justify-between backdrop-blur-sm bg-opacity-80 transform hover:scale-105 transition-transform
-               duration-200 cursor-pointer animate-fadeIn relative`}
+            return (
+              <div
+                key={todo.id}
+                className={`${cardColors[index % cardColors.length]} rounded-lg p-4 sm:p-5 shadow-lg min-h-[120px] w-full flex flex-col justify-between transform hover:scale-[1.01] transition-transform duration-200 cursor-pointer animate-fadeIn relative border border-gray-200`}
                 onClick={() => startEditing(todo)}
-            >
-              {/* Priority Badge */}
-              <div className={`absolute top-2 right-2 px-2 py-1 rounded-full ${priorityConfig.bgColor} ${priorityConfig.borderColor} border backdrop-blur-sm`}>
-                <div className={`flex items-center gap-1 ${priorityConfig.color}`}>
-                  {priorityConfig.icon}
-                  <span className="text-xs font-medium font-poppins">{todo.priority.toUpperCase()}</span>
-                </div>
-              </div>
-
-              <div 
-                className="flex-1 pr-16"
               >
-                {/* Display title if available, otherwise show truncated content */}
-                {todo.title ? (
-                  <div>
-                    <h3 className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins mb-1">
-                      {todo.title}
-                    </h3>
-                    <p className="text-white/80 text-sm sm:text-base line-clamp-2 font-poppins">
-                      {todo.content.length > 60 ? `${todo.content.substring(0, 60)}...` : todo.content}
+                {/* Priority Badge */}
+                <div className={`absolute top-2 right-2 px-2 py-1 rounded-full ${priorityConfig.bgColor} ${priorityConfig.borderColor} border backdrop-blur-sm`}>
+                  <div className={`flex items-center gap-1 ${priorityConfig.color}`}>
+                    {priorityConfig.icon}
+                    <span className="text-xs font-medium font-poppins">{todo.priority.toUpperCase()}</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 pr-16">
+                  {/* Display title if available, otherwise show truncated content */}
+                  {todo.title ? (
+                    <div>
+                      <h3 className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins mb-1">
+                        {todo.title}
+                      </h3>
+                      <p className="text-white text-sm sm:text-base line-clamp-2 font-poppins">
+                        {todo.content.length > 60 ? `${todo.content.substring(0, 60)}...` : todo.content}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-900 sm:text-lg md:text-2xl font-bold break-words font-poppins">
+                      {todo.content}
                     </p>
-                  </div>
-                ) : (
-                  <p className="text-white sm:text-lg md:text-2xl font-bold break-words font-poppins">
-                    {todo.content}
-                  </p>
-                )}
+                  )}
 
-              {showAssignedMember && (
-                <div>
-                  <span className="text-sm text-white font-bold">
-                       <Pin className="inline-block mr-1" /> Assigned to: {todo.assigned_member}
-                  </span>
+                  {showAssignedMember && (
+                    <div>
+                      <span className="text-sm text-white font-bold">
+                        <Pin className="inline-block mr-1" /> Assigned to: {todo.assigned_member}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-
-              </div>
-              <div className="flex justify-end gap-2 mt-4">
-                <div className="relative flex items-center">
-                  {todo.deadline && (() => {
-                    const deadlineDate = new Date(todo.deadline);
-                    const today = new Date();
-                    const isToday = deadlineDate.getFullYear() === today.getFullYear() &&
-                      deadlineDate.getMonth() === today.getMonth() &&
-                      deadlineDate.getDate() === today.getDate();
-                    return (
-                      <div className={`flex items-center px-2 py-1 rounded-md mr-2 ${isToday ? 'bg-red-700/80' : 'bg-black/20'}`}>
-                        <Clock size={14} className={`${isToday ? 'text-red-300' : 'text-white'} mr-1`} />
-                        <span className={`font-poppins text-lg ${isToday ? 'text-red-300 font-bold' : 'text-white'}`}>
-                          {deadlineDate.toLocaleDateString()}
-                        </span>
-                      </div>
-                    );
-                  })()}
-                  {/* Priority Dropdown with Orb Inside */}
-                  <div className="relative flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-md hover:bg-black hover:shadow-md transition-all duration-200">
-                    {/* Pulsing Priority Orb */}
-                    <div className={`w-3 h-3 rounded-full ${
-                      todo.priority === 'low' 
-                        ? 'bg-green-400 animate-pulse-green' 
-                        : todo.priority === 'moderate'
-                        ? 'bg-orange-400 animate-pulse-orange'
-                        : 'bg-red-400 animate-pulse-red'
-                    }`}></div>
-                    
-                    <select
-                      value={todo.priority}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        handlePriorityChange(todo.id, e.target.value as 'low' | 'moderate' | 'high');
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                      className="appearance-none p-1 bg-transparent text-white border-0 focus:outline-none transition-all duration-200 cursor-pointer font-poppins text-xs font-medium text-left pr-4"
-                    >
-                      <option value="low" className="bg-slate-800 text-white">Low</option>
-                      <option value="moderate" className="bg-slate-800 text-white">Moderate</option>
-                      <option value="high" className="bg-slate-800 text-white">High</option>
-                    </select>
-                    <ChevronDown 
-                      size={12} 
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 pointer-events-none" 
-                    />
+                <div className="flex justify-end gap-2 mt-4">
+                  <div className="relative flex items-center">
+                    {todo.deadline && (() => {
+                      const deadlineDate = new Date(todo.deadline);
+                      const today = new Date();
+                      const isToday = deadlineDate.getFullYear() === today.getFullYear() &&
+                        deadlineDate.getMonth() === today.getMonth() &&
+                        deadlineDate.getDate() === today.getDate();
+                      return (
+                        <div className={`flex items-center px-2 py-1 rounded-md mr-2 ${isToday ? 'bg-red-700/80' : 'bg-gray-200'}`}>
+                          <Clock size={14} className={`${isToday ? 'text-red-500' : 'text-gray-700'} mr-1`} />
+                          <span className={`font-poppins text-lg ${isToday ? 'text-red-500 font-bold' : 'text-gray-700'}`}>
+                            {deadlineDate.toLocaleDateString()}
+                          </span>
+                        </div>
+                      );
+                    })()}
+                    {/* Priority Dropdown with Orb Inside */}
+                    <div className="relative flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200 hover:shadow-md transition-all duration-200">
+                      {/* Pulsing Priority Orb */}
+                      <div className={`w-3 h-3 rounded-full ${
+                        todo.priority === 'low' 
+                          ? 'bg-green-400 animate-pulse-green' 
+                          : todo.priority === 'moderate'
+                          ? 'bg-orange-400 animate-pulse-orange'
+                          : 'bg-red-400 animate-pulse-red'
+                      }`}></div>
+                      <select
+                        value={todo.priority}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handlePriorityChange(todo.id, e.target.value as 'low' | 'moderate' | 'high');
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="appearance-none p-1 bg-transparent text-gray-900 border-0 focus:outline-none transition-all duration-200 cursor-pointer font-poppins text-xs font-medium text-left pr-4"
+                      >
+                        <option value="low" className="bg-gray-100 text-gray-900">Low</option>
+                        <option value="moderate" className="bg-gray-100 text-gray-900">Moderate</option>
+                        <option value="high" className="bg-gray-100 text-gray-900">High</option>
+                      </select>
+                      <ChevronDown 
+                        size={12} 
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" 
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )})}
+          );
+          })}
         </div>
       )}
-    </>  );
-};
+    </>
+)};
 
 export default TaskGrid;
