@@ -16,6 +16,7 @@ import PriorityFilter from "../components/DashboardBlocks/PriorityFilter";
 import LoadingSpinner from "../components/DashboardBlocks/Loader";
 import { useAuth } from "../hooks/auth/useAuth";
 import useSidebar from "../hooks/dashboard/useSidebar";
+import StudyPlanner from '../components/DashboardBlocks/StudyPlannerModal';
 import { Todo } from "../types/dashboard";
 
 export default function DashboardPage() {
@@ -43,6 +44,11 @@ export default function DashboardPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
   const [quote, setQuote] = useState('');
+
+  // AI Study Planner 
+  const [openStudyPlanner, setOpenStudyPlanner] = useState(false);  
+  const openModal = () => setOpenStudyPlanner(true);
+  const closeModal = () => setOpenStudyPlanner(false);
 
   // FUNCTION TO FETCH TASK FROM SUPABASE - Moved up and wrapped in useCallback  
   const fetchTodos = useCallback(async () => {
@@ -345,10 +351,11 @@ export default function DashboardPage() {
         <>
          <div className="flex justify-end mb-4 mt-2">
           <button
-          className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+            onClick={openModal}
+            className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
           >
-          <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
-          AI Study Planner
+            <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
+            AI Study Planner
           </button>
         </div>
         <TaskGrid 
@@ -409,6 +416,12 @@ export default function DashboardPage() {
         setShowDeleteModal={setShowDeleteModal}
         setTodoToDelete={setTodoToDelete}
         cancelEditing={cancelEditing}
+      />
+
+      {/* Study Planner Modal */}
+      <StudyPlanner
+        isOpen={openStudyPlanner}
+        onClose={closeModal}
       />
       </div>
     </div>

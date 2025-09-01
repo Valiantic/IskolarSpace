@@ -18,6 +18,7 @@ import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
+import StudyPlannerModal from '../../components/DashboardBlocks/StudyPlannerModal';
 import useRequireAuth from '../../hooks/auth/useRequireAuth';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -53,6 +54,11 @@ const SpacePage = () => {
   const [showSpaceInfoModal, setShowSpaceInfoModal] = useState(false);
   const openSpaceInfoModal = () => setShowSpaceInfoModal(true);
   const closeSpaceInfoModal = () => setShowSpaceInfoModal(false);
+
+  // Study Planner Modal 
+  const [showStudyPlannerModal, setShowStudyPlannerModal] = useState(false);
+  const openStudyPlannerModal = () => setShowStudyPlannerModal(true);
+  const closeStudyPlannerModal = () => setShowStudyPlannerModal(false);
 
   // Task Grid
   const [tasks, setTasks] = useState<any[]>([]);
@@ -374,6 +380,7 @@ const SpacePage = () => {
                 <div className="flex justify-end mb-4 mt-2">
                     <button
                       className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+                      onClick={openStudyPlannerModal}
                     >
                       <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
                       AI Study Planner
@@ -519,6 +526,11 @@ const SpacePage = () => {
                 error={membersError}
                 onLeaveSpace={handleLeaveSpace}
                 leaving={leaving}
+              />
+
+              <StudyPlannerModal
+                isOpen={showStudyPlannerModal}
+                onClose={closeStudyPlannerModal}
               />
             </>
           )}
