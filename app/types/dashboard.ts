@@ -159,3 +159,8 @@ export type ExtendedTaskGridProps = TaskGridProps & {
   showAssignedMember?: boolean;
   deadline: Date | null;  
 };
+
+export type StudyPlannerProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
