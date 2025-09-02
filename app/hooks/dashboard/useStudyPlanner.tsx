@@ -1,17 +1,32 @@
-import React from 'react'
+"use client";
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { createClient } from '@supabase/supabase-js';
+import { useStudyPlannerContext } from '../../contexts/StudyPlannerContext';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-const useStudyPlanner = ({ onClose }: { onClose: () => void }) => {
-  const [selectedType, setSelectedType] = React.useState<'day' | 'month' | 'year' | null>(null);
+const useStudyPlanner = ({ onClose, userId, openAddTaskWithAIPlan }: { 
+  onClose: () => void, 
+  userId: string,
+  openAddTaskWithAIPlan?: (planTitle: string, planContent: string) => void
+}) => {
+  const { aiPlan, setAiPlan, selectedType, setSelectedType, setPlanTitle } = useStudyPlannerContext();
 
-  const handleTypeClick = (type: 'day' | 'month' | 'year') => {
+  const handleTypeClick = (type: 'day' | 'week' | 'month') => {
     setSelectedType(type);
   };
-  const [content, setContent] = React.useState('')
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [content, setContent] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleClose = () => {
     setContent('')
+    setSelectedType(null)
+    setAiPlan('')
+    setPlanTitle('')
     onClose()
   }
   
@@ -21,15 +36,90 @@ const useStudyPlanner = ({ onClose }: { onClose: () => void }) => {
       }
   }
 
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handlePlan = async (range: "day" | "week" | "month") => {
+    setLoading(true);
+    setAiPlan(""); 
+    setPlanTitle(`IskolarSpace Generated ${range.charAt(0).toUpperCase() + range.slice(1)} Study Plan`);
+
+    const { data: tasks, error } = await supabase
+      .from("tbl_todos")
+      .select("*")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Database error:", error);
+      toast.error("Error fetching tasks from database.");
+      setLoading(false);
+      return;
+    }
+
+    if (!tasks || tasks.length === 0) {
+      toast.error("No tasks found. Add tasks before planning.");
+      setLoading(false);
+      return;
+    }
+
+    const prompt = `
+    You are an academic study planner. Based on the following tasks, generate a ${range}-based schedule:
+    ${tasks.map((t) => `- ${t.title || t.content} (due: ${t.deadline || 'No deadline'})`).join("\n")}
+    Include time blocks, priorities, and motivational tips. don't add text column or rows such as | -.
+    `;
+
+    try {
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        body: JSON.stringify({ prompt }),
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      if (!res.ok) {
+        throw new Error(`API request failed with status ${res.status}`);
+      }
+
+      const result = await res.json();
+
+      if (result.plan) {
+        setAiPlan(result.plan);
+        toast.success("Study plan generated successfully!");
+        
+        // Automatically open AddTaskModal with AI plan content
+        if (openAddTaskWithAIPlan) {
+          const planTitle = `IskolarSpace Generated ${range.charAt(0).toUpperCase() + range.slice(1)} Study Plan`;
+          openAddTaskWithAIPlan(planTitle, result.plan);
+        }
+      } else if (result.error) {
+        toast.error(`API Error: ${result.error}`);
+      } else {
+        setAiPlan("Test plan - API returned but no plan field found");
+        toast.error("No plan received from AI.");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      toast.error("Failed to generate plan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     content,
     isLoading,
     setContent,
     setIsLoading,
     handleBackdropClick,
-    handleClose
-  ,selectedType,
-  handleTypeClick
+    handleClose,
+    selectedType,
+    handleTypeClick,
+    showModal,
+    setShowModal,
+    aiPlan,
+    setAiPlan,
+    loading,
+    handlePlan,
+    setSelectedType,
   }
 }
 

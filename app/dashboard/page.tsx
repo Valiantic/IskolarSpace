@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { Plus, Sparkles} from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
@@ -17,12 +16,14 @@ import LoadingSpinner from "../components/DashboardBlocks/Loader";
 import { useAuth } from "../hooks/auth/useAuth";
 import useSidebar from "../hooks/dashboard/useSidebar";
 import StudyPlanner from '../components/DashboardBlocks/StudyPlannerModal';
+import { StudyPlannerProvider } from '../contexts/StudyPlannerContext';
 import { Todo } from "../types/dashboard";
 
 export default function DashboardPage() {
   const { isAuthenticated, authLoading, logout, requireAuth } = useAuth();
   const { userFullName, profilePicture } = useSidebar();
-  
+
+  const [userId, setUserId] = useState<string | null>(null);
   const [task, setTask] = useState("");
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>("low");
@@ -50,18 +51,27 @@ export default function DashboardPage() {
   const openModal = () => setOpenStudyPlanner(true);
   const closeModal = () => setOpenStudyPlanner(false);
 
-  // FUNCTION TO FETCH TASK FROM SUPABASE - Moved up and wrapped in useCallback  
+  // Function to open AddTaskModal with AI plan data
+  const openAddTaskWithAIPlan = (planTitle: string, planContent: string) => {
+    setTitle(planTitle);
+    setTask(planContent);
+    setShowInput(true);
+    setOpenStudyPlanner(false); // Close the study planner modal
+  };
+
+
+  // Fetch userId and todos
   const fetchTodos = useCallback(async () => {
-    // Get user id from localStorage/sessionStorage or useSidebar if needed
     const { data: { session } } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
-    if (!userId) return;
+    const uid = session?.user?.id;
+    if (!uid) return;
+    setUserId(uid);
     setIsLoadingTodos(true);
     const { data, error } = await supabase
       .from("tbl_todos")
       .select("id, title, content, user_id, created_at, priority, deadline")
       .order("created_at", { ascending: false })
-      .eq('user_id', userId);
+      .eq('user_id', uid);
     if (error) {
       console.error("Error fetching todos:", error);
     } else {
@@ -268,162 +278,168 @@ export default function DashboardPage() {
   if (!isAuthenticated) {
     return null;
   }  return (
-    <div className="relative">
-      <SpaceBackground />
-      <div className="min-h-screen relative">
-      
-      <Sidebar
-        userFullName={userFullName}
-        profilePicture={profilePicture}
-        handleLogout={logout}
-      />
-      
-      {/* Content Container */}
-      <div className="lg:ml-80 p-7 pt-10">
-        {todos.length > 0 && !isLoadingTodos && (
-          <>
-            {/* Search Bar and Priority Filter */}
-            <div className="mb-8">
-              <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-center mb-4">
-                <div className="flex items-center gap-3 w-full">
-                  <div className="flex flex-1 justify-center items-center gap-4">
-                    <div className="max-w-md w-full">
-                      <SearchBar
-                        onSearch={handleSearch}
-                        placeholder="Search tasks by title, content, or priority..."
-                      />
-                    </div>
-                    <div className="lg:ml-4">
-                      <PriorityFilter
-                        onFilterChange={handlePriorityFilter}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Search Results Count */}
-              {(searchTerm.trim() || priorityFilters.length > 0) && (
-                <div className="text-center space-y-2">
-                  <div className="text-white/70 text-sm font-poppins">
-                    {filteredTodos.length === 0 
-                      ? 'No tasks found' 
-                      : `${filteredTodos.length} task${filteredTodos.length === 1 ? '' : 's'} found`
-                    }
-                  </div>
-                  {/* Active Filters Display */}
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {searchTerm.trim() && (
-                      <span className="px-3 py-1 bg-blue-500/20 border border-blue-400/50 rounded-full text-blue-300 text-xs font-poppins">
-                        Search: "{searchTerm}"
-                      </span>
-                    )}
-                    {priorityFilters.map(priority => (
-                      <span 
-                        key={priority}
-                        className={`px-3 py-1 rounded-full text-xs font-poppins border ${
-                          priority === 'high' 
-                            ? 'bg-red-500/20 border-red-400/50 text-red-300'
-                            : priority === 'moderate'
-                            ? 'bg-yellow-500/20 border-yellow-400/50 text-yellow-300'
-                            : 'bg-green-500/20 border-green-400/50 text-green-300'
-                        }`}
-                      >
-                        {priority.charAt(0).toUpperCase() + priority.slice(1)} Priority
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {/* Quote */}
-            {!searchTerm.trim() && priorityFilters.length === 0 && (
-              <h1 className="text-lg sm:text-base md:text-xl lg:text-3xl text-white font-bold mt-5 mr-0 text-center font-poppins">
-                {quote}
-              </h1>
-            )}
-          </>
-        )}
-
-        {isLoadingTodos ? (
-          <LoadingSpinner />
-        ) : (
-        <>
-         <div className="flex justify-end mb-4 mt-2">
-          <button
-            onClick={openModal}
-            className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
-          >
-            <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
-            AI Study Planner
-          </button>
-        </div>
-        <TaskGrid 
-          todos={filteredTodos} 
-          fetchTodos={fetchTodos} 
-          startEditing={startEditing}
-          deadline={deadline}
-          handlePriorityChange={handlePriorityChange}
-          searchTerm={searchTerm}
-          priorityFilters={priorityFilters}
-          totalTasks={todos.length}
+    <StudyPlannerProvider>
+      <div className="relative">
+        <SpaceBackground />
+        <div className="min-h-screen relative">
+        
+        <Sidebar
+          userFullName={userFullName}
+          profilePicture={profilePicture}
+          handleLogout={logout}
         />
-        </>
-        )}
-      </div>
-      
-      {/* Add Task Button */}
-      <button 
-        onClick={() => setShowInput((prev) => !prev)}
-        className="fixed bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
-      >
-        <Plus size={24} />
-      </button>
-      
-      {/* Task Input Modal */}
-      <AddTaskModal
-        showInput={showInput}
-        title={title}
-        task={task}
-        priority={priority}
-        deadline={deadline}
-        setTitle={setTitle}
-        setTask={setTask}
-        setPriority={setPriority}
-        setDeadline={setDeadline}
-        handleAddTask={handleAddTask}
-        setShowInput={setShowInput}
-      />
-      
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
-        showDeleteModal={showDeleteModal}
-        handleDelete={handleDelete}
-        setShowDeleteModal={setShowDeleteModal}
-      />
-      
-      {/* Edit Task Modal */}
-      <EditTaskModal
-        editingTaskId={editingTaskId}
-        todos={todos}
-        editedContent={editedContent}
-        editedTitle={editedTitle}
-        editedDeadline={editedDeadline}
-        setEditedContent={setEditedContent}
-        setEditedTitle={setEditedTitle}
-        setEditedDeadline={setEditedDeadline}
-        handleSaveEdit={handleSaveEdit}
-        setShowDeleteModal={setShowDeleteModal}
-        setTodoToDelete={setTodoToDelete}
-        cancelEditing={cancelEditing}
-      />
+        
+        {/* Content Container */}
+        <div className="lg:ml-80 p-7 pt-10">
+          {todos.length > 0 && !isLoadingTodos && (
+            <>
+              {/* Search Bar and Priority Filter */}
+              <div className="mb-8">
+                <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-center mb-4">
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="flex flex-1 justify-center items-center gap-4">
+                      <div className="max-w-md w-full">
+                        <SearchBar
+                          onSearch={handleSearch}
+                          placeholder="Search tasks by title, content, or priority..."
+                        />
+                      </div>
+                      <div className="lg:ml-4">
+                        <PriorityFilter
+                          onFilterChange={handlePriorityFilter}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Search Results Count */}
+                {(searchTerm.trim() || priorityFilters.length > 0) && (
+                  <div className="text-center space-y-2">
+                    <div className="text-white/70 text-sm font-poppins">
+                      {filteredTodos.length === 0 
+                        ? 'No tasks found' 
+                        : `${filteredTodos.length} task${filteredTodos.length === 1 ? '' : 's'} found`
+                      }
+                    </div>
+                    {/* Active Filters Display */}
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {searchTerm.trim() && (
+                        <span className="px-3 py-1 bg-blue-500/20 border border-blue-400/50 rounded-full text-blue-300 text-xs font-poppins">
+                          Search: "{searchTerm}"
+                        </span>
+                      )}
+                      {priorityFilters.map(priority => (
+                        <span 
+                          key={priority}
+                          className={`px-3 py-1 rounded-full text-xs font-poppins border ${
+                            priority === 'high' 
+                              ? 'bg-red-500/20 border-red-400/50 text-red-300'
+                              : priority === 'moderate'
+                              ? 'bg-yellow-500/20 border-yellow-400/50 text-yellow-300'
+                              : 'bg-green-500/20 border-green-400/50 text-green-300'
+                          }`}
+                        >
+                          {priority.charAt(0).toUpperCase() + priority.slice(1)} Priority
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Quote */}
+              {!searchTerm.trim() && priorityFilters.length === 0 && (
+                <h1 className="text-lg sm:text-base md:text-xl lg:text-3xl text-white font-bold mt-5 mr-0 text-center font-poppins">
+                  {quote}
+                </h1>
+              )}
+            </>
+          )}
 
-      {/* Study Planner Modal */}
-      <StudyPlanner
-        isOpen={openStudyPlanner}
-        onClose={closeModal}
-      />
+          {isLoadingTodos ? (
+            <LoadingSpinner />
+          ) : (
+          <>
+          {filteredTodos.length > 0 && (
+            <div className="flex justify-end mb-4 mt-2">
+              <button
+                onClick={openModal}
+                className="font-poppins border border-blue-500/90 transition-transform duration-200 hover:scale-110 font-bold bg-slate-800 rounded-full p-3 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+              >
+                Plan with AI
+                <Sparkles className="inline-block ml-1 mb-1 w-4 h-4 sm:w-5 sm:h-5 text-cyan-400/90" />
+              </button>
+            </div>
+          )}
+          <TaskGrid 
+            todos={filteredTodos} 
+            fetchTodos={fetchTodos} 
+            startEditing={startEditing}
+            deadline={deadline}
+            handlePriorityChange={handlePriorityChange}
+            searchTerm={searchTerm}
+            priorityFilters={priorityFilters}
+            totalTasks={todos.length}
+          />
+          </>
+          )}
+        </div>
+        
+        {/* Add Task Button */}
+        <button 
+          onClick={() => setShowInput((prev) => !prev)}
+          className="fixed bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
+        >
+          <Plus size={24} />
+        </button>
+        
+        {/* Task Input Modal */}
+        <AddTaskModal
+          showInput={showInput}
+          title={title}
+          task={task}
+          priority={priority}
+          deadline={deadline}
+          setTitle={setTitle}
+          setTask={setTask}
+          setPriority={setPriority}
+          setDeadline={setDeadline}
+          handleAddTask={handleAddTask}
+          setShowInput={setShowInput}
+        />
+        
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          showDeleteModal={showDeleteModal}
+          handleDelete={handleDelete}
+          setShowDeleteModal={setShowDeleteModal}
+        />
+        
+        {/* Edit Task Modal */}
+        <EditTaskModal
+          editingTaskId={editingTaskId}
+          todos={todos}
+          editedContent={editedContent}
+          editedTitle={editedTitle}
+          editedDeadline={editedDeadline}
+          setEditedContent={setEditedContent}
+          setEditedTitle={setEditedTitle}
+          setEditedDeadline={setEditedDeadline}
+          handleSaveEdit={handleSaveEdit}
+          setShowDeleteModal={setShowDeleteModal}
+          setTodoToDelete={setTodoToDelete}
+          cancelEditing={cancelEditing}
+        />
+
+        {/* Study Planner Modal */}
+        <StudyPlanner
+          isOpen={openStudyPlanner}
+          onClose={closeModal}
+          userId={userId || ""}
+          openAddTaskWithAIPlan={openAddTaskWithAIPlan}
+        />
+        </div>
       </div>
-    </div>
+    </StudyPlannerProvider>
   );
 };

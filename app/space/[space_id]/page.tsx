@@ -377,15 +377,15 @@ const SpacePage = () => {
                 )}
               </div>
               {/* Add Task Button */}
-                <div className="flex justify-end mb-4 mt-2">
+                {/* <div className="flex justify-end mb-4 mt-2">
                     <button
-                      className="font-poppins transition-transform duration-200 hover:scale-110 font-bold bg-gradient-to-r from-slate-500 via-sky-500 to-sky-700 hover:from-slate-600 hover:via-sky-600 hover:to-sky-800 rounded-full p-2 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+                      className="font-poppins border border-blue-500/90 transition-transform duration-200 hover:scale-110 font-bold bg-slate-800 rounded-full p-3 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
                       onClick={openStudyPlannerModal}
                     >
-                      <Sparkles className="inline-block mr-1 mb-1 w-4 h-4 sm:w-5 sm:h-5" />
-                      AI Study Planner
+                      Plan with AI
+                      <Sparkles className="inline-block ml-1 mb-1 w-4 h-4 sm:w-5 sm:h-5 text-cyan-400/90" />
                     </button>
-                </div>
+                </div> */}
                 <button
                 onClick={() => setShowInput((prev) => !prev)}
                   className="fixed z-[1000] bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
@@ -531,6 +531,7 @@ const SpacePage = () => {
               <StudyPlannerModal
                 isOpen={showStudyPlannerModal}
                 onClose={closeStudyPlannerModal}
+                userId={userId}
               />
             </>
           )}

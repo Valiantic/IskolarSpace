@@ -163,4 +163,6 @@ export type ExtendedTaskGridProps = TaskGridProps & {
 export type StudyPlannerProps = {
   isOpen: boolean;
   onClose: () => void;
+  userId: string;
+  openAddTaskWithAIPlan?: (planTitle: string, planContent: string) => void;
 };
