@@ -5,17 +5,16 @@ import { X, Sparkles, Sun, Moon, Calendar1, Rocket } from 'lucide-react';
 import { StudyPlannerProps } from '../../types/dashboard';
 import useStudyPlanner from '../../hooks/dashboard/useStudyPlanner';
 
-const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose }) => {
+const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose, userId, openAddTaskWithAIPlan }) => {
   const {
-    content,
-    isLoading,
-    setContent,
-    setIsLoading,
     handleClose,
     handleBackdropClick,
     selectedType,
-    handleTypeClick
-  } = useStudyPlanner({ onClose });
+    handleTypeClick,
+    aiPlan,
+    loading,
+    handlePlan,
+  } = useStudyPlanner({ onClose, userId, openAddTaskWithAIPlan });
 
   if (!isOpen) return null;
 
@@ -26,7 +25,7 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose }) => {
       style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <div
-        className="relative bg-gradient-to-br from-slate-900/95 to-slate-800/95 border border-cyan-500/30 rounded-2xl p-4 sm:p-6 w-full max-w-md mx-4 shadow-2xl backdrop-blur-lg"
+        className="relative bg-gradient-to-br from-slate-900/95 to-slate-800/95 border border-cyan-500/30 rounded-2xl p-4 sm:p-6 w-full max-w-2xl mx-4 shadow-2xl backdrop-blur-lg max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
         style={{ position: 'relative', zIndex: 1000 }}
       >
@@ -50,51 +49,89 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          <div className="flex items-center mt-2">
-            <p className="text-lg font-poppins text-gray-300">
-              Welcome to AI Study Planner! Let's create your task schedule to help your learning journey.
-            </p>
-          </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-8 rounded-lg">
+              <video
+                autoPlay
+                loop
+                muted
+                className="w-32 h-32 sm:w-40 sm:h-40 mb-4 rounded-2xl object-cover"
+              >
+                <source src="/videos/studyplannerload.webm" type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-cyan-400 mb-2 font-poppins">
+                  Generating Your Study Plan...
+                </h3>
+                <p className="text-gray-300 font-poppins text-sm">
+                  AI is analyzing your tasks and creating an optimized schedule
+                </p>
+              </div>
+            </div>
+          )}
 
-          <div className="flex justify-center items-center mt-2">
-            <p className="text-lg font-poppins text-gray-300">
-              Generate a Schedule for:
-            </p>
-          </div>
+          {/* Main Content - Hidden during loading */}
+          {!loading && !aiPlan && (
+            <>
+              <div className="flex items-center mt-3 mb-3">
+                <p className="text-lg font-poppins text-gray-300">
+                  Welcome to AI Study Planner! Let's create your task schedule to help your learning journey.
+                </p>
+              </div>
 
-          <div className='flex gap-6 p-6 justify-center'>
-            <button
-              className={`w-40 h-35 rounded-full border-2 flex flex-col justify-center items-center p-6 transition-all duration-200 ${selectedType === 'day' ? 'border-cyan-400 bg-cyan-700 shadow-lg' : 'border-cyan-400 bg-transparent'}`}
-              style={{ fontSize: '1.25rem' }}
-              onClick={() => handleTypeClick('day')}
-            >
-              <Sun size={20} className={selectedType === 'day' ? 'text-white' : 'text-cyan-400'} />
-              <span className="block text-base font-poppins text-white mt-3">Day</span>
-            </button>
-            <button
-              className={`w-40 h-35 rounded-full border-2 flex flex-col justify-center items-center p-6 transition-all duration-200 ${selectedType === 'month' ? 'border-cyan-400 bg-cyan-700 shadow-lg' : 'border-cyan-400 bg-transparent'}`}
-              style={{ fontSize: '1.25rem' }}
-              onClick={() => handleTypeClick('month')}
-            >
-              <Moon size={20} className={selectedType === 'month' ? 'text-white' : 'text-cyan-400'} />
-              <span className="block text-base font-poppins text-white mt-3">Week</span>
-            </button>
-            <button
-              className={`w-40 h-35 rounded-full border-2 flex flex-col justify-center items-center p-6 transition-all duration-200 ${selectedType === 'year' ? 'border-cyan-400 bg-cyan-700 shadow-lg' : 'border-cyan-400 bg-transparent'}`}
-              style={{ fontSize: '1.25rem' }}
-              onClick={() => handleTypeClick('year')}
-            >
-              <Calendar1 size={20} className={selectedType === 'year' ? 'text-white' : 'text-cyan-400'} />
-              <span className="block text-base font-poppins text-white mt-3">Month</span>
-            </button>
-          </div>
+              <div className="flex justify-center items-center mt-2">
+                <p className="text-lg font-poppins text-gray-300">
+                  Generate a Schedule for:
+                </p>
+              </div>
 
-          <div className='flex justify-center mt-2'>
-            <button className='font-poppins w-full text-xl sm:text-xl text-white bg-cyan-500 hover:bg-cyan-600 rounded-lg py-2'>
-              Generate Study Plan
-              <Sparkles size={20} className="text-white inline-block ml-2" />
-            </button>
-          </div>
+              <div className='flex gap-6 p-6 mt-7 mb-7 justify-center'>
+                <button
+                  className={`w-40 h-35 rounded-full border-2 flex flex-col justify-center items-center p-6 transition-all duration-200 ${selectedType === 'day' ? 'border-cyan-400 bg-cyan-700 shadow-lg' : 'border-cyan-400 bg-transparent'}`}
+                  style={{ fontSize: '1.25rem' }}
+                  onClick={() => handleTypeClick('day')}
+                >
+                  <Sun size={20} className={selectedType === 'day' ? 'text-white' : 'text-cyan-400'} />
+                  <span className="block text-base font-poppins text-white mt-3">Day</span>
+                </button>
+                <button
+                  className={`w-40 h-35 rounded-full border-2 flex flex-col justify-center items-center p-6 transition-all duration-200 ${selectedType === 'week' ? 'border-cyan-400 bg-cyan-700 shadow-lg' : 'border-cyan-400 bg-transparent'}`}
+                  style={{ fontSize: '1.25rem' }}
+                  onClick={() => handleTypeClick('week')}
+                >
+                  <Moon size={20} className={selectedType === 'week' ? 'text-white' : 'text-cyan-400'} />
+                  <span className="block text-base font-poppins text-white mt-3">Week</span>
+                </button>
+                <button
+                  className={`w-40 h-35 rounded-full border-2 flex flex-col justify-center items-center p-6 transition-all duration-200 ${selectedType === 'month' ? 'border-cyan-400 bg-cyan-700 shadow-lg' : 'border-cyan-400 bg-transparent'}`}
+                  style={{ fontSize: '1.25rem' }}
+                  onClick={() => handleTypeClick('month')}
+                >
+                  <Calendar1 size={20} className={selectedType === 'month' ? 'text-white' : 'text-cyan-400'} />
+                  <span className="block text-base font-poppins text-white mt-3">Month</span>
+                </button>
+              </div>
+
+              <div className='flex justify-center mt-2'>
+                <button 
+                  onClick={() => selectedType && handlePlan(selectedType)}
+                  disabled={!selectedType}
+                  className={`font-poppins w-full text-xl sm:text-xl text-white rounded-lg py-4 ${
+                    !selectedType 
+                      ? 'bg-gray-500 cursor-not-allowed' 
+                      : 'bg-cyan-500 hover:bg-cyan-600'
+                  }`}
+                >
+                  Generate Study Plan
+                  <Sparkles size={20} className="text-white inline-block ml-2" />
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Generated Plan Display - Removed, now shown in AddTaskModal */}
 
         </div>
 
