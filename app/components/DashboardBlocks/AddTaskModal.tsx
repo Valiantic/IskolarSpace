@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Rocket, Clock, AlertCircle, Zap, X } from 'lucide-react';
+import { Rocket, Clock, AlertCircle, Zap, X, BookOpen } from 'lucide-react';
 import { Priority } from '../../types/dashboard';
 import { Member, AddTaskModalProps } from '../../types/join-space';
+import { useStudyPlannerContext } from '../../contexts/StudyPlannerContext';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -27,6 +28,11 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showEmptyError, setShowEmptyError] = useState(false);
   const [localAssignedTo, setLocalAssignedTo] = useState<string | null>(null);
+  const [showAIPlan, setShowAIPlan] = useState(false);
+  
+  // Use the Study Planner Context
+  const { aiPlan, planTitle, setAiPlan, setSelectedType } = useStudyPlannerContext();
+  
   const effectiveAssignedTo = typeof assignedTo !== 'undefined' ? assignedTo : localAssignedTo;
   const effectiveSetAssignedTo = typeof setAssignedTo !== 'undefined' ? setAssignedTo : setLocalAssignedTo;
 
@@ -56,17 +62,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   handleAddTask(e, effectiveAssignedTo ?? null);
   };
 
-  const getPriorityIcon = (priorityLevel: Priority) => {
-    switch (priorityLevel) {
-      case 'high':
-        return <Zap size={16} className="text-red-400" />;
-      case 'moderate':
-        return <AlertCircle size={16} className="text-yellow-400" />;
-      case 'low':
-        return <Clock size={16} className="text-green-400" />;
-    }
-  };
-
   return (
     <div 
       className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-2 sm:p-4"
@@ -78,11 +73,43 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
           onClick={(e) => e.stopPropagation()} 
         >
           {/* Header with close button */}
-          <div className="flex justify-center items-center mb-3 sm:mb-4">
+          <div className="flex justify-center items-center mb-3 sm:mb-4 relative">
             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-400 to-cyan-300 font-poppins text-center">
               What's your plan for today?
             </h2>
+            
           </div>
+
+          {/* AI Plan Display */}
+          {aiPlan && showAIPlan && (
+            <div className="mb-6 p-4 bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-lg border border-cyan-500/30 backdrop-blur-sm">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-bold text-cyan-400 font-poppins">
+                  {planTitle || 'Your Study Plan'}
+                </h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setAiPlan('');
+                      setSelectedType(null);
+                    }}
+                    className="text-xs px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded-md transition-colors font-poppins"
+                  >
+                    Clear Plan
+                  </button>
+                  <button
+                    onClick={() => setShowAIPlan(false)}
+                    className="text-xs px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors font-poppins"
+                  >
+                    Hide
+                  </button>
+                </div>
+              </div>
+              <div className="text-gray-300 text-xs font-poppins whitespace-pre-wrap max-h-40 overflow-y-auto bg-black/20 p-3 rounded-md">
+                {aiPlan}
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleFormSubmit}>
             {/* Title Input (Optional) - Hidden during scroll */}

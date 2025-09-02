@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import TaskGrid from '../../components/DashboardBlocks/TaskGrid';
-import { Plus, Orbit } from 'lucide-react';
+import { Plus, Orbit, Sparkles } from 'lucide-react';
 import AddTaskModal from '../../components/DashboardBlocks/AddTaskModal';
 import Sidebar from '../../components/DashboardBlocks/Sidebar';
 import SpaceBackground from '../../components/DashboardBlocks/SpaceBackground';
@@ -18,6 +18,7 @@ import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
+import StudyPlannerModal from '../../components/DashboardBlocks/StudyPlannerModal';
 import useRequireAuth from '../../hooks/auth/useRequireAuth';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -53,6 +54,11 @@ const SpacePage = () => {
   const [showSpaceInfoModal, setShowSpaceInfoModal] = useState(false);
   const openSpaceInfoModal = () => setShowSpaceInfoModal(true);
   const closeSpaceInfoModal = () => setShowSpaceInfoModal(false);
+
+  // Study Planner Modal 
+  const [showStudyPlannerModal, setShowStudyPlannerModal] = useState(false);
+  const openStudyPlannerModal = () => setShowStudyPlannerModal(true);
+  const closeStudyPlannerModal = () => setShowStudyPlannerModal(false);
 
   // Task Grid
   const [tasks, setTasks] = useState<any[]>([]);
@@ -325,7 +331,7 @@ const SpacePage = () => {
                   </div>
                 </div>
                 {/* Space Name below search/filter */}
-                <h1 className="text-3xl text-white font-bold mt-5 text-center font-poppins">
+                <h1 className="text-lg sm:text-base md:text-xl lg:text-3xl text-white font-bold mt-5 mr-0 text-center font-poppins">
                   {isLoadingMembers ? 'Loading...' : `${spaceName}`}
                 </h1>
                 {(searchTerm.trim() || priorityFilters.length > 0) && (
@@ -371,12 +377,21 @@ const SpacePage = () => {
                 )}
               </div>
               {/* Add Task Button */}
-              <button
+                {/* <div className="flex justify-end mb-4 mt-2">
+                    <button
+                      className="font-poppins border border-blue-500/90 transition-transform duration-200 hover:scale-110 font-bold bg-slate-800 rounded-full p-3 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
+                      onClick={openStudyPlannerModal}
+                    >
+                      Plan with AI
+                      <Sparkles className="inline-block ml-1 mb-1 w-4 h-4 sm:w-5 sm:h-5 text-cyan-400/90" />
+                    </button>
+                </div> */}
+                <button
                 onClick={() => setShowInput((prev) => !prev)}
-                className="fixed bottom-8 right-8 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-sky-600 hover:via-blue-600 hover:to-cyan-600 rounded-full p-4 text-white shadow-lg"
-              >
+                  className="fixed z-[1000] bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
+                >
                 <Plus size={24} />
-              </button>
+                </button>
               {/* Tasks Section */}
               <AddTaskModal
                 showInput={showInput}
@@ -511,6 +526,12 @@ const SpacePage = () => {
                 error={membersError}
                 onLeaveSpace={handleLeaveSpace}
                 leaving={leaving}
+              />
+
+              <StudyPlannerModal
+                isOpen={showStudyPlannerModal}
+                onClose={closeStudyPlannerModal}
+                userId={userId}
               />
             </>
           )}
