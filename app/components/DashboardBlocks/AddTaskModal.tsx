@@ -67,7 +67,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 animate-fadeIn overflow-hidden p-2 sm:p-4"
       onClick={() => setShowInput(false)}
     >
-      <div className="w-full p-2 sm:p-4 max-w-2xl mx-auto animate-scaleInLarger overflow-hidden max-h-[95vh] sm:max-h-full">
+      <div className="w-full p-4 max-w-4xl mx-auto animate-scaleInLarger overflow-hidden max-h-full">
         <div 
           className="bg-slate-700 rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl w-full backdrop-blur-sm bg-opacity-90 transform transition-all duration-300 hover:shadow-2xl overflow-auto border border-white/10"
           onClick={(e) => e.stopPropagation()} 
