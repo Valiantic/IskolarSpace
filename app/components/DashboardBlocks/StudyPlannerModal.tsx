@@ -5,7 +5,7 @@ import { X, Sparkles, Sun, Moon, Calendar1, Rocket } from 'lucide-react';
 import { StudyPlannerProps } from '../../types/dashboard';
 import useStudyPlanner from '../../hooks/dashboard/useStudyPlanner';
 
-const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose, userId, openAddTaskWithAIPlan }) => {
+const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose, userId, openAddTaskWithAIPlan, spaceId, tableType }) => {
   const {
     handleClose,
     handleBackdropClick,
@@ -14,7 +14,7 @@ const StudyPlanner: React.FC<StudyPlannerProps> = ({ isOpen, onClose, userId, op
     aiPlan,
     loading,
     handlePlan,
-  } = useStudyPlanner({ onClose, userId, openAddTaskWithAIPlan });
+  } = useStudyPlanner({ onClose, userId, openAddTaskWithAIPlan, spaceId, tableType });
 
   if (!isOpen) return null;
 

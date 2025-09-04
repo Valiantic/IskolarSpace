@@ -9,9 +9,11 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const useStudyPlanner = ({ onClose, userId, openAddTaskWithAIPlan }: { 
+const useStudyPlanner = ({ onClose, userId, spaceId, tableType = 'todos', openAddTaskWithAIPlan }: { 
   onClose: () => void, 
   userId: string,
+  spaceId?: string,
+  tableType?: 'todos' | 'tasks',
   openAddTaskWithAIPlan?: (planTitle: string, planContent: string) => void
 }) => {
   const { aiPlan, setAiPlan, selectedType, setSelectedType, setPlanTitle } = useStudyPlannerContext();
@@ -44,10 +46,21 @@ const useStudyPlanner = ({ onClose, userId, openAddTaskWithAIPlan }: {
     setAiPlan(""); 
     setPlanTitle(`IskolarSpace Generated ${range.charAt(0).toUpperCase() + range.slice(1)} Study Plan`);
 
+    // Dynamic table and filter based on tableType
+    const tableName = tableType === 'todos' ? 'tbl_todos' : 'tbl_tasks';
+    const filterField = tableType === 'todos' ? 'user_id' : 'space_id';
+    const filterValue = tableType === 'todos' ? userId : spaceId;
+
+    if (!filterValue) {
+      toast.error(tableType === 'todos' ? "User ID required" : "Space ID required");
+      setLoading(false);
+      return;
+    }
+
     const { data: tasks, error } = await supabase
-      .from("tbl_todos")
+      .from(tableName)
       .select("*")
-      .eq("user_id", userId);
+      .eq(filterField, filterValue);
 
     if (error) {
       console.error("Database error:", error);
@@ -64,7 +77,7 @@ const useStudyPlanner = ({ onClose, userId, openAddTaskWithAIPlan }: {
 
     const prompt = `
     You are an academic study planner. Based on the following tasks, generate a ${range}-based schedule:
-    ${tasks.map((t) => `- ${t.title || t.content} (due: ${t.deadline || 'No deadline'})`).join("\n")}
+    ${tasks.map((t) => `- ${t.title || t.content || t.description} (due: ${t.deadline || 'No deadline'})`).join("\n")}
     Include time blocks, priorities, and motivational tips. don't add text column or rows such as | - or any
     special characters upon generation to make the output more readable put some spaces before and after the sentence.
     `;

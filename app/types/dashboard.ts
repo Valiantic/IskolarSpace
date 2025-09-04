@@ -11,6 +11,7 @@ export interface Todo {
   assigned_to?: string;
   assigned_member?: string;
   deadline?: string | Date | null;
+  tableType?: 'todos' | 'tasks';
 }
 
 // Priority type for consistent typing
@@ -165,4 +166,6 @@ export type StudyPlannerProps = {
   onClose: () => void;
   userId: string;
   openAddTaskWithAIPlan?: (planTitle: string, planContent: string) => void;
+  tableType?: 'todos' | 'tasks';
+  spaceId?: string;
 };
