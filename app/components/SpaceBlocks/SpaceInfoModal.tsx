@@ -1,12 +1,35 @@
 import React from 'react';
 import useClipboard from '../../hooks/utils/useClipboard';
-import { X, Orbit, User, Crown } from 'lucide-react';
+import { X, Orbit, User, Crown, Settings } from 'lucide-react';
 import { Member, SpaceInfoModalProps } from '../../types/join-space';
 
-const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, members, spaceCode, spaceName, isLoading, error, onLeaveSpace, leaving }) => {
+const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  members, 
+  spaceCode, 
+  spaceName, 
+  isLoading, 
+  error, 
+  onLeaveSpace, 
+  leaving,
+  currentUserId,
+  onOpenSettings
+}) => {
   const { copyToClipboard, copied } = useClipboard();
   if (!isOpen) return null;
+  
   const safeMembers = Array.isArray(members) ? members : [];
+  
+  // Check if current user is admin
+  const isCurrentUserAdmin = currentUserId && safeMembers.some(
+    (member: Member) => {
+      const userId = Array.isArray(member.tbl_users) 
+        ? member.tbl_users[0]?.id 
+        : member.tbl_users?.id;
+      return userId === currentUserId && member.role === 'admin';
+    }
+  );
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
       <div className="bg-slate-800 rounded-xl shadow-xl p-4 w-full max-w-md relative">
@@ -19,7 +42,17 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({ isOpen, onClose, member
         </button>
         <h2 className="text-2xl font-bold mb-4 text-center text-white font-poppins">
           {spaceName ? spaceName : 'Space Info'}
-          <Orbit size={25} className="inline-block text-blue-500 ml-2" />
+          {isCurrentUserAdmin && onOpenSettings ? (
+            <button
+              onClick={onOpenSettings}
+              className="ml-2 p-1 hover:bg-white/10 rounded-lg transition-colors"
+              title="Space Settings"
+            >
+              <Settings size={20} className="text-blue-500" />
+            </button>
+          ) : (
+            <Orbit size={25} className="inline-block text-blue-500 ml-2" />
+          )}
         </h2>
         <div className="text-lg sm:text-sm md:text-lg text-white mb-2">Members:</div>
         <div className="p-4 rounded-lg mb-2 bg-slate-700">
