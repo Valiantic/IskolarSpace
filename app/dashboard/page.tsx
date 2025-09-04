@@ -436,6 +436,7 @@ export default function DashboardPage() {
           isOpen={openStudyPlanner}
           onClose={closeModal}
           userId={userId || ""}
+          tableType="todos"
           openAddTaskWithAIPlan={openAddTaskWithAIPlan}
         />
         </div>
