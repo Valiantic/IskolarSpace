@@ -20,6 +20,7 @@ import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
 import StudyPlannerModal from '../../components/DashboardBlocks/StudyPlannerModal';
 import useRequireAuth from '../../hooks/auth/useRequireAuth';
+import { StudyPlannerProvider } from '../../contexts/StudyPlannerContext';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -291,7 +292,8 @@ const SpacePage = () => {
   }
 
   return (
-    <div className="relative">
+    <StudyPlannerProvider>
+       <div className="relative">
       <SpaceBackground />
       <div className="min-h-screen relative">
         <Sidebar userFullName={userFullName} handleLogout={logout} />
@@ -538,6 +540,7 @@ const SpacePage = () => {
         </div>
       </div>
     </div>
+    </StudyPlannerProvider>
   );
 };
 

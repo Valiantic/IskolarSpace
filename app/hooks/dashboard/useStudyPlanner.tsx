@@ -65,7 +65,8 @@ const useStudyPlanner = ({ onClose, userId, openAddTaskWithAIPlan }: {
     const prompt = `
     You are an academic study planner. Based on the following tasks, generate a ${range}-based schedule:
     ${tasks.map((t) => `- ${t.title || t.content} (due: ${t.deadline || 'No deadline'})`).join("\n")}
-    Include time blocks, priorities, and motivational tips. don't add text column or rows such as | -.
+    Include time blocks, priorities, and motivational tips. don't add text column or rows such as | - or any
+    special characters upon generation to make the output more readable put some spaces before and after the sentence.
     `;
 
     try {
