@@ -49,7 +49,7 @@ const SpaceSettingsModal: React.FC<SpaceSettingsModalProps> = ({
         <div className="relative z-10">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center gap-3">
               <h2 className="text-2xl font-bold text-white font-poppins">Space Settings</h2>
               <Settings size={24} className="text-cyan-400" />
             </div>

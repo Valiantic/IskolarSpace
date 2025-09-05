@@ -31,83 +31,116 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({
     }
   );
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-      <div className="bg-slate-800 rounded-xl shadow-xl p-4 w-full max-w-md relative">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold"
-          aria-label="Close"
-        >
-          <X className='w-8 h-8' />
-        </button>
-        <h2 className="text-2xl font-bold mb-4 text-center text-white font-poppins">
-          {spaceName ? spaceName : 'Space Info'}
-          {isCurrentUserAdmin && onOpenSettings ? (
-            <button
-              onClick={onOpenSettings}
-              className="ml-2 p-1 hover:bg-white/10 rounded-lg transition-colors"
-              title="Space Settings"
-            >
-              <Settings size={20} className="text-blue-500" />
-            </button>
-          ) : (
-            <Orbit size={25} className="inline-block text-blue-500 ml-2" />
-          )}
-        </h2>
-        <div className="text-lg sm:text-sm md:text-lg text-white mb-2">Members:</div>
-        <div className="p-4 rounded-lg mb-2 bg-slate-700">
-          {isLoading ? (
-            <div className="text-center py-4 text-gray-300">Loading members...</div>
-          ) : error ? (
-            <div className="text-center py-4 text-red-400">{error}</div>
-          ) : (
-            <ul className="space-y-2 list-disc list-inside">
-              {safeMembers.length === 0 ? (
-          <li className="text-gray-400 text-center">No members found.</li>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm">
+      <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 border border-cyan-500/30 rounded-2xl p-6 w-full max-w-2xl mx-4 shadow-2xl backdrop-blur-lg max-h-[90vh]">
+        {/* Cosmic glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 rounded-2xl blur-xl pointer-events-none"></div>
+        
+        <div className="relative z-10">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-white font-poppins">
+                {spaceName ? spaceName : 'Space Info'}
+              </h2>
+              {isCurrentUserAdmin && onOpenSettings ? (
+                <button
+                  onClick={onOpenSettings}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  title="Space Settings"
+                >
+                  <Settings size={24} className="text-cyan-400" />
+                </button>
               ) : (
-          safeMembers.map((member) => {
-            let fullName = 'Unnamed Member';
-            if (Array.isArray(member.tbl_users) && member.tbl_users.length > 0) {
-              fullName = member.tbl_users[0]?.full_name || 'Unnamed Member';
-            } else if (member.tbl_users && typeof member.tbl_users === 'object' && 'full_name' in member.tbl_users) {
-              fullName = member.tbl_users.full_name || 'Unnamed Member';
-            }
-            const isAdmin = member.role === 'admin';
-            return (
-              <li
-                key={member.user_id}
-                className="flex items-center gap-2 text-white font-poppins"
-                style={{ listStyleType: 'disc', color: 'white' }}
-              >
-                {isAdmin ? <Crown className="inline-block mr-2 text-yellow-400" /> : <User className="inline-block mr-2" />}
-                <span className="font-semibold">{fullName}</span>
-              </li>
-            );
-          })
+                <Orbit size={24} className="text-cyan-400" />
               )}
-            </ul>
-          )}
-        </div>
-        <div className="mb-6">
-          <div className="text-lg sm:text-sm md:text-lg text-white mb-2">Space Code:</div>
-          <div className="flex justify-center items-center gap-2">
-            <span
-              className="font-mono text-lg font-semibold w-full text-center text-blue-700 bg-blue-100 px-3 py-1 rounded cursor-pointer select-all"
-              onClick={() => copyToClipboard(spaceCode)}
-              title="Click to copy"
-              style={{ userSelect: 'all' }}
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
-              {copied ? 'Copied!' : (spaceCode || 'N/A')}
-            </span>
+              <X size={20} className="text-gray-400 hover:text-white" />
+            </button>
           </div>
-          <button
-            className="w-full mt-4 py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 font-bold"
-            onClick={onLeaveSpace}
-            disabled={leaving}
-          >
-            {leaving ? 'Leaving...' : 'Leave Space'}
-          </button>
+
+          {/* Members Section */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-white mb-3 font-poppins">Members</h3>
+            <div className="bg-slate-700/30 border border-slate-600/50 rounded-lg p-4">
+              {isLoading ? (
+                <div className="text-center py-4 text-gray-300 font-poppins">Loading members...</div>
+              ) : error ? (
+                <div className="text-center py-4 text-red-400 font-poppins">{error}</div>
+              ) : (
+                <div className="space-y-3">
+                  {safeMembers.length === 0 ? (
+                    <div className="text-gray-400 text-center font-poppins">No members found.</div>
+                  ) : (
+                    safeMembers.map((member) => {
+                      let fullName = 'Unnamed Member';
+                      if (Array.isArray(member.tbl_users) && member.tbl_users.length > 0) {
+                        fullName = member.tbl_users[0]?.full_name || 'Unnamed Member';
+                      } else if (member.tbl_users && typeof member.tbl_users === 'object' && 'full_name' in member.tbl_users) {
+                        fullName = member.tbl_users.full_name || 'Unnamed Member';
+                      }
+                      const isAdmin = member.role === 'admin';
+                      return (
+                        <div
+                          key={member.user_id}
+                          className="flex items-center gap-3 p-3 bg-slate-600/20 border border-slate-500/30 rounded-lg"
+                        >
+                          {isAdmin ? (
+                            <Crown className="text-yellow-400" size={20} />
+                          ) : (
+                            <User className="text-gray-400" size={20} />
+                          )}
+                          <div>
+                            <p className="text-white font-medium font-poppins">{fullName}</p>
+                            <p className="text-gray-400 text-sm capitalize font-poppins">{member.role}</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Space Code Section */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-white mb-3 font-poppins">Space Code</h3>
+            <div className="bg-slate-700/30 border border-slate-600/50 rounded-lg p-4">
+              <div
+                className="font-mono text-lg font-semibold text-center text-cyan-300 bg-slate-800/50 border border-cyan-500/30 px-4 py-3 rounded-lg cursor-pointer select-all transition-colors hover:bg-slate-800/70"
+                onClick={() => copyToClipboard(spaceCode)}
+                title="Click to copy"
+                style={{ userSelect: 'all' }}
+              >
+                {copied ? '✓ Copied!' : (spaceCode || 'N/A')}
+              </div>
+              <p className="text-gray-400 text-sm text-center mt-2 font-poppins">
+                Click to copy space code
+              </p>
+            </div>
+          </div>
+
+          {/* Leave Space Section */}
+          <div className="border-t border-red-500/30 pt-6">
+            <h3 className="text-lg font-semibold text-red-400 mb-3 font-poppins">Leave Space</h3>
+            <button
+              onClick={onLeaveSpace}
+              disabled={leaving}
+              className="w-full py-3 px-4 bg-red-600/20 border border-red-500/50 text-red-300 hover:bg-red-600/30 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-poppins"
+            >
+              {leaving ? 'Leaving...' : 'Leave Space'}
+            </button>
+          </div>
         </div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-2 left-2 w-1 h-1 bg-cyan-400 rounded-full animate-ping pointer-events-none"></div>
+        <div className="absolute bottom-2 right-8 w-0.5 h-0.5 bg-purple-400 rounded-full pointer-events-none"></div>
       </div>
     </div>
   );
