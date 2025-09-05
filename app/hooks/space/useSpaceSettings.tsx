@@ -10,7 +10,8 @@ const useSpaceSettings = ({
   members, 
   currentUserId, 
   onSpaceUpdated, 
-  onSpaceDeleted 
+  onSpaceDeleted,
+  onClose 
 }: SpaceSettingsHookProps) => {
   const router = useRouter();
   const [newSpaceName, setNewSpaceName] = useState(spaceName);
@@ -47,6 +48,10 @@ const useSpaceSettings = ({
       if (response.ok) {
         toast.success('Space name updated successfully');
         onSpaceUpdated();
+        // Close modal after a brief delay to show updated data
+        if (onClose) {
+          setTimeout(() => onClose(), 1000);
+        }
       } else {
         const error = await response.json();
         toast.error(error.message || 'Failed to update space name');
@@ -109,6 +114,10 @@ const useSpaceSettings = ({
       if (response.ok) {
         toast.success(`Member ${newRole === 'admin' ? 'promoted to admin' : 'demoted to member'}`);
         onSpaceUpdated();
+        // Close modal after a brief delay to show updated data
+        if (onClose) {
+          setTimeout(() => onClose(), 1000);
+        }
       } else {
         const error = await response.json();
         toast.error(error.message || 'Failed to update member role');
@@ -141,6 +150,10 @@ const useSpaceSettings = ({
       if (response.ok) {
         toast.success('Member kicked successfully');
         onSpaceUpdated();
+        // Close modal after a brief delay to show updated data
+        if (onClose) {
+          setTimeout(() => onClose(), 1000);
+        }
       } else {
         const error = await response.json();
         toast.error(error.message || 'Failed to kick member');

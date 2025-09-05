@@ -25,6 +25,7 @@ export interface SpaceSettingsHookProps {
   currentUserId: string;
   onSpaceUpdated: () => void;
   onSpaceDeleted: () => void;
+  onClose?: () => void;
 }
 
 export interface UpdateSpaceNameData {

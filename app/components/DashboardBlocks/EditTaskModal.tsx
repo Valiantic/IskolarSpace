@@ -130,7 +130,7 @@ const EditTaskModal: React.FC<EditTaskModalProps & { members?: Member[], assigne
           )}
           {/* Content Textarea */}
           <textarea
-            className={`w-full p-6 rounded-lg mb-6 resize-none text-white bg-transparent focus:outline-none border-0 text-lg md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
+            className={`w-full p-6 rounded-lg mb-6 resize-none text-white bg-transparent focus:outline-none border-0 text-lg md:text-lg leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
               isScrolling ? 'h-[500px]' : 'h-80'
             }`}
             value={editedContent}

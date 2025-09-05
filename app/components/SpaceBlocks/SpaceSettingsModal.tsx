@@ -34,6 +34,7 @@ const SpaceSettingsModal: React.FC<SpaceSettingsModalProps> = ({
     currentUserId,
     onSpaceUpdated,
     onSpaceDeleted,
+    onClose,
   });
 
   if (!isOpen || !isCurrentUserAdmin) return null;
