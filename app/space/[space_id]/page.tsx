@@ -296,11 +296,35 @@ const SpacePage = () => {
   };
 
   // Handle space updates (for settings modal)
-  const handleSpaceUpdated = () => {
-    // Refetch space data
-    fetchTasks();
-    // You might want to refetch members and space name here too
-  };
+  const handleSpaceUpdated = useCallback(async () => {
+    if (!spaceId || !user?.id) return;
+    
+    setIsLoadingMembers(true);
+    try {
+      const membersArray = await getSpaceMembers(spaceId);
+      const mappedMembers = membersArray.map((m: { user_id: string; role?: string; tbl_users: { id?: string; full_name: string } }) => ({
+        user_id: m.user_id,
+        role: m.role,
+        tbl_users: {
+          id: m.tbl_users.id || m.user_id,
+          full_name: m.tbl_users.full_name
+        }
+      }));
+      setMembers(mappedMembers);
+      
+      const userSpaces = await getUserSpaces(user.id);
+      const currentSpace = userSpaces.find((s: any) => s.space_id === spaceId);
+      setSpaceName(currentSpace?.tbl_spaces?.name || 'Space');
+      setSpaceCode(currentSpace?.tbl_spaces?.code || '');
+      setMembersError(null);
+      
+      fetchTasks();
+    } catch (err: any) {
+      setMembersError(err?.message || 'Failed to fetch updated data');
+      console.error('Error fetching updated space data:', err);
+    }
+    setIsLoadingMembers(false);
+  }, [spaceId, user?.id, fetchTasks]);
 
   const handleSpaceDeleted = () => {
     router.push('/dashboard');

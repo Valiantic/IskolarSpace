@@ -146,7 +146,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
             )}
             {/* Content Textarea */}
             <textarea
-              className={`w-full p-3 sm:p-4 rounded-lg mb-3 sm:mb-4 resize-none text-white bg-transparent focus:outline-none border-0 text-sm sm:text-base md:text-lg font-bold leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
+              className={`w-full p-3 sm:p-4 rounded-lg mb-3 sm:mb-4 resize-none text-white bg-transparent focus:outline-none border-0 text-sm sm:text-base md:text-lg leading-relaxed overflow-auto no-scrollbar font-poppins placeholder:text-white/50 transition-all duration-300 ${
                 isScrolling ? 'h-[200px] sm:h-[300px]' : 'h-32 sm:h-48 md:h-60'
               } ${showEmptyError ? 'border-2 border-red-400' : ''}`}
               value={task}
