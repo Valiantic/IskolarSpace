@@ -18,6 +18,7 @@ import EditTaskModal from '../../components/DashboardBlocks/EditTaskModal';
 import SearchBar from '../../components/DashboardBlocks/SearchBar';
 import PriorityFilter from '../../components/DashboardBlocks/PriorityFilter';
 import SpaceInfoModal from '../../components/SpaceBlocks/SpaceInfoModal';
+import SpaceSettingsModal from '../../components/SpaceBlocks/SpaceSettingsModal';
 import StudyPlannerModal from '../../components/DashboardBlocks/StudyPlannerModal';
 import useRequireAuth from '../../hooks/auth/useRequireAuth';
 import { StudyPlannerProvider } from '../../contexts/StudyPlannerContext';
@@ -55,6 +56,14 @@ const SpacePage = () => {
   const [showSpaceInfoModal, setShowSpaceInfoModal] = useState(false);
   const openSpaceInfoModal = () => setShowSpaceInfoModal(true);
   const closeSpaceInfoModal = () => setShowSpaceInfoModal(false);
+
+  // Space Settings Modal state
+  const [showSpaceSettingsModal, setShowSpaceSettingsModal] = useState(false);
+  const openSpaceSettingsModal = () => {
+    setShowSpaceInfoModal(false); // Close info modal
+    setShowSpaceSettingsModal(true);
+  };
+  const closeSpaceSettingsModal = () => setShowSpaceSettingsModal(false);
 
   // Study Planner Modal 
   const [showStudyPlannerModal, setShowStudyPlannerModal] = useState(false);
@@ -286,6 +295,41 @@ const SpacePage = () => {
   closeStudyPlannerModal(); // Close the study planner modal
   };
 
+  // Handle space updates (for settings modal)
+  const handleSpaceUpdated = useCallback(async () => {
+    if (!spaceId || !user?.id) return;
+    
+    setIsLoadingMembers(true);
+    try {
+      const membersArray = await getSpaceMembers(spaceId);
+      const mappedMembers = membersArray.map((m: { user_id: string; role?: string; tbl_users: { id?: string; full_name: string } }) => ({
+        user_id: m.user_id,
+        role: m.role,
+        tbl_users: {
+          id: m.tbl_users.id || m.user_id,
+          full_name: m.tbl_users.full_name
+        }
+      }));
+      setMembers(mappedMembers);
+      
+      const userSpaces = await getUserSpaces(user.id);
+      const currentSpace = userSpaces.find((s: any) => s.space_id === spaceId);
+      setSpaceName(currentSpace?.tbl_spaces?.name || 'Space');
+      setSpaceCode(currentSpace?.tbl_spaces?.code || '');
+      setMembersError(null);
+      
+      fetchTasks();
+    } catch (err: any) {
+      setMembersError(err?.message || 'Failed to fetch updated data');
+      console.error('Error fetching updated space data:', err);
+    }
+    setIsLoadingMembers(false);
+  }, [spaceId, user?.id, fetchTasks]);
+
+  const handleSpaceDeleted = () => {
+    router.push('/dashboard');
+  };
+
   if (authLoading || !user) {
     return null;
   }
@@ -386,7 +430,8 @@ const SpacePage = () => {
                 )}
               </div>
               {/* Add Task Button */}
-                <div className="flex justify-end mb-4 mt-2">
+                {tasks.length > 0 && (
+                  <div className="flex justify-end mb-4 mt-2">
                     <button
                       className="font-poppins border border-blue-500/90 transition-transform duration-200 hover:scale-110 font-bold bg-slate-800 rounded-full p-3 sm:p-3 text-white shadow-lg flex items-center text-sm sm:text-base"
                       onClick={openStudyPlannerModal}
@@ -394,7 +439,9 @@ const SpacePage = () => {
                       Plan with AI
                       <Sparkles className="inline-block ml-1 mb-1 w-4 h-4 sm:w-5 sm:h-5 text-cyan-400/90" />
                     </button>
-                </div>
+                  </div>
+                )}
+
                 <button
                 onClick={() => setShowInput((prev) => !prev)}
                   className="fixed z-[1000] bottom-8 right-8 bg-gradient-to-r from-slate-500 to-sky-500 hover:from-slate-600 hover:to-sky-600 rounded-full p-4 text-white shadow-lg"
@@ -535,6 +582,20 @@ const SpacePage = () => {
                 error={membersError}
                 onLeaveSpace={handleLeaveSpace}
                 leaving={leaving}
+                currentUserId={userId}
+                onOpenSettings={openSpaceSettingsModal}
+              />
+
+              {/* Space Settings Modal */}
+              <SpaceSettingsModal
+                isOpen={showSpaceSettingsModal}
+                onClose={closeSpaceSettingsModal}
+                spaceId={spaceId}
+                spaceName={spaceName}
+                members={members}
+                currentUserId={userId || ''}
+                onSpaceUpdated={handleSpaceUpdated}
+                onSpaceDeleted={handleSpaceDeleted}
               />
 
               <StudyPlannerModal

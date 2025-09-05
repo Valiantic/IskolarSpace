@@ -36,7 +36,7 @@ export interface UseCreateSpaceReturn {
 
 export interface  Member {
   user_id: string;
-  tbl_users?: Array<{ full_name?: string }> | { full_name?: string };
+  tbl_users?: Array<{ full_name?: string; id?: string }> | { full_name?: string; id?: string };
   role: 'admin' | 'member';
 }
 
@@ -50,6 +50,8 @@ export interface SpaceInfoModalProps {
   spaceName?: string;
   onLeaveSpace?: () => void;
   leaving?: boolean;
+  currentUserId?: string;
+  onOpenSettings?: () => void;
 }
 
 export interface JoinSpaceProps {
