@@ -31,7 +31,7 @@ const AIHighlightCard = () => {
           key={card_id}
           data-aos="fade-up"
           data-aos-delay={index * 200}
-          className="bg-slate-800 border border-2 p-2 border-cyan-400 rounded-lg shadow-md hover:shadow-lg transition duration-300 overflow-hidden"
+          className="bg-slate-800 w-full max-w-[1000px] border border-2 p-4 border-cyan-400 rounded-lg shadow-md hover:shadow-lg transition duration-300 overflow-hidden"
         >
           <div className="p-4 flex align-items-center justify-center rounded-md">
             <h3 className="text-2xl font-bold text-cyan-200 font-poppins">{title}</h3>
@@ -39,9 +39,9 @@ const AIHighlightCard = () => {
           <Image
             src={image}
             alt={title}
-            width={800}
-            height={500}
-            className="w-full h-auto max-h-[400px] object-contain rounded-md"
+            width={1200}
+            height={800}
+            className="w-full h-auto max-h-[450px] object-cover rounded-md"
           />
         </div>
       ))}
