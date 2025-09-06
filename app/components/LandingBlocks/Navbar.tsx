@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
               height={40} 
               className="w-10 h-10 object-cover"
             />
-          <span className="text-white text-2xl font-semibold font-poppins">IskolarSpace</span>
+          <span className="bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text z-20 text-2xl font-semibold font-poppins">IskolarSpace</span>
         </div>
 
         {/* Desktop Navigation */}

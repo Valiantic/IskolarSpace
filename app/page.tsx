@@ -2,12 +2,14 @@
 import React, { useEffect } from "react";
 import { SparklesCore } from "./components/DashboardBlocks/ui/sparkles";
 import Link from "next/link";
-import { BackgroundProvider, useBackground } from "../lib/BackgroundContext";
+import { BackgroundProvider, useBackground } from "./contexts/BackgroundContext";
 import { Rocket } from "lucide-react";
 
 // COMPONENTS
 import About from "./components/LandingBlocks/About";
-import { StickyScrollReveal } from "./components/LandingBlocks/StickyScrollReveal";
+import AIHighlightCard from "./components/LandingBlocks/AIHighlightCard";
+import SpaceFeatureHighlight from "./components/LandingBlocks/SpaceFeatureHighlight";
+import NotesFeatureHighlight from "./components/LandingBlocks/NotesFeatureHighlight";
 import GetStartedBanner from "./components/LandingBlocks/GetStartedBanner";
 import Footer from "./components/LandingBlocks/Footer";
 import Navbar from "./components/LandingBlocks/Navbar";
@@ -88,10 +90,18 @@ function PageContent() {
       </section>
 
       <section className="w-full mt-10 mb-10">
-        <StickyScrollReveal />
+        <AIHighlightCard />
       </section>
 
-      <section className="w-full mt-10 mb-10">
+      <section data-aos="fade-up" className="w-full mt-10 mb-10">
+        <SpaceFeatureHighlight />
+      </section>
+
+       <section data-aos="fade-up" className="w-full">
+        <NotesFeatureHighlight />
+      </section>
+
+      <section className="w-full mb-10">
         <GetStartedBanner />
       </section>
 

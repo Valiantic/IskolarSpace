@@ -74,7 +74,7 @@ const About = () => {
               </h2>
     
               <p className="mt-4 text-white sm:text-2xl md:text-2xl justify-content-center">
-            "IskolarSpace is your ultimate platform for organizing and mastering your academic workflow. Take notes effortlessly, track tasks efficiently, and structure your studies like never before."
+            "IskolarSpace is your ultimate platform for task management either for your academic workflow or collaborating with others through space. IskolarSpace leverages the power of AI to create study plans that could elevate your productivity efficiently like never before."
               </p>
             </div>
           </div>
@@ -87,9 +87,11 @@ const About = () => {
             <Image
               src={Homepage}
               alt="Students collaborating"
-              className="rounded w-full h-auto transition-transform duration-300 hover:scale-105"
-              width={900}
-              height={700}
+              className="rounded w-full h-auto max-w-[900px] max-h-[600px] object-cover transition-transform duration-300 hover:scale-105"
+              width={1200}
+              height={800}
+              quality={95}
+              priority
             />
           </div>
           </div>

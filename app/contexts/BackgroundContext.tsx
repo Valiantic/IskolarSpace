@@ -9,7 +9,7 @@ type BackgroundContextType = {
 const BackgroundContext = createContext<BackgroundContextType | undefined>(undefined);
 
 export function BackgroundProvider({ children }: { children: React.ReactNode }) {
-  const [backgroundColor, setBackgroundColor] = useState("000000");
+  const [backgroundColor, setBackgroundColor] = useState("black");
 
   return (
     <BackgroundContext.Provider value={{ backgroundColor, setBackgroundColor }}>
