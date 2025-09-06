@@ -30,6 +30,7 @@ export default function DashboardPage() {
   const [showInput, setShowInput] = useState(false);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoadingTodos, setIsLoadingTodos] = useState(true);
+  const [isUpdatingTodos, setIsUpdatingTodos] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilters, setPriorityFilters] = useState<('low' | 'moderate' | 'high')[]>([]);
   const [deadlineFilters, setDeadlineFilters] = useState<string[]>([]);
@@ -61,12 +62,18 @@ export default function DashboardPage() {
 
 
   // Fetch userId and todos
-  const fetchTodos = useCallback(async () => {
+  const fetchTodos = useCallback(async (showLoading = true) => {
     const { data: { session } } = await supabase.auth.getSession();
     const uid = session?.user?.id;
     if (!uid) return;
     setUserId(uid);
-    setIsLoadingTodos(true);
+    
+    if (showLoading) {
+      setIsLoadingTodos(true);
+    } else {
+      setIsUpdatingTodos(true);
+    }
+    
     const { data, error } = await supabase
       .from("tbl_todos")
       .select("id, title, content, user_id, created_at, priority, deadline")
@@ -77,7 +84,12 @@ export default function DashboardPage() {
     } else {
       setTodos(data || []);
     }
-    setIsLoadingTodos(false);
+    
+    if (showLoading) {
+      setIsLoadingTodos(false);
+    } else {
+      setIsUpdatingTodos(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -125,7 +137,7 @@ export default function DashboardPage() {
         setPriority('low'); // Reset priority to default
         setDeadline(null);
         setShowInput(false); 
-        fetchTodos();
+        await fetchTodos(false);
       }
   }
 
@@ -169,7 +181,7 @@ export default function DashboardPage() {
       setEditingTaskId(null);
       setEditedContent("");
       setEditedTitle("");
-      fetchTodos();
+      await fetchTodos(false); 
     }
   }
 
@@ -183,7 +195,7 @@ export default function DashboardPage() {
     if (error) {
       console.error("Error updating priority", error.message);
     } else {
-      fetchTodos();
+      await fetchTodos(false); 
     }
   };
 
@@ -260,7 +272,7 @@ export default function DashboardPage() {
         setEditedContent("");
         setEditedTitle("");
       }
-      fetchTodos();
+      await fetchTodos(false); 
     }
 
     setShowDeleteModal(false);
