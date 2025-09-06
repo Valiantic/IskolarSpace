@@ -80,7 +80,7 @@ const SpacePage = () => {
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [assignedTo, setAssignedTo] = useState<string | null>(null);
   const [deadline, setDeadline] = useState<Date | null>(null);
-  const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
+  const [updatingTask, setUpdatingTask] = useState(false);
 
   // Delete Confirmation Modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -97,20 +97,28 @@ const SpacePage = () => {
   const [editedDeadline, setEditedDeadline] = useState<Date | null>(null);
 
   // Fetch tasks
-  const fetchTasks = useCallback(async () => {
+  const fetchTasks = useCallback(async (showLoading = true) => {
     if (!spaceId) {
       setTasks([]);
       setIsLoading(false);
       return;
     }
-    setIsLoading(true);
+    if (showLoading) {
+      setIsLoading(true);
+    }  else {
+      setUpdatingTask(true);
+    }
     try {
       const fetchedTasks = await getTasks(spaceId);
       setTasks(fetchedTasks);
     } catch (err) {
       setTasks([]);
     }
-    setIsLoading(false);
+    if (showLoading) {
+      setIsLoading(false);
+    }  else {
+      setUpdatingTask(false);
+    }
   }, [spaceId]);
 
   // Add task
@@ -139,7 +147,7 @@ const SpacePage = () => {
       setShowInput(false);
       setAssignedTo(null);
       setDeadline(null);
-      fetchTasks();
+      await fetchTasks(false);
     } catch (err: any) {
       if (err?.response) {
         toast.error(`Error creating task: ${err.response.data.error || 'Unknown error'}`);
@@ -237,7 +245,7 @@ const SpacePage = () => {
       });
       toast.success('Task updated successfully!');
       cancelEditing();
-      fetchTasks();
+      await fetchTasks(false);
     } catch (err) {
       console.error('Error updating task:', err);
     }
@@ -251,9 +259,9 @@ const SpacePage = () => {
       if (editingTaskId === todoToDelete) {
         cancelEditing();
       }
-      fetchTasks();
+      await fetchTasks(false);
     } catch (err) {
-      // handle error
+      console.error('Error deleting task:', err);
     }
     setShowDeleteModal(false);
     setTodoToDelete(null);
@@ -292,7 +300,7 @@ const SpacePage = () => {
   setTitle(planTitle);
   setTask(planContent);
   setShowInput(true);
-  closeStudyPlannerModal(); // Close the study planner modal
+  closeStudyPlannerModal(); 
   };
 
   // Handle space updates (for settings modal)
@@ -531,7 +539,7 @@ const SpacePage = () => {
                       description: taskToUpdate.description || taskToUpdate.content || '',
                       status: newStatus,
                     });
-                    fetchTasks();
+                    await fetchTasks(false);
                   } catch (err) {
                     console.error('Error updating task priority:', err);
                   }
