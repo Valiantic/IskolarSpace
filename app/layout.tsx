@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import QueryProvider from "./providers/QueryProvider";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from 'react-hot-toast';
 import "./globals.css";
 import 'aos/dist/aos.css';
@@ -81,6 +82,7 @@ export default function RootLayout({
             },
           }}
         />
+        <Analytics />
         </QueryProvider>
       </body>
     </html>
