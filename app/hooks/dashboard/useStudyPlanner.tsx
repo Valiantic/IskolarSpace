@@ -75,12 +75,15 @@ const useStudyPlanner = ({ onClose, userId, spaceId, tableType = 'todos', openAd
       return;
     }
 
-    const prompt = `
-    You are an academic study planner. Based on the following tasks, generate a ${range}-based schedule:
-    ${tasks.map((t) => `- ${t.title || t.content || t.description} (due: ${t.deadline || 'No deadline'})`).join("\n")}
-    Include time blocks, priorities, and motivational tips. don't add text column or rows such as | - or any
-    special characters upon generation to make the output more readable put some spaces before and after the sentence.
-    `;
+  const prompt = `
+  You are an academic study planner. Based on the following tasks, generate a ${range}-based schedule. Prioritize tasks according to their priority level (high, medium, low), ensuring high priority tasks are scheduled first and receive more time and attention. Clearly indicate which tasks are high, medium, or low priority in your plan.
+    
+  Tasks:
+  ${tasks.map((t) => `- ${t.title || t.content || t.description} (due: ${t.deadline || 'No deadline'}, priority: ${t.priority || 'unspecified'})`).join("\n")}
+    
+  Include time blocks, priorities, and motivational tips. Do not add text columns, rows, or special characters such as | or - upon generation. Make the output more readable by putting some spaces before and after each sentence.
+  At the end, include a brief motivational message to encourage effective studying and suggest what task should be prioritized for finishing first, based on the their priority level.
+  `;
 
     try {
       const res = await fetch("/api/gemini", {
