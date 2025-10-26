@@ -35,8 +35,9 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({
       <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 border border-cyan-500/30 rounded-2xl p-6 w-full max-w-2xl mx-4 shadow-2xl backdrop-blur-lg max-h-[90vh]">
         {/* Cosmic glow effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 rounded-2xl blur-xl pointer-events-none"></div>
-        
-        <div className="relative z-10">
+
+        {/* Scrollable content with hidden scrollbar */}
+  <div className="relative z-10 overflow-y-auto max-h-[75vh] pr-2 no-scrollbar">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -126,7 +127,7 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({
           </div>
 
           {/* Leave Space Section */}
-          <div className="border-t border-red-500/30 pt-6">
+          <div className="border-t border-red-500/30 pt-6 bottom-0 bg-gradient-to-t from-slate-900/95 to-transparent pb-2 z-20">
             <h3 className="text-lg font-semibold text-red-400 mb-3 font-poppins">Leave Space</h3>
             <button
               onClick={onLeaveSpace}
@@ -136,7 +137,7 @@ const SpaceInfoModal: React.FC<SpaceInfoModalProps> = ({
               {leaving ? 'Leaving...' : 'Leave Space'}
             </button>
           </div>
-        </div>
+  </div>
 
         {/* Decorative elements */}
         <div className="absolute top-2 left-2 w-1 h-1 bg-cyan-400 rounded-full animate-ping pointer-events-none"></div>
