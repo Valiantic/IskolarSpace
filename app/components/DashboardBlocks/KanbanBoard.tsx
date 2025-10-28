@@ -91,11 +91,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
     title: string,
     status: 'todo' | 'in_progress' | 'done',
     tasks: Todo[],
-    color: string
+    color: string,
+    borderColor: string
   ) => {
     return (
       <div
-        className="bg-slate-900/50 backdrop-blur-sm rounded-lg border border-slate-700/50 p-4"
+        className={`bg-slate-900/50 backdrop-blur-sm rounded-lg border-4 ${borderColor} p-4`}
         onDragOver={handleDragOver}
         onDrop={() => handleDrop(status)}
       >
@@ -196,9 +197,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   return (
     <div className="w-full overflow-x-auto pb-4 md:scrollbar-hide">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4">
-        {renderColumn('To Do', 'todo', columns.todo, 'text-slate-300')}
-        {renderColumn('In Progress', 'in_progress', columns.in_progress, 'text-blue-400')}
-        {renderColumn('Done', 'done', columns.done, 'text-green-400')}
+        {renderColumn('To Do 📝', 'todo', columns.todo, 'text-slate-300', 'border-slate-600')}
+        {renderColumn('In Progress ⏳', 'in_progress', columns.in_progress, 'text-blue-400', 'border-blue-500')}
+        {renderColumn('Done 🚀', 'done', columns.done, 'text-green-400', 'border-green-500')}
       </div>
     </div>
   );
