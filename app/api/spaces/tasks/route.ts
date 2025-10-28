@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 // PUT: Edit a task
 export async function PUT(request: NextRequest) {
   const body = await request.json();
-  const { id, title, description, status, assigned_to, created_by, deadline } = body;
+  const { id, title, description, status, assigned_to, created_by, deadline, kanban_status } = body;
   if (!id) {
     return NextResponse.json({ error: "Missing task id" }, { status: 400 });
   }
@@ -90,6 +90,7 @@ export async function PUT(request: NextRequest) {
   if (status !== undefined) updateFields.status = status;
   if (assigned_to !== undefined) updateFields.assigned_to = assigned_to;
   if (deadline !== undefined) updateFields.deadline = deadline;
+  if (kanban_status !== undefined) updateFields.kanban_status = kanban_status;
   const { data, error } = await supabase
     .from("tbl_tasks")
     .update(updateFields)

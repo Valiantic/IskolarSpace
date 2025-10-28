@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import TaskGrid from '../../components/DashboardBlocks/TaskGrid';
+import KanbanBoard from '../../components/DashboardBlocks/KanbanBoard';
 import { Plus, Orbit, Sparkles } from 'lucide-react';
 import AddTaskModal from '../../components/DashboardBlocks/AddTaskModal';
 import Sidebar from '../../components/DashboardBlocks/Sidebar';
@@ -95,6 +96,7 @@ const SpacePage = () => {
   const [editedTitle, setEditedTitle] = useState('');
   const [editedPriority, setEditedPriority] = useState<'low' | 'moderate' | 'high'>('low');
   const [editedDeadline, setEditedDeadline] = useState<Date | null>(null);
+  const [editedKanbanStatus, setEditedKanbanStatus] = useState<'todo' | 'in_progress' | 'done'>('todo');
 
   // Fetch tasks
   const fetchTasks = useCallback(async (showLoading = true) => {
@@ -216,6 +218,7 @@ const SpacePage = () => {
   setEditedContent(task.content || task.description || '');
   setEditedTitle(task.title || '');
   setEditedPriority(task.priority || task.status || 'low');
+  setEditedKanbanStatus(task.kanban_status || 'todo');
   setShowEditModal(true);
   };
   const cancelEditing = () => {
@@ -241,13 +244,34 @@ const SpacePage = () => {
         status: editedPriority,
         assigned_to: assignedTo === '' ? null : assignedTo,
         created_by: user?.id,
-        deadline: editDeadlineToSave
+        deadline: editDeadlineToSave,
+        kanban_status: editedKanbanStatus
       });
       toast.success('Task updated successfully!');
       cancelEditing();
       await fetchTasks(false);
     } catch (err) {
       console.error('Error updating task:', err);
+    }
+  };
+
+  // HANDLE KANBAN STATUS CHANGE
+  const handleKanbanStatusChange = async (taskId: string, newStatus: 'todo' | 'in_progress' | 'done') => {
+    const taskToUpdate = tasks.find((t) => t.id === taskId);
+    if (!taskToUpdate || !spaceId) return;
+
+    try {
+      await updateTask(spaceId, {
+        id: taskId,
+        title: taskToUpdate.title || null,
+        description: taskToUpdate.description || taskToUpdate.content || '',
+        status: taskToUpdate.status || taskToUpdate.priority || 'low',
+        kanban_status: newStatus,
+      });
+      await fetchTasks(false);
+    } catch (err) {
+      console.error('Error updating kanban status:', err);
+      toast.error('Failed to update task status');
     }
   };
 
@@ -352,9 +376,9 @@ const SpacePage = () => {
 
   return (
     <StudyPlannerProvider>
-       <div className="relative">
+       <div className="relative md:scrollbar-hide">
       <SpaceBackground />
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative md:scrollbar-hide">
         <Sidebar userFullName={userFullName} handleLogout={logout} />
         <div className="lg:ml-80 p-7 pt-10 relative">
           {isLoading ? (
@@ -473,7 +497,7 @@ const SpacePage = () => {
                 setAssignedTo={setAssignedTo}
                 members={members}
               />
-              <TaskGrid
+              <KanbanBoard
                 todos={tasks
                   .filter(task => {
                     // Search filter
@@ -527,36 +551,19 @@ const SpacePage = () => {
                     deadline: task.deadline || null,
                   }))
                 }
-                fetchTodos={fetchTasks}
-                startEditing={startEditing}
-                handlePriorityChange={async (id, newStatus) => {
-                  const taskToUpdate = tasks.find((t) => t.id === id);
-                  if (!taskToUpdate) return;
-                  try {
-                    await updateTask(spaceId, {
-                      id,
-                      title: taskToUpdate.title || null,
-                      description: taskToUpdate.description || taskToUpdate.content || '',
-                      status: newStatus,
-                    });
-                    await fetchTasks(false);
-                  } catch (err) {
-                    console.error('Error updating task priority:', err);
-                  }
-                }}
-                searchTerm={searchTerm}
-                priorityFilters={priorityFilters}
-                totalTasks={tasks.length}
+                onStatusChange={handleKanbanStatusChange}
+                onTaskClick={startEditing}
                 showAssignedMember={true}
-                deadline={deadline}
               />
               {showEditModal && (
                   <EditTaskModal
                     editingTaskId={editingTaskId}
                     todos={tasks.map((task) => ({
                       ...task,
+                      priority: task.priority || task.status || 'low',
                       content: task.content || task.description || '',
                       deadline: task.deadline || null,
+                      kanban_status: task.kanban_status || 'todo',
                     }))}
                     editedContent={editedContent}
                     editedTitle={editedTitle}
@@ -571,6 +578,10 @@ const SpacePage = () => {
                     members={members}
                     editedDeadline={editedDeadline}
                     setEditedDeadline={setEditedDeadline}
+                    editedPriority={editedPriority}
+                    setEditedPriority={setEditedPriority}
+                    editedKanbanStatus={editedKanbanStatus}
+                    setEditedKanbanStatus={setEditedKanbanStatus}
                   />
               )}
               {/* Delete Confirmation Modal */}
