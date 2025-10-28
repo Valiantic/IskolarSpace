@@ -12,6 +12,7 @@ export interface Todo {
   assigned_member?: string;
   deadline?: string | Date | null;
   tableType?: 'todos' | 'tasks';
+  kanban_status?: 'todo' | 'in_progress' | 'done';
 }
 
 // Priority type for consistent typing

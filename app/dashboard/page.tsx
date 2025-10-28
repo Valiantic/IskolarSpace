@@ -6,6 +6,7 @@ import { Plus, Sparkles} from "lucide-react";
 import { getRandomQuote } from "../constants/quotes";
 import SpaceBackground from "../components/DashboardBlocks/SpaceBackground";
 import TaskGrid from "../components/DashboardBlocks/TaskGrid";
+import KanbanBoard from "../components/DashboardBlocks/KanbanBoard";
 import Sidebar from "../components/DashboardBlocks/Sidebar";
 import EditTaskModal from "../components/DashboardBlocks/EditTaskModal";
 import AddTaskModal from "../components/DashboardBlocks/AddTaskModal";
@@ -36,11 +37,13 @@ export default function DashboardPage() {
   const [deadlineFilters, setDeadlineFilters] = useState<string[]>([]);
   const [deadline, setDeadline] = useState<Date | null>(null);
 
-  // STATES TO EDIT TASK 
+  // STATES TO EDIT TASK
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDeadline, setEditedDeadline] = useState<Date | null>(null);
+  const [editedPriority, setEditedPriority] = useState<'low' | 'moderate' | 'high'>('low');
+  const [editedKanbanStatus, setEditedKanbanStatus] = useState<'todo' | 'in_progress' | 'done'>('todo');
 
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -67,16 +70,16 @@ export default function DashboardPage() {
     const uid = session?.user?.id;
     if (!uid) return;
     setUserId(uid);
-    
+
     if (showLoading) {
       setIsLoadingTodos(true);
     } else {
       setIsUpdatingTodos(true);
     }
-    
+
     const { data, error } = await supabase
       .from("tbl_todos")
-      .select("id, title, content, user_id, created_at, priority, deadline")
+      .select("id, title, content, user_id, created_at, priority, deadline, kanban_status")
       .order("created_at", { ascending: false })
       .eq('user_id', uid);
     if (error) {
@@ -84,7 +87,7 @@ export default function DashboardPage() {
     } else {
       setTodos(data || []);
     }
-    
+
     if (showLoading) {
       setIsLoadingTodos(false);
     } else {
@@ -154,7 +157,7 @@ export default function DashboardPage() {
     setEditedContent("");
     setEditedTitle("");
   }
-  // HANDLE SAVE EDITED TASK 
+  // HANDLE SAVE EDITED TASK
   const handleSaveEdit = async (todoId: string) => {
     if (!editedContent.trim()) return;
 
@@ -167,21 +170,23 @@ export default function DashboardPage() {
     }
     const { error } = await supabase
       .from("tbl_todos")
-      .update({ 
+      .update({
         title: editedTitle.trim() || null,
         content: editedContent,
-        deadline: editedDeadlineToSave
+        deadline: editedDeadlineToSave,
+        priority: editedPriority,
+        kanban_status: editedKanbanStatus
       })
       .eq("id", todoId);
 
     if (error) {
       console.error("Error updating task", error.message);
     } else {
-      // CLEAR EDITING STATE 
+      // CLEAR EDITING STATE
       setEditingTaskId(null);
       setEditedContent("");
       setEditedTitle("");
-      await fetchTodos(false); 
+      await fetchTodos(false);
     }
   }
 
@@ -195,7 +200,21 @@ export default function DashboardPage() {
     if (error) {
       console.error("Error updating priority", error.message);
     } else {
-      await fetchTodos(false); 
+      await fetchTodos(false);
+    }
+  };
+
+  // HANDLE KANBAN STATUS CHANGE
+  const handleKanbanStatusChange = async (todoId: string, newStatus: 'todo' | 'in_progress' | 'done') => {
+    const { error } = await supabase
+      .from("tbl_todos")
+      .update({ kanban_status: newStatus })
+      .eq("id", todoId);
+
+    if (error) {
+      console.error("Error updating kanban status", error.message);
+    } else {
+      await fetchTodos(false);
     }
   };
 
@@ -291,9 +310,9 @@ export default function DashboardPage() {
     return null;
   }  return (
     <StudyPlannerProvider>
-      <div className="relative">
+      <div className="relative md:scrollbar-hide">
         <SpaceBackground />
-        <div className="min-h-screen relative">
+        <div className="min-h-screen relative md:scrollbar-hide">
         
         <Sidebar
           userFullName={userFullName}
@@ -383,15 +402,11 @@ export default function DashboardPage() {
               </button>
             </div>
           )}
-          <TaskGrid 
-            todos={filteredTodos} 
-            fetchTodos={fetchTodos} 
-            startEditing={startEditing}
-            deadline={deadline}
-            handlePriorityChange={handlePriorityChange}
-            searchTerm={searchTerm}
-            priorityFilters={priorityFilters}
-            totalTasks={todos.length}
+          <KanbanBoard
+            todos={filteredTodos}
+            onStatusChange={handleKanbanStatusChange}
+            onTaskClick={startEditing}
+            showAssignedMember={false}
           />
           </>
           )}
@@ -441,6 +456,10 @@ export default function DashboardPage() {
           setShowDeleteModal={setShowDeleteModal}
           setTodoToDelete={setTodoToDelete}
           cancelEditing={cancelEditing}
+          editedPriority={editedPriority}
+          setEditedPriority={setEditedPriority}
+          editedKanbanStatus={editedKanbanStatus}
+          setEditedKanbanStatus={setEditedKanbanStatus}
         />
 
         {/* Study Planner Modal */}

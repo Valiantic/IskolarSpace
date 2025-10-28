@@ -25,6 +25,28 @@
   scrollbar-width: none;  /* Firefox */
 }
 
+/* Tailwind scrollbar-hide utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbars on desktop only */
+@media (min-width: 768px) {
+  .md\:scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .md\:scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /* HIDE BODY SCROLLBAR WHEN MODAL IS OPEN */
 body.modal-open {
   overflow: hidden;
