@@ -18,11 +18,21 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
 }) => {
   const [draggedTask, setDraggedTask] = useState<string | null>(null);
 
-  // Group tasks by kanban_status
+  // Priority order mapping for sorting
+  const priorityOrder = { high: 1, moderate: 2, low: 3 };
+
+  // Sort function to order by priority
+  const sortByPriority = (a: Todo, b: Todo) => {
+    const aPriority = priorityOrder[a.priority] || 3;
+    const bPriority = priorityOrder[b.priority] || 3;
+    return aPriority - bPriority;
+  };
+
+  // Group tasks by kanban_status and sort by priority
   const columns = {
-    todo: todos.filter((t) => t.kanban_status === 'todo' || !t.kanban_status),
-    in_progress: todos.filter((t) => t.kanban_status === 'in_progress'),
-    done: todos.filter((t) => t.kanban_status === 'done'),
+    todo: todos.filter((t) => t.kanban_status === 'todo' || !t.kanban_status).sort(sortByPriority),
+    in_progress: todos.filter((t) => t.kanban_status === 'in_progress').sort(sortByPriority),
+    done: todos.filter((t) => t.kanban_status === 'done').sort(sortByPriority),
   };
 
   const handleDragStart = (taskId: string) => {
