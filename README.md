@@ -17,10 +17,27 @@ To give students a **seamless way** to write down and manage tasks, creating an 
 - 📝 **Edit tasks** to update priorities and deadlines  
 - ❌ **Remove completed or irrelevant tasks** for a cleaner workspace  
 - ⏰ **Set Deadlines** on task and todos of your workspace
+- 📊 **Kanban Board** for visual task management and workflow tracking
 - 🤖 **AI Study Planner** powered by Google Gemini API for intelligent task scheduling
 - 🛰 **Daily motivational quotes** to boost engagement  
 - 🌌 **Create and Join Space** to collaborate with other students workspace 
 - 📖 **Share your notes to the Universe** gives you way to say your thoughts outloud in space!
+- 🗂 Kanban Board Functionality
+
+IskolarSpace includes a **Kanban Board** to help students visually organize and track their tasks through different stages of completion:
+
+### 🟩 Key Kanban Features:
+- **Drag-and-drop task movement** between columns (e.g., To Do, In Progress, Done)
+- **Column-based workflow** for clear progress tracking
+- **Task prioritization** and easy status updates
+- **Visual overview** of all tasks and their current state
+- **Collaborative updates** in shared spaces for group projects
+
+### 🔧 How It Works:
+1. **View tasks in Kanban columns** representing different workflow stages
+2. **Drag tasks** to update their status and progress
+3. **Instant updates** for all collaborators in the space
+4. **Seamless integration** with AI Study Planner and other productivity features
 
 ## 🛠 Built With  
 - **Next.js** – Fast & scalable React framework  
@@ -36,7 +53,7 @@ IskolarSpace features an **intelligent AI Study Planner** powered by **Google Ge
 - 📅 **Smart Schedule Generation** - Creates daily, weekly, or monthly study plans
 - 🎯 **Task Analysis** - Analyzes your current tasks to suggest optimal study sequences  
 - ⚡ **Instant Planning** - Generate comprehensive study plans in seconds
-- 🚀 **Auto-Task Creation** - Automatically populates task creation form with AI-generated content
+- 🚀 **Auto-Task Creation** - Automatically populates task creation form with AI-generated content for study planning
 
 ### 🔧 How It Works:
 1. **Select Time Frame** - Choose between day, week, or month planning
