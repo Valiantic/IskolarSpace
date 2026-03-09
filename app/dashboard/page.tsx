@@ -47,7 +47,7 @@ export default function DashboardPage() {
 
   // DELETE CONFIRMATION MODAL 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
+  const [todosToDelete, setTodosToDelete] = useState<string[]>([]);
   const [quote, setQuote] = useState('');
 
   // AI Study Planner 
@@ -275,18 +275,18 @@ export default function DashboardPage() {
 
   // HANDLE DELETE TASK FROM CONFIRMATION MODAL
   const handleDelete = async () => {
-    if(!todoToDelete) return;
+    if(todosToDelete.length === 0) return;
 
     const { error } = await supabase
     .from("tbl_todos")
     .delete()
-    .eq("id", todoToDelete);
+    .in("id", todosToDelete);
 
     if (error) {
-      console.error("Error deleting task", error.message);
+      console.error("Error deleting tasks", error.message);
     }else {
-      // Close edit modal if it's open and the deleted task is being edited
-      if (editingTaskId === todoToDelete) {
+      // Close edit modal if it's open and any of the deleted tasks is being edited
+      if (editingTaskId && todosToDelete.includes(editingTaskId)) {
         setEditingTaskId(null);
         setEditedContent("");
         setEditedTitle("");
@@ -295,7 +295,12 @@ export default function DashboardPage() {
     }
 
     setShowDeleteModal(false);
-    setTodoToDelete(null);
+    setTodosToDelete([]);
+  };
+
+  const handleBulkDelete = (ids: string[]) => {
+    setTodosToDelete(ids);
+    setShowDeleteModal(true);
   };
 
   if (authLoading || isAuthenticated === null) {
@@ -406,6 +411,7 @@ export default function DashboardPage() {
             todos={filteredTodos}
             onStatusChange={handleKanbanStatusChange}
             onTaskClick={startEditing}
+            onBulkDelete={handleBulkDelete}
             showAssignedMember={false}
           />
           </>
@@ -440,6 +446,7 @@ export default function DashboardPage() {
           showDeleteModal={showDeleteModal}
           handleDelete={handleDelete}
           setShowDeleteModal={setShowDeleteModal}
+          count={todosToDelete.length > 1 ? todosToDelete.length : undefined}
         />
         
         {/* Edit Task Modal */}
@@ -454,7 +461,7 @@ export default function DashboardPage() {
           setEditedDeadline={setEditedDeadline}
           handleSaveEdit={handleSaveEdit}
           setShowDeleteModal={setShowDeleteModal}
-          setTodoToDelete={setTodoToDelete}
+          setTodoToDelete={(id) => id && setTodosToDelete([id])}
           cancelEditing={cancelEditing}
           editedPriority={editedPriority}
           setEditedPriority={setEditedPriority}
