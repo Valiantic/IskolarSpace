@@ -168,14 +168,17 @@ export async function PUT(request: NextRequest) {
 // DELETE: Delete a task
 export async function DELETE(request: NextRequest) {
   const body = await request.json();
-  const { id } = body;
-  if (!id) {
-    return NextResponse.json({ error: "Missing task id" }, { status: 400 });
+  const { id, ids } = body;
+  if (!id && !ids) {
+    return NextResponse.json({ error: "Missing task id or ids" }, { status: 400 });
   }
-  const { error } = await supabase
-    .from("tbl_tasks")
-    .delete()
-    .eq("id", id);
+  const query = supabase.from("tbl_tasks").delete();
+  if (ids && Array.isArray(ids)) {
+    query.in("id", ids);
+  } else {
+    query.eq("id", id);
+  }
+  const { error } = await query;
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

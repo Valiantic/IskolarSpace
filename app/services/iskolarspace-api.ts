@@ -49,9 +49,10 @@ export const updateTask = async (spaceId: string, task: any) => {
   return res.data.task;
 };
 
-// Delete a task in a space
-export const deleteTask = async (spaceId: string, id: string) => {
-  const res = await axios.delete(`/api/spaces/tasks?spaceId=${spaceId}`, { data: { id } });
+// Delete tasks in a space
+export const deleteTask = async (spaceId: string, id: string | string[]) => {
+  const payload = Array.isArray(id) ? { ids: id } : { id };
+  const res = await axios.delete(`/api/spaces/tasks?spaceId=${spaceId}`, { data: payload });
   return res.data.success;
 };
 

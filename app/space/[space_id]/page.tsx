@@ -85,11 +85,10 @@ const SpacePage = () => {
 
   // Delete Confirmation Modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+  const [tasksToDelete, setTasksToDelete] = useState<string[]>([]);
 
   // For EditTaskModal
   const [showEditModal, setShowEditModal] = useState(false);
-  const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
   const [membersError, setMembersError] = useState<string | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState('');
@@ -275,21 +274,28 @@ const SpacePage = () => {
     }
   };
 
-  // Delete task
+  // Delete tasks
   const handleDelete = async () => {
-    if (!todoToDelete || !spaceId) return;
+    if (tasksToDelete.length === 0 || !spaceId) return;
     try {
-      await deleteTask(spaceId, todoToDelete);
-      if (editingTaskId === todoToDelete) {
+      await deleteTask(spaceId, tasksToDelete);
+      
+      // Close editing if any deleted task was being edited
+      if (editingTaskId && tasksToDelete.includes(editingTaskId)) {
         cancelEditing();
       }
       await fetchTasks(false);
     } catch (err) {
-      console.error('Error deleting task:', err);
+      console.error('Error deleting tasks:', err);
+      toast.error('Failed to delete tasks');
     }
     setShowDeleteModal(false);
-    setTodoToDelete(null);
-    setTaskToDelete(null);
+    setTasksToDelete([]);
+  };
+
+  const handleBulkDelete = (ids: string[]) => {
+    setTasksToDelete(ids);
+    setShowDeleteModal(true);
   };
 
     // Leave Space handler
@@ -553,6 +559,7 @@ const SpacePage = () => {
                 }
                 onStatusChange={handleKanbanStatusChange}
                 onTaskClick={startEditing}
+                onBulkDelete={handleBulkDelete}
                 showAssignedMember={true}
               />
               {showEditModal && (
@@ -571,7 +578,7 @@ const SpacePage = () => {
                     setEditedTitle={setEditedTitle}
                     handleSaveEdit={handleSaveEdit}
                     setShowDeleteModal={setShowDeleteModal}
-                    setTodoToDelete={setTodoToDelete}
+                    setTodoToDelete={(id) => id && setTasksToDelete([id])}
                     cancelEditing={cancelEditing}
                     assignedTo={assignedTo}
                     setAssignedTo={setAssignedTo}
@@ -589,6 +596,7 @@ const SpacePage = () => {
                 showDeleteModal={showDeleteModal}
                 handleDelete={handleDelete}
                 setShowDeleteModal={setShowDeleteModal}
+                count={tasksToDelete.length > 1 ? tasksToDelete.length : undefined}
               />
               {/* Space Info Modal */}
               <SpaceInfoModal
@@ -620,7 +628,7 @@ const SpacePage = () => {
               <StudyPlannerModal
                 isOpen={showStudyPlannerModal}
                 onClose={closeStudyPlannerModal}
-                userId={userId}
+                userId={userId || ""}
                 spaceId={spaceId}
                 openAddTaskWithAIPlan={openAddTaskWithAIPlan}
                 tableType="tasks"
