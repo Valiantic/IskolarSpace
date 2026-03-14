@@ -14,7 +14,7 @@ To give students a **seamless way** to write down and manage tasks, creating an 
 ## ✨ Features  
 - ✅ **Create progress tasks** for assignments, studies, and projects  
 - 🔍 **View ongoing tasks** in an intuitive interface  
-- 📝 **Edit tasks** to update priorities and deadlines  
+- 📝 **Edit tasks** to update priorities and deadlines with drag and drop features
 - ❌ **Remove completed or irrelevant tasks** for a cleaner workspace  
 - ⏰ **Set Deadlines** on task and todos of your workspace
 - 📊 **Kanban Board** for visual task management and workflow tracking
