@@ -38,6 +38,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Welcome email. Never blocks the join.
+  // Reading your OWN email is still permitted after the column revoke in
+  // sql/01 section 6b, because the grant covers the owner's own row.
   try {
     const { data: userData } = await auth.supabase
       .from("profiles")

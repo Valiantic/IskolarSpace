@@ -73,10 +73,11 @@ const SpacePage = () => {
 
       if (notesError) throw notesError
 
-      // Get user full names and avatar URLs from profiles
+      // Display names and avatars for other users come from vw_member_profiles.
+      // A direct select on `profiles` returns only your own row under RLS.
       const userIds = [...new Set(notesData.map(note => note.user_id))]
       const { data: usersData, error: usersError } = await supabase
-        .from('profiles')
+        .from('vw_member_profiles')
         .select('id, full_name, avatar_url')
         .in('id', userIds)
 
