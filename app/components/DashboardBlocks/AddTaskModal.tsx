@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { Rocket, Clock, AlertCircle, Zap, X, BookOpen } from 'lucide-react';
 import { Priority } from '../../types/dashboard';
-import { Member, AddTaskModalProps } from '../../types/join-space';
+import { AddTaskModalProps } from '../../types/join-space';
 import { useStudyPlannerContext } from '../../contexts/StudyPlannerContext';
+import AssigneeSelect from './AssigneeSelect';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -20,21 +21,21 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   handleAddTask,
   setShowInput,
   members,
-  assignedTo,
-  setAssignedTo,
+  assignees,
+  setAssignees,
   setDeadline,
 }) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showEmptyError, setShowEmptyError] = useState(false);
-  const [localAssignedTo, setLocalAssignedTo] = useState<string | null>(null);
+  const [localAssignees, setLocalAssignees] = useState<string[]>([]);
   const [showAIPlan, setShowAIPlan] = useState(false);
-  
+
   // Use the Study Planner Context
   const { aiPlan, planTitle, setAiPlan, setSelectedType } = useStudyPlannerContext();
-  
-  const effectiveAssignedTo = typeof assignedTo !== 'undefined' ? assignedTo : localAssignedTo;
-  const effectiveSetAssignedTo = typeof setAssignedTo !== 'undefined' ? setAssignedTo : setLocalAssignedTo;
+
+  const effectiveAssignees = typeof assignees !== 'undefined' ? assignees : localAssignees;
+  const effectiveSetAssignees = typeof setAssignees !== 'undefined' ? setAssignees : setLocalAssignees;
 
   if (!showInput) return null;
 
@@ -59,7 +60,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
       return;
     }
     setShowEmptyError(false);
-  handleAddTask(e, effectiveAssignedTo ?? null);
+    handleAddTask(e, effectiveAssignees);
   };
 
   return (
@@ -123,26 +124,16 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               />
             </div>
 
-            {/* Only show assign dropdown if members prop is provided (space page) */}
+            {/* Assignees. Only rendered on the space page, where members exist. */}
             {typeof members !== 'undefined' && Array.isArray(members) && members.length > 0 && (
-              <select
-                value={effectiveAssignedTo ?? ""}
-                onChange={e => effectiveSetAssignedTo(e.target.value)}
-                className="w-full p-2 rounded-lg bg-gray-800 text-white mb-3 p-2 px-2 font-poppins"
-              >
-                <option value="">Assign to...</option>
-                {members.map((member: Member) => {
-                  // Safely cast tbl_users to expected shape
-                  const user = Array.isArray(member.tbl_users)
-                    ? member.tbl_users[0] as { id?: string; full_name?: string }
-                    : member.tbl_users as { id?: string; full_name?: string };
-                  return user && typeof user.id === 'string' ? (
-                    <option key={user.id} value={user.id}>
-                      {user.full_name ?? 'Unnamed Member'}
-                    </option>
-                  ) : null;
-                })}
-              </select>
+              <div className="mb-3">
+                <AssigneeSelect
+                  members={members}
+                  value={effectiveAssignees}
+                  onChange={effectiveSetAssignees}
+                  label="Assign to (one or more)"
+                />
+              </div>
             )}
             {/* Content Textarea */}
             <textarea

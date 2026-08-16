@@ -10,7 +10,7 @@ import Sidebar from '../../components/DashboardBlocks/Sidebar';
 import SpaceBackground from '../../components/DashboardBlocks/SpaceBackground';
 import { getTasks, getSpaceMembers } from '../../services/iskolarspace-api';
 import { getUserSpaces } from '../../services/iskolarspace-api';
-import { createTask, updateTask, deleteTask } from '../../services/iskolarspace-api';
+import { createTask, updateTask, deleteTask, leaveSpace } from '../../services/iskolarspace-api';
 import { useAuth } from '../../hooks/auth/useAuth';
 import useSidebar from '../../hooks/dashboard/useSidebar';
 import LoadingSpinner from '../../components/DashboardBlocks/Loader';
@@ -79,7 +79,7 @@ const SpacePage = () => {
   const [task, setTask] = useState('');
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState<'low' | 'moderate' | 'high'>('low');
-  const [assignedTo, setAssignedTo] = useState<string | null>(null);
+  const [assignees, setAssignees] = useState<string[]>([]);
   const [deadline, setDeadline] = useState<Date | null>(null);
   const [updatingTask, setUpdatingTask] = useState(false);
 
@@ -123,7 +123,7 @@ const SpacePage = () => {
   }, [spaceId]);
 
   // Add task
-  const handleAddTask = async (e?: React.FormEvent<any>, assignedToArg?: string | null) => {
+  const handleAddTask = async (e?: React.FormEvent<any>, assigneesArg?: string[]) => {
     if (e) e.preventDefault();
     if (!task.trim() || !user?.id || !spaceId) return;
     let deadlineToSave = null;
@@ -133,12 +133,12 @@ const SpacePage = () => {
       deadlineToSave = noonDate.toISOString();
     }
     try {
+      // created_by is derived server-side from the session token.
       const result = await createTask(spaceId, {
         title: title.trim() || null,
         description: task,
         status: priority,
-        created_by: user.id,
-        assigned_to: assignedToArg === '' ? null : assignedToArg,
+        assignees: assigneesArg ?? assignees,
         deadline: deadlineToSave
       });
       toast.success('Task created successfully!');
@@ -146,7 +146,7 @@ const SpacePage = () => {
       setTitle('');
       setPriority('low');
       setShowInput(false);
-      setAssignedTo(null);
+      setAssignees([]);
       setDeadline(null);
       await fetchTasks(false);
     } catch (err: any) {
@@ -225,6 +225,7 @@ const SpacePage = () => {
   setEditedContent('');
   setEditedTitle('');
   setEditedPriority('low');
+  setAssignees([]);
   setShowEditModal(false);
   };
   const handleSaveEdit = async (taskId: string) => {
@@ -241,8 +242,7 @@ const SpacePage = () => {
         title: editedTitle.trim() || null,
         description: editedContent,
         status: editedPriority,
-        assigned_to: assignedTo === '' ? null : assignedTo,
-        created_by: user?.id,
+        assignees,
         deadline: editDeadlineToSave,
         kanban_status: editedKanbanStatus
       });
@@ -260,11 +260,10 @@ const SpacePage = () => {
     if (!taskToUpdate || !spaceId) return;
 
     try {
+      // Send only the field that changed. Omitted fields, assignees included,
+      // are left untouched by the API.
       await updateTask(spaceId, {
         id: taskId,
-        title: taskToUpdate.title || null,
-        description: taskToUpdate.description || taskToUpdate.content || '',
-        status: taskToUpdate.status || taskToUpdate.priority || 'low',
         kanban_status: newStatus,
       });
       await fetchTasks(false);
@@ -304,22 +303,12 @@ const SpacePage = () => {
     if (!userId || !spaceId) return;
     setLeaving(true);
     try {
-      // Use the leaveSpace API from services
-      // leaveSpace expects (spaceId: string, userId: number)
-      // It uses POST /api/spaces/user-spaces with { spaceId, userId, action: 'leave_space' }
-      const res = await fetch('/api/spaces/user-spaces', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ spaceId, userId, action: 'leave_space' }),
-      });
-      if (res.ok) {
-        toast.success('You have left the space.');
-        setShowSpaceInfoModal(false);
-        router.push('/dashboard'); 
-        // Optionally redirect or update UI here
-      } else {
-        toast.error('Failed to leave space.');
-      }
+      // Always removes the signed-in user; the server ignores any userId
+      // sent in the body.
+      await leaveSpace(spaceId);
+      toast.success('You have left the space.');
+      setShowSpaceInfoModal(false);
+      router.push('/dashboard');
     } catch (err) {
       toast.error('Error leaving space.');
     }
@@ -499,8 +488,8 @@ const SpacePage = () => {
                 setPriority={setPriority}
                 handleAddTask={handleAddTask}
                 setShowInput={setShowInput}
-                assignedTo={assignedTo}
-                setAssignedTo={setAssignedTo}
+                assignees={assignees}
+                setAssignees={setAssignees}
                 members={members}
               />
               <KanbanBoard
@@ -552,8 +541,12 @@ const SpacePage = () => {
                     ...task,
                     priority: (task.priority || task.status || 'low'),
                     content: task.content || task.description || '',
-                    assigned_to: task.assigned_to,
-                    assigned_member: members.find(m => m.tbl_users.id === task.assigned_to)?.tbl_users.full_name || 'Unassigned',
+                    assignees: task.assignees ?? [],
+                    assigned_members: (task.assignees ?? []).map(
+                      (id: string) =>
+                        members.find(m => m.tbl_users.id === id)?.tbl_users.full_name
+                        || 'Unknown member'
+                    ),
                     deadline: task.deadline || null,
                   }))
                 }
@@ -571,6 +564,7 @@ const SpacePage = () => {
                       content: task.content || task.description || '',
                       deadline: task.deadline || null,
                       kanban_status: task.kanban_status || 'todo',
+                      assignees: task.assignees ?? [],
                     }))}
                     editedContent={editedContent}
                     editedTitle={editedTitle}
@@ -580,8 +574,8 @@ const SpacePage = () => {
                     setShowDeleteModal={setShowDeleteModal}
                     setTodoToDelete={(id) => id && setTasksToDelete([id])}
                     cancelEditing={cancelEditing}
-                    assignedTo={assignedTo}
-                    setAssignedTo={setAssignedTo}
+                    assignees={assignees}
+                    setAssignees={setAssignees}
                     members={members}
                     editedDeadline={editedDeadline}
                     setEditedDeadline={setEditedDeadline}
