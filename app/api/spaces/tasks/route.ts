@@ -135,13 +135,27 @@ async function notifyAssignees(
   }
 
   try {
+    // A direct select on `profiles` returns only the caller's own row (see
+    // sql/01 section 6b), so names for everyone else come from the
+    // vw_member_profiles view, and recipient addresses from get_member_email,
+    // which resolves only users who share a space with the caller.
     const { data: profiles } = await supabase
-      .from("profiles")
-      .select("id, email, full_name")
+      .from("vw_member_profiles")
+      .select("id, full_name")
       .in("id", [...userIds, actorId]);
 
     const assignerName =
       profiles?.find((p: { id: string }) => p.id === actorId)?.full_name ?? "Unknown";
+
+    const emails = new Map<string, string>();
+    await Promise.allSettled(
+      userIds.map(async (userId) => {
+        const { data } = await supabase.rpc("get_member_email", {
+          p_user_id: userId,
+        });
+        if (typeof data === "string" && data) emails.set(userId, data);
+      })
+    );
 
     let spaceName = "";
     if (deadline) {
@@ -157,12 +171,14 @@ async function notifyAssignees(
 
     await Promise.allSettled(
       userIds.map(async (userId) => {
-        const profile = profiles?.find((p: { id: string }) => p.id === userId);
-        if (!profile?.email) return;
+        const email = emails.get(userId);
+        if (!email) return;
+        const fullName =
+          profiles?.find((p: { id: string }) => p.id === userId)?.full_name ?? "";
 
         await sendAssignmentEmail(
-          profile.email,
-          profile.full_name,
+          email,
+          fullName,
           taskTitle,
           assignerName,
           priority,
@@ -173,8 +189,8 @@ async function notifyAssignees(
           const deadlineDate = new Date(deadline).toISOString().split("T")[0];
           if (deadlineDate === today) {
             await sendDeadlineReminderEmail(
-              profile.email,
-              profile.full_name,
+              email,
+              fullName,
               taskTitle,
               deadlineDate,
               spaceName,
