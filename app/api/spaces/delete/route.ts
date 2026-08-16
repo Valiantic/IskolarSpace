@@ -1,24 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { requireSpaceAdmin } from '../../../../lib/auth/apiAuth';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+// DELETE: remove a space. Admins of that space only.
 export async function DELETE(request: NextRequest) {
   try {
     const { spaceId } = await request.json();
 
-    if (!spaceId) {
+    if (!spaceId || typeof spaceId !== 'string') {
       return NextResponse.json(
         { message: 'Space ID is required' },
         { status: 400 }
       );
     }
 
-    // Delete space (this will cascade delete related records)
-    const { error } = await supabase
+    const auth = await requireSpaceAdmin(request, spaceId);
+    if ('response' in auth) return auth.response;
+
+    // Cascades to members and tasks.
+    const { error } = await auth.supabase
       .from('tbl_spaces')
       .delete()
       .eq('id', spaceId);

@@ -3,6 +3,19 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { SpaceSettingsHookProps, Member } from '../../types/space-settings';
+import { supabase } from '../../../lib/supabaseClient';
+
+/** JSON headers plus the caller's Supabase access token. Space admin actions
+ *  are authorized server-side from this token. */
+const authJsonHeaders = async (): Promise<Record<string, string>> => {
+  const { data: { session } } = await supabase.auth.getSession();
+  return {
+    'Content-Type': 'application/json',
+    ...(session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : {}),
+  };
+};
 
 const useSpaceSettings = ({ 
   spaceId, 
@@ -36,9 +49,7 @@ const useSpaceSettings = ({
     try {
       const response = await fetch('/api/spaces/update-name', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: await authJsonHeaders(),
         body: JSON.stringify({
           spaceId,
           newName: newSpaceName.trim(),
@@ -70,9 +81,7 @@ const useSpaceSettings = ({
     try {
       const response = await fetch('/api/spaces/delete', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: await authJsonHeaders(),
         body: JSON.stringify({ spaceId }),
       });
 
@@ -101,9 +110,7 @@ const useSpaceSettings = ({
     try {
       const response = await fetch('/api/spaces/update-member-role', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: await authJsonHeaders(),
         body: JSON.stringify({
           spaceId,
           userId,
@@ -138,9 +145,7 @@ const useSpaceSettings = ({
     try {
       const response = await fetch('/api/spaces/kick-member', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: await authJsonHeaders(),
         body: JSON.stringify({
           spaceId,
           userId,

@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { requireSpaceAdmin } from '../../../../lib/auth/apiAuth';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+// PUT: change a member's role. Admins only.
 export async function PUT(request: NextRequest) {
   try {
     const { spaceId, userId, role } = await request.json();
@@ -24,8 +20,28 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Update member role
-    const { error } = await supabase
+    const auth = await requireSpaceAdmin(request, spaceId);
+    if ('response' in auth) return auth.response;
+
+    // Refuse to demote the last admin, which would strand the space with
+    // nobody able to manage it.
+    if (role === 'member') {
+      const { data: admins } = await auth.supabase
+        .from('tbl_space_members')
+        .select('user_id')
+        .eq('space_id', spaceId)
+        .eq('role', 'admin');
+
+      const adminIds = (admins ?? []).map((a: { user_id: string }) => a.user_id);
+      if (adminIds.length <= 1 && adminIds.includes(userId)) {
+        return NextResponse.json(
+          { message: 'Cannot demote the last admin of a space' },
+          { status: 400 }
+        );
+      }
+    }
+
+    const { error } = await auth.supabase
       .from('tbl_space_members')
       .update({ role })
       .eq('space_id', spaceId)

@@ -86,10 +86,16 @@ const useStudyPlanner = ({ onClose, userId, spaceId, tableType = 'todos', openAd
   `;
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/gemini", {
         method: "POST",
         body: JSON.stringify({ prompt }),
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {}),
+        },
       });
       
       if (!res.ok) {

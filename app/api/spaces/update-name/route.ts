@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { requireSpaceAdmin } from '../../../../lib/auth/apiAuth';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+// PUT: rename a space. Admins only.
 export async function PUT(request: NextRequest) {
   try {
     const { spaceId, newName } = await request.json();
@@ -17,8 +13,14 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Update space name
-    const { error } = await supabase
+    if (typeof newName !== 'string' || newName.length > 100) {
+      return NextResponse.json({ message: 'Invalid name' }, { status: 400 });
+    }
+
+    const auth = await requireSpaceAdmin(request, spaceId);
+    if ('response' in auth) return auth.response;
+
+    const { error } = await auth.supabase
       .from('tbl_spaces')
       .update({ name: newName.trim() })
       .eq('id', spaceId);
