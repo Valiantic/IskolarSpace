@@ -66,10 +66,18 @@ export interface AddTaskModalProps {
   setTitle: (title: string) => void;
   setTask: (task: string) => void;
   setPriority: (priority: 'low' | 'moderate' | 'high') => void;
-  handleAddTask: (e?: React.FormEvent<any>, assignedToArg?: string | null) => void;
+  handleAddTask: (e?: React.FormEvent<any>, assigneesArg?: string[]) => void;
   setShowInput: (show: boolean) => void;
   members?: Member[];
-  assignedTo?: string | null;
-  setAssignedTo?: (id: string | null) => void;
+  /** User ids assigned to the task being composed. */
+  assignees?: string[];
+  setAssignees?: (ids: string[]) => void;
   setDeadline: (date: Date | null) => void;
 }
+
+/** Normalizes Member.tbl_users, which the API returns as either an object or a
+ *  single-element array depending on the join. */
+export const memberUser = (
+  member: Member
+): { id?: string; full_name?: string } | undefined =>
+  Array.isArray(member.tbl_users) ? member.tbl_users[0] : member.tbl_users;

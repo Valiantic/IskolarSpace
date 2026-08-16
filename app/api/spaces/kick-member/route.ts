@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { requireSpaceAdmin } from '../../../../lib/auth/apiAuth';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+// DELETE: remove a member from a space. Admins only.
 export async function DELETE(request: NextRequest) {
   try {
     const { spaceId, userId } = await request.json();
@@ -17,8 +13,19 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Remove member from space
-    const { error } = await supabase
+    const auth = await requireSpaceAdmin(request, spaceId);
+    if ('response' in auth) return auth.response;
+
+    // An admin cannot kick themselves; they should leave the space instead.
+    // This also prevents a space being left with no admin by accident.
+    if (userId === auth.userId) {
+      return NextResponse.json(
+        { message: 'Use "leave space" to remove yourself' },
+        { status: 400 }
+      );
+    }
+
+    const { error } = await auth.supabase
       .from('tbl_space_members')
       .delete()
       .eq('space_id', spaceId)

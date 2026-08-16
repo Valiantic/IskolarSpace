@@ -259,13 +259,31 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                         </div>
                       )}
 
-                      {/* Assigned Member */}
-                      {showAssignedMember && task.assigned_member && (
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 ml-auto">
-                          <User className="w-3 h-3 text-sky-400" />
-                          <span className="text-[10px] text-slate-400 font-bold font-poppins uppercase tracking-wider truncate max-w-[80px]">
-                            {task.assigned_member}
-                          </span>
+                      {/* Assigned members. Shows the first two by name and
+                          rolls the rest into a +N chip to keep cards compact. */}
+                      {showAssignedMember && (task.assigned_members?.length ?? 0) > 0 && (
+                        <div className="flex items-center gap-1.5 ml-auto min-w-0">
+                          {task.assigned_members!.slice(0, 2).map((name) => (
+                            <div
+                              key={name}
+                              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5"
+                            >
+                              <User className="w-3 h-3 text-sky-400" />
+                              <span className="text-[10px] text-slate-400 font-bold font-poppins uppercase tracking-wider truncate max-w-[80px]">
+                                {name}
+                              </span>
+                            </div>
+                          ))}
+                          {task.assigned_members!.length > 2 && (
+                            <div
+                              className="flex items-center px-2.5 py-1 rounded-lg bg-black/40 border border-white/5"
+                              title={task.assigned_members!.slice(2).join(', ')}
+                            >
+                              <span className="text-[10px] text-slate-400 font-bold font-poppins uppercase tracking-wider">
+                                +{task.assigned_members!.length - 2}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

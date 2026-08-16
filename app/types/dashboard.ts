@@ -8,8 +8,14 @@ export interface Todo {
   user_id: string;
   created_at: string;
   priority: 'low' | 'moderate' | 'high';
+  /** @deprecated single-assignee column, kept for rollout. Use assignees. */
   assigned_to?: string;
+  /** @deprecated single-assignee display name. Use assigned_members. */
   assigned_member?: string;
+  /** User ids of everyone assigned to this task. */
+  assignees?: string[];
+  /** Display names resolved from assignees, in the same order. */
+  assigned_members?: string[];
   deadline?: string | Date | null;
   tableType?: 'todos' | 'tasks';
   kanban_status?: 'todo' | 'in_progress' | 'done';
@@ -73,6 +79,8 @@ export interface EditTaskModalProps {
   setShowDeleteModal: (show: boolean) => void;
   setTodoToDelete: (todoId: string | null) => void;
   cancelEditing: () => void;
+  assignees?: string[];
+  setAssignees?: (ids: string[]) => void;
 }
 
 // DeleteConfirmationModal Component Types

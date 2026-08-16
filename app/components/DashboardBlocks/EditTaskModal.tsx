@@ -4,13 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Check, Trash, Clock, Zap, AlertCircle } from 'lucide-react';
 import { EditTaskModalProps, Priority } from '../../types/dashboard';
 import { Member } from '../../types/join-space';
+import AssigneeSelect from './AssigneeSelect';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const EditTaskModal: React.FC<EditTaskModalProps & {
   members?: Member[],
-  assignedTo?: string | null,
-  setAssignedTo?: (id: string | null) => void,
   editedPriority?: Priority,
   setEditedPriority?: (priority: Priority) => void,
   editedKanbanStatus?: 'todo' | 'in_progress' | 'done',
@@ -29,17 +28,17 @@ const EditTaskModal: React.FC<EditTaskModalProps & {
   setTodoToDelete,
   cancelEditing,
   members,
-  assignedTo,
-  setAssignedTo,
+  assignees,
+  setAssignees,
   editedPriority,
   setEditedPriority,
   editedKanbanStatus,
   setEditedKanbanStatus,
 }) => {
-  // Local state for assignment dropdown
-  const [localAssignedTo, setLocalAssignedTo] = useState<string | null>(assignedTo ?? null);
-  const effectiveAssignedTo = typeof assignedTo !== 'undefined' ? assignedTo : localAssignedTo;
-  const effectiveSetAssignedTo = typeof setAssignedTo !== 'undefined' ? setAssignedTo : setLocalAssignedTo;
+  // Local fallback when the parent does not own assignee state.
+  const [localAssignees, setLocalAssignees] = useState<string[]>(assignees ?? []);
+  const effectiveAssignees = typeof assignees !== 'undefined' ? assignees : localAssignees;
+  const effectiveSetAssignees = typeof setAssignees !== 'undefined' ? setAssignees : setLocalAssignees;
 
   // Local state for priority and kanban status
   const [localPriority, setLocalPriority] = useState<Priority>('low');
@@ -56,7 +55,7 @@ const EditTaskModal: React.FC<EditTaskModalProps & {
       }
     };
   }, [scrollTimeout]);
-9
+
   const todoIndex = todos.findIndex(todo => todo.id === editingTaskId);
   const editingTodo = todoIndex >= 0 ? todos[todoIndex] : null;
 
@@ -69,10 +68,14 @@ const EditTaskModal: React.FC<EditTaskModalProps & {
       } else {
         setEditedDeadline(null);
       }
-      if (typeof setAssignedTo !== 'undefined') {
-        setAssignedTo(editingTodo.assigned_to || null);
+      // Prefer the multi-assignee array, falling back to the legacy single
+      // column for tasks created before the migration.
+      const current = editingTodo.assignees
+        ?? (editingTodo.assigned_to ? [editingTodo.assigned_to] : []);
+      if (typeof setAssignees !== 'undefined') {
+        setAssignees(current);
       } else {
-        setLocalAssignedTo(editingTodo.assigned_to || null);
+        setLocalAssignees(current);
       }
 
       // Set priority
@@ -186,27 +189,15 @@ const EditTaskModal: React.FC<EditTaskModalProps & {
             </div>
           </div>
 
-          {/* Assignment Dropdown for space page */}
+          {/* Assignees. Only rendered on the space page, where members exist. */}
           {typeof members !== 'undefined' && Array.isArray(members) && members.length > 0 && (
             <div className="mb-3">
-              <label className="block text-white/70 text-xs sm:text-sm font-poppins mb-1">Assign to</label>
-              <select
-                value={effectiveAssignedTo ?? ""}
-                onChange={e => effectiveSetAssignedTo(e.target.value)}
-                className="w-full p-2 rounded-lg bg-gray-800 text-white font-poppins text-sm sm:text-base"
-              >
-                <option value="">Unassigned</option>
-                {members.map((member: Member) => {
-                  const user = Array.isArray(member.tbl_users)
-                    ? member.tbl_users[0] as { id?: string; full_name?: string }
-                    : member.tbl_users as { id?: string; full_name?: string };
-                  return user && typeof user.id === 'string' ? (
-                    <option key={user.id} value={user.id}>
-                      {user.full_name ?? 'Unnamed Member'}
-                    </option>
-                  ) : null;
-                })}
-              </select>
+              <AssigneeSelect
+                members={members}
+                value={effectiveAssignees}
+                onChange={effectiveSetAssignees}
+                label="Assign to (one or more)"
+              />
             </div>
           )}
           {/* Content Textarea */}
