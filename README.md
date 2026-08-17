@@ -18,10 +18,13 @@ To give students a **seamless way** to write down and manage tasks, creating an 
 - ❌ **Remove completed or irrelevant tasks** for a cleaner workspace  
 - ⏰ **Set Deadlines** on task and todos of your workspace
 - 📊 **Kanban Board** for visual task management and workflow tracking
+- 👥 **Assign a task to multiple members** so group work has clear shared ownership
+- 🗑 **Select and delete tasks in bulk** to clear finished work in one action
 - 🤖 **AI Study Planner** powered by Google Gemini API for intelligent task scheduling
 - 🛰 **Daily motivational quotes** to boost engagement  
 - 🌌 **Create and Join Space** to collaborate with other students workspace 
 - 📖 **Share your notes to the Universe** gives you way to say your thoughts outloud in space!
+- 🔐 **Role-based space permissions** keeping admin actions with space admins
 - 🗂 Kanban Board Functionality
 
 IskolarSpace includes a **Kanban Board** to help students visually organize and track their tasks through different stages of completion:
@@ -31,6 +34,7 @@ IskolarSpace includes a **Kanban Board** to help students visually organize and 
 - **Column-based workflow** for clear progress tracking
 - **Task prioritization** and easy status updates
 - **Visual overview** of all tasks and their current state
+- **Multi-select mode** for acting on several tasks at once
 - **Collaborative updates** in shared spaces for group projects
 
 ### 🔧 How It Works:
@@ -38,6 +42,62 @@ IskolarSpace includes a **Kanban Board** to help students visually organize and 
 2. **Drag tasks** to update their status and progress
 3. **Instant updates** for all collaborators in the space
 4. **Seamless integration** with AI Study Planner and other productivity features
+
+## 👥 Multi-Assignee Tasks
+Group projects rarely belong to one person, so a task in a shared space can be assigned to **any number of members** rather than just one.
+
+### ✨ Key Features:
+- 🤝 **Assign several members** to a single task from one dropdown
+- 🏷 **Chips for each assignee**, removable with a click
+- 👀 **At-a-glance ownership** on Kanban cards, showing the first two names and a `+N` badge when more are assigned
+- 📧 **Email notifications** sent to everyone newly added to a task
+- 🔒 **Space-scoped** so only members of that space can be assigned
+
+### 🔧 How It Works:
+1. **Open a task** in the add or edit modal
+2. **Pick one or more members** from the assignee dropdown
+3. **Everyone newly assigned is notified** by email
+4. **Assignments stay put** when a card is dragged between columns
+
+## 🗑 Bulk Task Actions
+Clearing finished work no longer means deleting tasks one at a time.
+
+### 🔧 How It Works:
+1. **Enter selection mode** on the Kanban board
+2. **Tick the tasks** you want to remove
+3. **Confirm once** to delete the whole selection
+
+## 🔐 Spaces, Roles, and Access
+Spaces are collaborative, so who can do what is enforced on the **server**, not just hidden in the interface.
+
+### ✨ Key Features:
+- 👑 **Admin and member roles** per space
+- 🛡 **Admin-only actions** covering renaming a space, deleting it, removing members, and changing roles
+- 🚪 **Members can leave** a space at any time
+- 🔑 **Every request is authenticated**, and each one is checked against your membership of the space it targets
+- 🧭 **Tasks stay inside their space** and are only readable by that space's members
+- ⚠️ **Last admin protected** so a space can never be left without someone able to manage it
+
+## 🗄 Database Setup
+The app relies on Supabase **Row Level Security** policies. They are not optional: the Supabase key ships in the browser bundle, so these policies are what keep one user's data out of another user's reach.
+
+Two SQL scripts must be applied to the database, in order:
+
+1. `sql/01_security_hardening.sql` — enables Row Level Security and adds access policies
+2. `sql/02_multi_assignee.sql` — creates the multi-assignee table and migrates existing assignments
+
+Run them from the **Supabase Dashboard → SQL Editor**. Neither script deletes data. Take a backup first, and run the verification queries at the end of each file to confirm the result.
+
+Required environment variables:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+GEMINI_API_KEY=
+GMAIL_USER=
+GMAIL_PASS=
+NEXT_PUBLIC_URL=
+```
 
 ## 🛠 Built With  
 - **Next.js** – Fast & scalable React framework  
