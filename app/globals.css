@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -111,6 +113,35 @@ body.modal-open {
 
 .animate-floating {
   animation: floating 3s ease-in-out infinite;
+}
+
+/* SPACE THEME ANIMATIONS */
+@keyframes nebula-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.animate-nebula {
+  animation: nebula-pulse 8s ease-in-out infinite;
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.animate-star {
+  animation: star-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes slow-pan {
+  0% { transform: scale(1.1) translate(0, 0); }
+  50% { transform: scale(1.15) translate(-1%, -1%); }
+  100% { transform: scale(1.1) translate(0, 0); }
+}
+
+.animate-slow-pan {
+  animation: slow-pan 20s ease-in-out infinite;
 }
 
 /* Priority Level Pulsing Orb Animations */
