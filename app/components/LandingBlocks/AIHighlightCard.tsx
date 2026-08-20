@@ -19,7 +19,7 @@ const AIHighlightCard = () => {
     <section id='features' className="mx-auto max-w-screen-xl px-1 py-4 sm:px-2 lg:px-3">
 
       <div data-aos="fade-up" className='flex items-center justify-center p-2'>
-        <h1 className="text-xl sm:text-lg md:text-7xl font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text z-20 font-poppins">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white z-20 font-syncopate tracking-tight text-center">
           AI-Powered Study Planner
         </h1>
       </div>
@@ -31,18 +31,21 @@ const AIHighlightCard = () => {
           key={card_id}
           data-aos="fade-up"
           data-aos-delay={index * 200}
-          className="bg-slate-800 w-full max-w-[1000px] border border-2 p-4 border-cyan-400 rounded-lg shadow-md hover:shadow-lg transition duration-300 overflow-hidden"
+          className="bg-[#0c0c0e] border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-cyan-500/10 hover:border-white/20 transition-all duration-300 group flex flex-col gap-6"
         >
-          <div className="p-4 flex align-items-center justify-center rounded-md">
-            <h3 className="text-2xl font-bold text-cyan-200 font-poppins">{title}</h3>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-xl font-bold text-white tracking-tight">{title}</h3>
+            <p className="text-sm text-slate-400">Experience intelligent scheduling powered by IskolarSpace AI.</p>
           </div>
-          <Image
-            src={image}
-            alt={title}
-            width={1200}
-            height={800}
-            className="w-full h-auto max-h-[450px] object-cover rounded-md"
-          />
+          
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/5 bg-black/50 shadow-inner group-hover:scale-[1.02] transition-transform duration-500">
+            <Image
+              src={image}
+              alt={title}
+              fill
+              className="object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+            />
+          </div>
         </div>
       ))}
     </div>

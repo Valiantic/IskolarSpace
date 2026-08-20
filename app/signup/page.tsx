@@ -39,7 +39,6 @@ export default function SignupPage() {
       email,
       password,
       options: { data: { full_name: fullName } },
-      
     });
 
     if (signUpError) {
@@ -48,9 +47,7 @@ export default function SignupPage() {
     }
 
     // 2. Check for a valid session.
-    // NOTE: If email confirmations are enabled, data.session might be null.
     if (!data.session) {
-      // For development, disable email confirmations in Supabase Auth settings.
       setError("Please check your email to confirm your account. Once confirmed, please sign in.");
       return;
     }
@@ -68,147 +65,148 @@ export default function SignupPage() {
   }
 
   return (
-<section className="bg-black overflow-x-hidden w-full min-h-screen">
-  <div className="lg:grid lg:min-h-screen lg:grid-cols-12 w-full overflow-hidden">
-    <aside className="relative block h-40 md:h-80 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
-      <Image
-        alt="Student Astronaut"
-        src={Signupic}
-        className="absolute inset-0 h-full w-full object-cover md:object-cover"
-        priority
-      />
-    </aside>
-
-    <main
-      className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
-    >
-      <div className="max-w-xl lg:max-w-3xl w-full">
-
-          <div className="bg-gray-900/80 backdrop-blur-sm border border-cyan-500/30 rounded-2xl p-8 shadow-2xl shadow-cyan-500/10">
-
-
-          <Link href="/" className="mt-4 text-sm text-white sm:mt-0 underline gap-2 flex items-center bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
-             <FaArrowAltCircleLeft/> Home
-          </Link>
-
-        <div className="flex items-center gap-2"> 
-          <h1 className="mt-6 sm:text-lg md:text-5xl font-bold text-white sm:text-xl md:text-7xl">
-            Welcome to <span className="font-bold bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">IskolarSpace!</span>
-          </h1>
-          <Image 
-            src={Logo} 
-            alt="IskolarSpace Logo" 
-            className="mt-6 h-16 w-16 sm:h-5 sm:w-5 md:h-28 md:w-28" 
-            width={0} 
-            height={0} 
-          />
-        </div>
-
-        <p className="mt-4 leading-relaxed text-white">
-         Empower your educational journey with IskolarSpace. Let's get started!
-        </p>
-
-         <form onSubmit={handleSignup} className="mt-8 grid grid-cols-6 gap-6">
-        
-        
-                {/* Error message with improved mobile display */}
-                {error && (
-                  <div className="col-span-6">
-                    <p className="text-red-500 mb-4 break-words text-sm sm:text-base">{error}</p>
-                  </div>
-                )}
-        
-                  <div className="col-span-6">
-                    <label htmlFor="Fullname" className="block text-xl font-bold text-white">
-                      What should we call you?
-                    </label>
-        
-                    <input
-                      type="text"
-                      id="Fullname"
-                      name="full_name"
-                      className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl text-black shadow-xs"
-                      value={fullName}
-                      onChange={handleNameChange}
-                      maxLength={20}
-                    />
-                     <p className="text-sm text-gray-400 mt-1">{fullName.length}/20 characters</p>
-                    {!nameValidation.isValid && fullName.length > 20 && (
-                      <p className="text-red-500 text-sm mt-1">{nameValidation.errors[0]}</p>
-                    )}
-                  </div>
-        
-        
-                  <div className="col-span-6">
-                    <label htmlFor="Email" className="block text-xl font-bold text-white"> Email </label>
-        
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                       className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl  text-black  shadow-xs"
-                      required
-                    />
-                  </div>
-        
-                  <div className="col-span-6">
-                    <label htmlFor="Password" className="block text-xl font-bold text-white"> Password </label>
-        
-                    <div className="mb-4 relative">
-        
-                    <input
-                      type={togglePassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="mt-1 p-2 w-full rounded-md border-gray-200 bg-white text-xl  text-black shadow-xs"
-                    />
-        
-                    <button 
-                      type="button" 
-                      onClick={showPassword} 
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                    >
-                      {togglePassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                    </div>
-
-                    {password && !passwordValidation.isValid && (
-                      <div className="mt-2">
-                        <p className="text-sm text-red-500 mb-1">Requirements:</p>
-                        {passwordValidation.errors.map((err, i) => (
-                          <p key={i} className="text-red-500 text-sm">• {err}</p>
-                        ))}
-                      </div>
-                    )}
-
-                  </div>
-        
-              
-        
-                  <div className="col-span-6 sm:flex sm:items-center sm:gap-4 sm:justify-end">
-                    
-                    <p onClick={handleNavigation} className="mt-4 text-sm text-blue-600 sm:mt-0 bg-gradient-to-r from-white to-sky-500 text-transparent bg-clip-text">
-                      Already have an account?&nbsp;&nbsp;
-                      <a href="#" className="text-white underline">Log in</a>.
-                    </p>
-        
-                    <button
-                      type="submit"
-                      className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-gradient-to-r from-white to-sky-500 hover:text-blue-600 focus:ring-3 focus:outline-hidden disabled:opacity-50"
-                      disabled={!isFormValid}
-                    >
-                      Create an account
-                    </button>
-                    
-                  </div>
-                </form>
-          
+    <div className="min-h-screen w-full flex flex-col lg:grid lg:grid-cols-5 bg-[#09090b]">
+      {/* Left Column - Form */}
+      <div className="lg:col-span-2 flex items-center justify-center px-8 lg:px-12 py-12 relative z-10 flex-col bg-[#09090b]">
+        <main className="w-full max-w-[420px]">
+          {/* Header */}
+          <div className="mb-10">
+            <Link href="/" className="inline-flex items-center gap-2 mb-8 text-sm text-slate-400 hover:text-slate-200 transition-colors">
+              <FaArrowAltCircleLeft className="text-lg" /> Back to Home
+            </Link>
+            
+            <div className="flex items-center gap-3 mb-6">
+              <Image src={Logo} alt="IskolarSpace Logo" width={40} height={40} />
+              <span className="text-xl font-bold text-white font-poppins tracking-tight">IskolarSpace</span>
+            </div>
+            
+            <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">
+              Create an account
+            </h1>
+            <p className="text-sm text-slate-400">
+              Sign up to continue to your workspace
+            </p>
           </div>
-       
+
+          <form onSubmit={handleSignup} className="space-y-5">
+            {/* Error message */}
+            {error && (
+              <div className="p-3 bg-red-950/50 border border-red-500/20 rounded-lg">
+                <p className="text-red-400 text-sm font-medium text-center">{error}</p>
+              </div>
+            )}
+
+            {/* Full Name */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-end">
+                <label htmlFor="Fullname" className="block text-sm font-medium text-slate-200">
+                  Full Name
+                </label>
+                <span className="text-xs text-slate-500">{fullName.length}/20</span>
+              </div>
+              <input
+                type="text"
+                id="Fullname"
+                value={fullName}
+                onChange={handleNameChange}
+                maxLength={20}
+                className={`flex h-12 w-full rounded-lg border bg-[#141416] px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400/20 transition-all ${!nameValidation.isValid && fullName.length > 20 ? 'border-red-500/50' : 'border-white/10 hover:border-white/20'}`}
+                placeholder="Jane Doe"
+              />
+              {!nameValidation.isValid && fullName.length > 20 && (
+                <p className="text-red-400 text-xs mt-1">{nameValidation.errors[0]}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <label htmlFor="Email" className="block text-sm font-medium text-slate-200">
+                Email
+              </label>
+              <input
+                type="email"
+                id="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex h-12 w-full rounded-lg border border-white/10 bg-[#141416] hover:border-white/20 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400/20 transition-all"
+                placeholder="name@example.com"
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-2">
+              <label htmlFor="Password" className="block text-sm font-medium text-slate-200">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={togglePassword ? "text" : "password"}
+                  id="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`flex h-12 w-full rounded-lg border bg-[#141416] hover:border-white/20 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400/20 pr-12 transition-all ${password && !passwordValidation.isValid ? 'border-amber-500/50' : 'border-white/10'}`}
+                  required
+                />
+                <button 
+                  type="button" 
+                  onClick={showPassword} 
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  {togglePassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                </button>
+              </div>
+              
+              {password && !passwordValidation.isValid && (
+                <div className="mt-2 p-3 bg-amber-950/20 border border-amber-500/20 rounded-lg">
+                  <p className="text-xs text-amber-500 mb-1 font-medium">Password requirements:</p>
+                  <ul className="list-disc list-inside">
+                  {passwordValidation.errors.map((err, i) => (
+                    <li key={i} className="text-amber-400/80 text-xs">{err}</li>
+                  ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={!isFormValid}
+              className="w-full mt-8 inline-flex h-12 items-center justify-center rounded-lg bg-white px-4 py-2 text-[15px] font-semibold text-slate-950 hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Sign Up
+            </button>
+
+            {/* Login Link */}
+            <div className="text-center pt-6">
+              <p className="text-slate-400 text-sm">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={handleNavigation}
+                  className="text-white hover:underline font-medium transition-colors ml-1"
+                >
+                  Log in
+                </button>
+              </p>
+            </div>
+          </form>
+        </main>
       </div>
-    </main>
-  </div>
-</section>
+      
+      {/* Right Column - Image */}
+      <div className="hidden lg:block lg:col-span-3 relative w-full h-full bg-[#09090b]">
+        <Image
+          src={Signupic}
+          alt="Signup Background"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Adds a slight shadow on the inner left edge from the form */}
+        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#09090b] to-transparent" />
+      </div>
+    </div>
   );
 }

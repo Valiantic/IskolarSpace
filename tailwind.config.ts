@@ -16,6 +16,9 @@ export default {
         'poppins': ['var(--font-poppins)', 'sans-serif'],
         'geist-sans': ['var(--font-geist-sans)', 'sans-serif'],
         'geist-mono': ['var(--font-geist-mono)', 'monospace'],
+        'syncopate': ['Syncopate', 'sans-serif'],
+        'orbitron': ['Orbitron', 'sans-serif'],
+        'rajdhani': ['Rajdhani', 'sans-serif'],
       },
       animation: {
         'spin-reverse': 'spin 1s linear infinite reverse',
