@@ -19,9 +19,9 @@ const AIHighlightCard = () => {
     <section id='features' className="mx-auto max-w-screen-xl px-1 py-4 sm:px-2 lg:px-3">
 
       <div data-aos="fade-up" className='flex items-center justify-center p-2'>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white z-20 font-syncopate tracking-tight text-center">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white z-20 font-syncopate tracking-tight text-center">
           AI-Powered Study Planner
-        </h1>
+        </h2>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6">

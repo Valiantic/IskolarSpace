@@ -3,6 +3,7 @@ import QueryProvider from "./providers/QueryProvider";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from 'react-hot-toast';
+import { SITE_URL } from "./constants/site";
 import "./globals.css";
 import 'aos/dist/aos.css';
 
@@ -22,9 +23,67 @@ const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
+const description = "IskolarSpace is an AI-powered task manager for students. Plan coursework, prioritize deadlines on a Kanban board, and collaborate in shared spaces.";
+const socialDescription = "Plan. Prioritize. Collaborate. Organize your student life and collaborate with your peers.";
+
 export const metadata: Metadata = {
-  title: "IskolarSpace",
-  description: "Plan. Prioritize. Collaborate.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "IskolarSpace | AI Task Manager and Study Planner for Students",
+    template: "%s | IskolarSpace",
+  },
+  description,
+  keywords: "task management, productivity, collaboration, iskolarspace, student, education, teamwork, organize, prioritize, task app",
+  authors: [{ name: "IskolarSpace Team" }],
+  robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
+  icons: { icon: "/svgs/iskolarspace_logo.svg" },
+  openGraph: {
+    title: "IskolarSpace",
+    description: socialDescription,
+    type: "website",
+    images: ["/images/iskolarspace_logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "IskolarSpace",
+    description: socialDescription,
+    images: ["/images/iskolarspace_logo.png"],
+  },
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: "IskolarSpace",
+      url: SITE_URL,
+      logo: `${SITE_URL}/images/iskolarspace_logo.png`,
+      sameAs: [
+        "https://www.instagram.com/stevemadali/",
+        "https://github.com/Valiantic",
+        "https://www.linkedin.com/in/steven-madali/",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: "IskolarSpace",
+      url: SITE_URL,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+    {
+      "@type": "WebApplication",
+      name: "IskolarSpace",
+      url: SITE_URL,
+      description,
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -34,29 +93,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/svgs/iskolarspace_logo.svg" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* SEO Meta Tags */}
-        <meta name="keywords" content="task management, productivity, collaboration, iskolarspace, student, education, teamwork, organize, prioritize, task app" />
-        <meta name="author" content="IskolarSpace Team" />
-        <meta name="robots" content="index, follow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href="https://iskolarspace.com/" />
-        {/* Open Graph Meta Tags */}
-        <meta property="og:title" content="IskolarSpace" />
-        <meta property="og:description" content="Plan. Prioritize. Collaborate. Organize your student life and collaborate with your peers." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://iskolarspace.com/" />
-        <meta property="og:image" content="https://iskolarspace.com/images/iskolarspace_logo.png" />
-        {/* Twitter Card Meta Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="IskolarSpace" />
-        <meta name="twitter:description" content="Plan. Prioritize. Collaborate. Organize your student life and collaborate with your peers." />
-        <meta name="twitter:image" content="https://iskolarspace.com/images/iskolarspace_logo.png" />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <QueryProvider>{children}
         <Toaster
           position="top-right"
