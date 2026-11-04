@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { SparklesCore } from "./components/DashboardBlocks/ui/sparkles";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { BackgroundProvider, useBackground } from "./contexts/BackgroundContext";
 import { Rocket } from "lucide-react";
@@ -10,10 +10,17 @@ import About from "./components/LandingBlocks/About";
 import AIHighlightCard from "./components/LandingBlocks/AIHighlightCard";
 import SpaceFeatureHighlight from "./components/LandingBlocks/SpaceFeatureHighlight";
 import NotesFeatureHighlight from "./components/LandingBlocks/NotesFeatureHighlight";
+import Faq from "./components/LandingBlocks/Faq";
 import GetStartedBanner from "./components/LandingBlocks/GetStartedBanner";
 import Footer from "./components/LandingBlocks/Footer";
 import Navbar from "./components/LandingBlocks/Navbar";
 import ScrollToTop from "./components/LandingBlocks/ScrollToTop";
+
+// Decorative only, so its particle engine stays out of the initial bundle
+const SparklesCore = dynamic(
+  () => import("./components/DashboardBlocks/ui/sparkles").then((mod) => mod.SparklesCore),
+  { ssr: false }
+);
 
 function PageContent() {
   const { backgroundColor } = useBackground();
@@ -47,9 +54,7 @@ function PageContent() {
             <span className="text-xs tracking-wider text-slate-300 uppercase">Your No. 1 AI Powered Task Management App</span>
           </div>
 
-          <h1 
-            data-aos="fade-up"
-            data-aos-delay="100"
+          <h1
             className="text-center font-bold leading-tight tracking-tight max-w-4xl"
           >
             <span className="block text-5xl sm:text-6xl md:text-8xl text-white">
@@ -74,7 +79,7 @@ function PageContent() {
             </div>
           </div>
 
-          <div className="flex gap-4 mb-10 z-10 max-w-2xl" data-aos="fade-up" data-aos-delay="200">
+          <div className="flex gap-4 mb-10 z-10 max-w-2xl">
             <h2 className="text-slate-400 text-lg md:text-xl text-center font-medium leading-relaxed">
               Ascend to peak productivity. <span className="text-slate-200">Plan</span> your coursework, <span className="text-slate-200">prioritize</span> deadlines, and <span className="text-slate-200">collaborate</span> seamlessly.
             </h2>
@@ -105,6 +110,10 @@ function PageContent() {
 
        <section data-aos="fade-up" className="w-full">
         <NotesFeatureHighlight />
+      </section>
+
+      <section className="w-full">
+        <Faq />
       </section>
 
       <section className="w-full mb-10">
